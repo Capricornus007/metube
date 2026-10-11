@@ -168,7 +168,7 @@
     <string name="subscribe_to_channel">Підписатися на канал</string>
     <string name="wait_data_loading">Зачекайте поки дані завантажуються…</string>
     <string name="auto_frame_rate_pause">Auto Frame Rate (пауза при перемиканні)</string>
-    <string name="auto_frame_rate_applying">Застосовується автофреймрейт %sx%s@%s</string>
+    <string name="auto_frame_rate_applying">Застосовується автофреймрейт %sx%s\@%s</string>
     <string name="audio_shift">Зміщення аудіо</string>
     <string name="player_remember_speed">Запам\'ятовувати швидкість</string>
     <string name="mark_channel_as_watched">Позначити як переглянуте</string>
@@ -193,7 +193,7 @@
     <string name="content_block_interaction">Нагадування про підписку</string>
     <string name="content_block_self_promo">Самореклама</string>
     <string name="content_block_music_off_topic">Немузична секція кліпу</string>
-    <string name="confirm_segment_skip">Пропустити сегмент \"%s\"?</string>
+    <string name="confirm_segment_skip">Пропустити сегмент \"%s\"\?</string>
     <string name="cancel_segment_skip">Скасувати пропуск сегменту</string>
     <string name="msg_skipping_segment">Пропуск сегменту \"%s\"…</string>
     <string name="content_block_notification_type">Тип повідомлень</string>
@@ -403,7 +403,7 @@
     <string name="playback_notifications_fix_desc">Приховує сповіщення про зміну відтворюваного треку. Може бути корисним на прошивках на базі AOSP.</string>
     <string name="playback_notifications_fix">Вимкнути сповіщення про відтворення</string>
     <string name="amlogic_fix_desc">Виправлення втрати кадрів на пристроях на базі Amlogic.</string>
-    <string name="amlogic_fix">Виправлення 1080p@60fps на Amlogic</string>
+    <string name="amlogic_fix">Виправлення 1080p\@60fps на Amlogic</string>
     <string name="tunneled_video_playback_desc">Увага: можливі проблеми з паузой! Тунельне відтворення обіцяє кращу синхронізацію аудіо/відео та більш плавне відтворення. Потрібен Андроїд 5+</string>
     <string name="tunneled_video_playback">Тунельне відтворення (Android 5+)</string>
     <string name="master_volume">Основна гучність</string>
@@ -425,7 +425,7 @@
     <string name="save_remove_playlist">Додати/Видалити плейлист з розділу Плейлисти</string>
     <string name="save_playlist">Додати плейлист до розділу Плейлисти</string>
     <string name="remove_playlist">Видалити плейлист з розділу Плейлисти назавжди</string>
-    <string name="remove_playlist_fmt">Видалити %s назавжди?</string>
+    <string name="remove_playlist_fmt">Видалити %s назавжди\?</string>
     <string name="removed_from_playlists">Видалено з розділу Плейлисти</string>
     <string name="saved_to_playlists">Додано у розділ Плейлисти</string>
     <string name="create_playlist">Створити плейлист</string>
@@ -439,8 +439,8 @@
     <string name="cant_save_playlist">Цей плейлист додати неможливо</string>
     <string name="enter_value">Введіть будь-яке непусте значення</string>
     <string name="dialog_add_remove_from">Додати/Видалити з %s</string>
-    <string name="lb_playback_controls_skip_next">"Перейти до наступного відео"</string>
-    <string name="lb_playback_controls_skip_previous">"Перейти до попереднього відео/Перемотати на початок"</string>
+    <string name="lb_playback_controls_skip_next">\"Перейти до наступного відео\"</string>
+    <string name="lb_playback_controls_skip_previous">\"Перейти до попереднього відео/Перемотати на початок\"</string>
     <string name="alt_presets_behavior">Альтернативна поведінка відео пресетів (обмеження пропускної спроможності)</string>
     <string name="alt_presets_behavior_desc">Додаток спробує підтримувати пропускну здатність близьку до пресету замість того, щоб вибрати точну відповідність між роздільною здатністю, частотою кадрів та кодеком.</string>
     <string name="sleep_timer">Таймер сна (якщо пульт не використовувался одну годину)</string>
@@ -478,7 +478,7 @@
     <string name="badge_live">НАЖИВО</string>
     <string name="add_device_view_description">Щоб прив`язати пристрій, введіть цей код у застосунку YouTube на телефоні у розділі Налаштування/Дивитися на ТВ\nПРИМІТКА. Працює лише з клавіатурою Gboard.</string>
     <!-- END Moved strings -->
-    <string name="skip_24_rate">Пропускати 24fps формати (виправлення режиму real cinema?)</string>
+    <string name="skip_24_rate">Пропускати 24fps формати (виправлення режиму real cinema\?)</string>
     <string name="skip_shorts">Пропускати Shorts</string>
     <string name="player_disable_suggestions">Вимкнути рекомендації</string>
     <string name="suggestions">Пропозиції</string>
@@ -715,7 +715,7 @@
     <string name="action_debug_info">Налагоджувальна інформація</string>
     <string name="dialog_block_channel">Заблокувати канал</string>
     <string name="dialog_unblock_channel">Розблокувати канал</string>
-    <string name="confirm_block_channel">Приховати весь контент від %s?</string>
+    <string name="confirm_block_channel">Приховати весь контент від %s\?</string>
     <string name="channel_blocked">Канал заблоковано</string>
     <string name="channel_unblocked">Канал розблоковано</string>
     <string name="header_blocked_channels">Заблоковані канали</string>
@@ -745,4 +745,50 @@
         <item quantity="many">%s секунд</item>
         <item quantity="other">%s секунди</item>
     </plurals>
+    <string name="header_downloads">Завантажені</string>
+    <string name="dialog_download">Завантажити</string>
+    <string name="msg_sign_in_to_save">Увійдіть, щоб зберігати відео до плейлистів</string>
+    <string name="about_app">Про %1$s</string>
+    <string name="about_source_code">Вихідний код</string>
+    <string name="about_source_code_url">https://github.com/yashoncode/metube</string>
+    <string name="about_license">Ліцензія</string>
+    <string name="about_license_name">MIT</string>
+    <string name="about_license_url">https://github.com/yashoncode/metube/blob/main/LICENSE</string>
+    <string name="diagnostic_log_send">Надіслати діагностичний журнал</string>
+    <string name="diagnostic_log_send_desc">Для звітів про помилки. Містить відео й канали, які ви відкривали; паролі та токени входу вилучено</string>
+    <string name="diagnostic_log_subject">Діагностичний журнал %1$s %2$s</string>
+    <string name="diagnostic_log_failed">Не вдалося створити діагностичний журнал</string>
+    <string name="signed_in_success">Ви увійшли</string>
+    <string name="feedback_failed">Не вдалося надіслати це на YouTube. Спробуйте ще раз.</string>
+    <string name="subscribed_to_channel_name">Ви підписалися на %1$s</string>
+    <string name="unsubscribed_from_channel_name">Ви відписалися від %1$s</string>
+    <string name="subscribe_failed">Не вдалося підписатися. Спробуйте ще раз.</string>
+    <string name="unsubscribe_failed">Не вдалося відписатися. Спробуйте ще раз.</string>
+    <string name="action_undo">Повернути</string>
+    <string name="msg_player_no_connection_retry">Немає з\'єднання. Повторимо, коли ви будете в мережі, або натисніть відтворення.</string>
+    <string name="msg_player_no_connection_short">Немає з\'єднання — повторюємо…</string>
+    <string name="msg_player_no_connection_tap">Немає з\'єднання — натисніть відтворення</string>
+    <string name="auto_frame_rate_sec">%s сек</string>
+    <string name="audio_shift_sec">%s сек</string>
+    <string name="ui_hide_timeout_sec">%s сек</string>
+    <string name="screen_dimming_timeout_min">%s хв</string>
+    <string name="msg_quality_pin_fallback">%1$s не працює — якість цього відео змінено на Авто</string>
+    <string name="msg_audio_pin_fallback">Аудіодоріжка не працює — для цього відео використовується звук за замовчуванням</string>
+    <string name="update_check_failed">Не вдалося перевірити оновлення. Спробуйте пізніше.</string>
+    <string name="playlist_name_hint">Назва плейлиста</string>
+    <string name="playback_controls_repeat_pause">Повторювати паузу</string>
+    <string name="playback_controls_repeat_list">Повторювати список</string>
+    <string name="action_subscribe_off">Відписатися</string>
+    <string name="action_subscribe_on">Підписатися</string>
+    <string name="player_return_youtube_dislike">Кількість Не подобається (Return YouTube Dislike)</string>
+    <string name="header_live">Наживо</string>
+    <string name="keep_finished_activities">Не закривати завершені активності</string>
+    <string name="disable_channels_service">Вимкнути службу Канали</string>
+    <string name="lb_playback_controls_closed_captioning_disable">Вимкнути субтитри</string>
+    <string name="lb_playback_controls_closed_captioning_enable">Увімкнути субтитри</string>
+    <string name="premium_users_only">Лише для користувачів Premium. Виправляє неповний список форматів відео</string>
+    <string name="playback_buffering_fix">Виправлення буферизації відтворення</string>
+    <string name="oculus_quest_fix">Виправлення для Oculus Quest</string>
+    <string name="install_bridge">Встановити ATV/Amazon bridge</string>
+    <string name="fix_empty_subs_and_channels">Виправити порожні Підписки і Канали</string>
 </resources>
