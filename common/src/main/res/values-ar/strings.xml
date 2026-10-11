@@ -743,10 +743,16 @@
   <string name="color_scheme_dark_blue_oled">أزرق داكن (OLED)</string>
   <plurals name="hours">
         <item quantity="one">%s ساعة</item>
+        <item quantity="two">%s ساعتان</item>
+        <item quantity="few">%s ساعات</item>
+        <item quantity="many">%s ساعة</item>
         <item quantity="other">%s ساعة</item>
     </plurals>
     <plurals name="seconds">
         <item quantity="one">%s ثانية</item>
+        <item quantity="two">%s ثانيتان</item>
+        <item quantity="few">%s ثوانٍ</item>
+        <item quantity="many">%s ثانية</item>
         <item quantity="other">%s ثانية</item>
     </plurals>
   <string name="header_downloads">التنزيلات</string>
