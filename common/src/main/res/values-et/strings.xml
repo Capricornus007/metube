@@ -663,7 +663,7 @@
   <string name="remove_playlist_fmt">Eemaldada %s lõplikult\?</string>
   <string name="create_playlist_note">MÄRKUS: Seda ei näe YouTube\'i rakenduses</string>
   <string name="playlist_name_hint">Esitusloendi nimi</string>
-  <string name="skip_shorts">Jäta Shorts vahele</string>
+  <string name="skip_shorts">Jäta lühivideod vahele</string>
   <string name="suggestions">Soovitused</string>
   <string name="place_comments_left">Kuva kommentaarid vasakul</string>
   <string name="speech_engine">Häälotsingu mootor</string>
@@ -684,9 +684,9 @@
   <string name="hide_watched_from_watch_later">Eemalda vaadatud videod esitusloendist Hiljem vaadatavad</string>
   <string name="auto_frame_rate_desc">See valik kõrvaldab väreluse stseenides, kus kaamera liigub kiiresti, nt spordiülekannetes</string>
   <string name="channel_filter_hint">Filtreeri kanaleid</string>
-  <string name="player_loop_shorts">Korda Shorts\'i</string>
-  <string name="player_quick_shorts_skip">Jäta Shorts vahele vasaku/parema nupuga</string>
-  <string name="player_quick_shorts_skip_alt">Jäta Shorts vahele üles/alla nupuga</string>
+  <string name="player_loop_shorts">Korda lühivideoid</string>
+  <string name="player_quick_shorts_skip">Jäta lühivideod vahele vasaku/parema nupuga</string>
+  <string name="player_quick_shorts_skip_alt">Jäta lühivideod vahele üles/alla nupuga</string>
   <string name="player_quick_skip_videos">Jäta tavalised videod vahele vasaku/parema nupuga</string>
   <string name="player_quick_skip_videos_alt">Jäta tavalised videod vahele üles/alla nupuga</string>
   <string name="channels_filter">Kuva kanalite jaotises väli Kanalite filtreerimine</string>
