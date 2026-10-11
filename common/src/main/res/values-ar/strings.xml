@@ -749,4 +749,37 @@
         <item quantity="one">%s ثانية</item>
         <item quantity="other">%s ثانية</item>
     </plurals>
+  <string name="header_downloads">التنزيلات</string>
+  <string name="dialog_download">تنزيل</string>
+  <string name="msg_sign_in_to_save">سجّل الدخول لحفظ الفيديوهات في قوائم التشغيل</string>
+  <string name="about_app">حول %1$s</string>
+  <string name="about_source_code">الشفرة المصدرية</string>
+  <string name="about_license">الترخيص</string>
+  <string name="diagnostic_log_send">إرسال سجل التشخيص</string>
+  <string name="diagnostic_log_send_desc">لإعداد تقارير الأخطاء. يتضمن الفيديوهات والقنوات التي فتحتها؛ تُزال كلمات المرور ورموز تسجيل الدخول</string>
+  <string name="diagnostic_log_subject">سجل تشخيص %1$s %2$s</string>
+  <string name="diagnostic_log_failed">تعذّر إنشاء سجل التشخيص</string>
+  <string name="signed_in_success">تم تسجيل الدخول</string>
+  <string name="feedback_failed">تعذّر إرسال ذلك إلى YouTube. حاول مرة أخرى.</string>
+  <string name="subscribed_to_channel_name">تم الاشتراك في %1$s</string>
+  <string name="unsubscribed_from_channel_name">تم إلغاء الاشتراك من %1$s</string>
+  <string name="subscribe_failed">تعذّر الاشتراك. حاول مرة أخرى.</string>
+  <string name="unsubscribe_failed">تعذّر إلغاء الاشتراك. حاول مرة أخرى.</string>
+  <string name="action_undo">تراجع</string>
+  <string name="msg_player_no_connection_retry">لا يوجد اتصال. ستُعاد المحاولة عند العودة إلى الإنترنت، أو انقر على التشغيل للمحاولة.</string>
+  <string name="msg_player_no_connection_short">لا يوجد اتصال — إعادة المحاولة…</string>
+  <string name="msg_player_no_connection_tap">لا يوجد اتصال — انقر على التشغيل لإعادة المحاولة</string>
+  <string name="msg_quality_pin_fallback">فشل %1$s — تم ضبط الجودة على تلقائي لهذا الفيديو</string>
+  <string name="msg_audio_pin_fallback">فشل مسار الصوت — يتم استخدام الصوت الافتراضي لهذا الفيديو</string>
+  <string name="update_check_failed">تعذّر التحقق من التحديثات. حاول لاحقًا.</string>
+  <string name="playlist_name_hint">اسم قائمة التشغيل</string>
+  <string name="player_return_youtube_dislike">عدد عدم الإعجاب (Return YouTube Dislike)</string>
+  <string name="header_live">مباشر</string>
+  <string name="app_restore_desc">ملاحظة: يجب نسخ ملف النسخ الاحتياطي zip إلى هذا المجلد يدويًا أو من مدير الملفات، استخدم \'فتح باستخدام\'</string>
+  <string name="app_backup_desc">ملاحظة: سيُنشأ النسخ الاحتياطي بصيغة zip</string>
+  <string name="add_video_to_watch_later">حفظ في مشاهدة لاحقًا</string>
+  <string name="enable_conscrypt">تمكين Conscrypt</string>
+  <string name="enable_conscrypt_desc">يحسّن توافق HTTPS وTLS وVPN في بعض الأجهزة، لكنه قد يسبب أحيانًا مشاكل تشغيل أو بطئًا في الشبكة</string>
+  <string name="network_settings">إعدادات الشبكة</string>
+  <string name="comments_disabled">التعليقات معطّلة لهذا الفيديو</string>
 </resources>
