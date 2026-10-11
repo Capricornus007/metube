@@ -779,7 +779,7 @@
     <item quantity="one">%s ura</item>
     <item quantity="other">%s ur</item>
   </plurals>
-  <plurals name="seconds">  <item quantity="few">%s sekundi</item>
+  <plurals name="seconds">  <item quantity="few">%s sekunde</item>
   <item quantity="two">%s sekundi</item>
 
     <item quantity="one">%s sekunda</item>
