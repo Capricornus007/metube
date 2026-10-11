@@ -6,6 +6,7 @@ import android.content.Context;
 import android.graphics.Outline;
 import android.graphics.drawable.Drawable;
 import android.text.Editable;
+import android.text.TextUtils;
 import android.text.TextWatcher;
 import android.view.View;
 import android.view.ViewOutlineProvider;
@@ -73,6 +74,8 @@ final class ShortsOverlay {
         TextView meta;
         TextView subscribeLabel;
         ImageView avatar;
+        /** METUBE(shorts): the short's description, so the overlay can show all of it. */
+        TextView description;
     }
 
     private static final long OUT_MS = 220;
@@ -95,6 +98,7 @@ final class ShortsOverlay {
     private final TextView mChannel;
     private final TextView mTitle;
     private final TextView mMeta;
+    private final TextView mDescription;
     private final TextView mLikes;
     private final TextView mComments;
     private final TextView mSubscribe;
@@ -119,6 +123,10 @@ final class ShortsOverlay {
     private int mPeekDir;
     private boolean mActive;
     private boolean mCommentsOpen;
+    /** METUBE(shorts): this window's picture is being drawn by a host screen; paint nothing. */
+    private boolean mChromeSuppressed;
+    /** METUBE(shorts): the title / meta / description opened to their full length by a tap. */
+    private boolean mInfoExpanded;
     private boolean mScrubbing;
     private long mDurationMs;
 
@@ -130,6 +138,7 @@ final class ShortsOverlay {
         mChannel = root.findViewById(R.id.mobile_shorts_channel);
         mTitle = root.findViewById(R.id.mobile_shorts_title);
         mMeta = root.findViewById(R.id.mobile_shorts_meta);
+        mDescription = root.findViewById(R.id.mobile_shorts_description);
         mLikes = root.findViewById(R.id.mobile_shorts_like_count);
         mComments = root.findViewById(R.id.mobile_shorts_comments_count);
         mSubscribe = root.findViewById(R.id.mobile_shorts_subscribe);
@@ -150,8 +159,12 @@ final class ShortsOverlay {
         mOverlay.findViewById(R.id.mobile_shorts_comments).setOnClickListener(v -> mHost.openShortsComments());
         mOverlay.findViewById(R.id.mobile_shorts_more).setOnClickListener(v -> mHost.openShortsMore());
         mOverlay.findViewById(R.id.mobile_shorts_back).setOnClickListener(v -> mHost.exitShorts());
-        // Tap the title for the rest of it (and tap again to fold it).
-        mTitle.setOnClickListener(v -> mTitle.setMaxLines(mTitle.getMaxLines() == 2 ? 8 : 2));
+        // Tap the title (or the description) for the rest of it, and again to fold it back.
+        View.OnClickListener expand = v -> toggleInfo();
+        mTitle.setOnClickListener(expand);
+        if (mDescription != null) {
+            mDescription.setOnClickListener(expand);
+        }
 
         round(mAvatar, true);
         round(mDisc, false);
@@ -189,6 +202,13 @@ final class ShortsOverlay {
         mirror(watch.commentsCount, text -> mComments.setText(isCount(text) ? text
                 : mComments.getContext().getString(R.string.mobile_comments_title)));
         mirror(watch.meta, mMeta::setText);
+        if (mDescription != null) {
+            mirror(watch.description, text -> {
+                mDescription.setText(text);
+                mDescription.setVisibility(TextUtils.isEmpty(text)
+                        ? View.GONE : View.VISIBLE);
+            });
+        }
         mirror(watch.subscribeLabel, mSubscribe::setText);
     }
 
@@ -218,7 +238,20 @@ final class ShortsOverlay {
     /** The comments sheet takes the lower part of the screen; the short shrinks above it. */
     void setCommentsOpen(boolean open) {
         mCommentsOpen = open;
-        mOverlay.setVisibility(mActive && !open ? View.VISIBLE : View.GONE);
+        mOverlay.setVisibility(mActive && !open && !mChromeSuppressed
+                ? View.VISIBLE : View.GONE);
+    }
+
+    /**
+     * METUBE(shorts): the short is being played IN PLACE on another screen (the browse page hosts
+     * this session, see MobilePlaybackActivity#enterShortsHandoff). Keep tracking the video - the
+     * queue, the mode flag, the neighbour preload - but paint nothing: this window must show the
+     * page beneath it, or the user would see the tab change under their thumb.
+     */
+    void setChromeSuppressed(boolean suppressed) {
+        mChromeSuppressed = suppressed;
+        mOverlay.setVisibility(mActive && !mCommentsOpen && !suppressed
+                ? View.VISIBLE : View.GONE);
     }
 
     /** Every setVideo: shorts mode follows the video that is playing now. */
@@ -231,7 +264,8 @@ final class ShortsOverlay {
             mChannel.setText(item.getAuthor());
             mTitle.setText(item.getTitle());
             if (fresh) {
-                mTitle.setMaxLines(2);
+                mInfoExpanded = false;
+                applyInfoLines();
                 mAvatar.setImageDrawable(null);
                 mDisc.setImageDrawable(null);
                 mOverlay.removeCallbacks(mPreloadNeighbours);
@@ -253,7 +287,7 @@ final class ShortsOverlay {
         if (on != mActive) {
             mActive = on;
             mCommentsOpen = false;
-            mOverlay.setVisibility(on ? View.VISIBLE : View.GONE);
+            mOverlay.setVisibility(on && !mChromeSuppressed ? View.VISIBLE : View.GONE);
             if (!on) {
                 mCurrent = null;
                 setPlaying(false);
@@ -262,6 +296,24 @@ final class ShortsOverlay {
                 mVideo.setAlpha(1f);
             }
             mHost.onShortsModeChanged(on);
+        }
+    }
+
+    /**
+     * METUBE(shorts): the complaint this answers - a short's text was cut to one line. Three lines
+     * of title, two of the counts line and two of the description are visible without a tap, and a
+     * tap opens all of it (no fixed-height clip, no ellipsis that swallows the sentence).
+     */
+    private void toggleInfo() {
+        mInfoExpanded = !mInfoExpanded;
+        applyInfoLines();
+    }
+
+    private void applyInfoLines() {
+        mTitle.setMaxLines(mInfoExpanded ? Integer.MAX_VALUE : 3);
+        mMeta.setMaxLines(mInfoExpanded ? Integer.MAX_VALUE : 2);
+        if (mDescription != null) {
+            mDescription.setMaxLines(mInfoExpanded ? Integer.MAX_VALUE : 2);
         }
     }
 

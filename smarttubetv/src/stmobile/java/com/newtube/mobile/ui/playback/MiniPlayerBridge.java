@@ -58,6 +58,55 @@ public final class MiniPlayerBridge {
     }
 
     /**
+     * METUBE(shorts): a screen that plays the session FULL SCREEN in place of its own content: the
+     * Shorts tab of the browse page. Same ownership rules as {@link MiniHost} - the playback Activity
+     * keeps ExoPlayer AND the session-long {@link SurfaceTexture}, this host only re-parents that
+     * texture into a full-screen TextureView and forwards vertical swipes back to the player's
+     * existing queue navigation - but the host covers the whole window, so the mini card must give
+     * the texture up while it is up (one SurfaceTexture feeds one GL consumer at a time; see
+     * MobilePlaybackActivity#detachVideoTexture). The player is invisible behind it and still owns
+     * the media session, so the notification, background audio and PiP rules are untouched.
+     */
+    public interface ShortsHost {
+        /** Make the host visible and schedule its draw under the still-translucent player. */
+        boolean prepareForShortsHandoff(Runnable onDrawn);
+
+        /** The player pushed the playing short's text (title / channel / views-date / description). */
+        void onShortsInfoChanged(@Nullable ShortsInfo info);
+
+        /** The NEW stream reached READY: the host may lift its cover once a frame lands. */
+        void onShortsStreamReady();
+
+        /** The session is over (expanded back to the watch page, closed, or the player died). */
+        void onShortsSessionEnded();
+
+        /** The ViewManager view class that reorders this host's Activity to the front. */
+        Class<?> getShortsHostViewClass();
+    }
+
+    /**
+     * METUBE(shorts): what the in-place player shows as text. The watch page computes all of it
+     * (its own counts, dates and the description that arrives with the metadata), so the player
+     * pushes its rendered strings rather than the host re-deriving them.
+     */
+    public static final class ShortsInfo {
+        public final String videoId;
+        public final CharSequence title;
+        public final CharSequence channel;
+        public final CharSequence meta;
+        public final CharSequence description;
+
+        public ShortsInfo(String videoId, CharSequence title, CharSequence channel,
+                CharSequence meta, CharSequence description) {
+            this.videoId = videoId;
+            this.title = title;
+            this.channel = channel;
+            this.meta = meta;
+            this.description = description;
+        }
+    }
+
+    /**
      * NEWTUBE(motion): a host card left on screen, frozen on its last frame, while the player comes
      * back over it (see {@link #setPendingCardFold}).
      */
@@ -67,6 +116,8 @@ public final class MiniPlayerBridge {
     }
 
     private static final long NAVIGATION_PENDING_MS = 30_000;
+    /** METUBE(shorts): a browse tap's request to play the next short IN PLACE must be fresh. */
+    private static final long FULLSCREEN_REQUEST_MS = 15_000;
     @Nullable
     private static CardFold sPendingFold;
 
@@ -78,6 +129,15 @@ public final class MiniPlayerBridge {
     private static Bitmap sHandoffStill;
     private static Bitmap sMiniEntryStill;
     private static Rect sMiniBounds;
+
+    // METUBE(shorts): the in-place full-screen session (see ShortsHost).
+    @Nullable
+    private static WeakReference<ShortsHost> sShortsHost = new WeakReference<>(null);
+    private static boolean sFullscreen;
+    @Nullable
+    private static ShortsInfo sShortsInfo;
+    private static boolean sFullscreenRequested;
+    private static long sFullscreenRequestedAtMs;
 
     private MiniPlayerBridge() {
     }
@@ -113,6 +173,145 @@ public final class MiniPlayerBridge {
     static boolean prepareMiniHostForHandoff(Runnable onDrawn) {
         MiniHost host = sMiniHost.get();
         return host != null && host.prepareMiniPlayerForHandoff(onDrawn);
+    }
+
+    // ---------------------------------------------------------------------------------
+    // METUBE(shorts): the in-place full-screen session (see {@link ShortsHost}).
+    // ---------------------------------------------------------------------------------
+
+    /**
+     * METUBE(shorts): the browse page is (or is about to be) the screen a short plays on. Called
+     * from its onResume, next to {@link #registerMiniHost}: the two are alternatives for the same
+     * session, and which one is live is {@link #isFullscreen()}.
+     */
+    public static void registerShortsHost(ShortsHost host) {
+        sShortsHost = new WeakReference<>(host);
+    }
+
+    public static void unregisterShortsHost(ShortsHost host) {
+        if (sShortsHost != null && sShortsHost.get() == host) {
+            sShortsHost = new WeakReference<>(null);
+        }
+    }
+
+    @Nullable
+    static ShortsHost getShortsHost() {
+        return sShortsHost != null ? sShortsHost.get() : null;
+    }
+
+    /**
+     * METUBE(shorts): a card tap on the browse page asked for the in-place player. One-shot with a
+     * time limit: the player consumes it when it binds a short, so a tap that ends up anywhere else
+     * (a channel route, an error screen, a stale queue item) simply leaves it to expire and the
+     * ordinary watch page opens.
+     */
+    public static void requestFullscreenHandoff() {
+        sFullscreenRequested = true;
+        sFullscreenRequestedAtMs = SystemClock.uptimeMillis();
+    }
+
+    public static void clearFullscreenRequest() {
+        sFullscreenRequested = false;
+        sFullscreenRequestedAtMs = 0;
+    }
+
+    /**
+     * Peek without consuming: the freshly-created player window uses this to suppress its own entry
+     * animation for an open that is about to be handed over (the Shorts tab opens a short without a
+     * card tap, so no {@code PlayerTransitionBridge} snapshot exists to suppress it the usual way).
+     */
+    public static boolean hasFullscreenRequest() {
+        return sFullscreenRequested
+                && SystemClock.uptimeMillis() - sFullscreenRequestedAtMs <= FULLSCREEN_REQUEST_MS;
+    }
+
+    /** True once, for the open this request was made for (and only while it is still fresh). */
+    static boolean consumeFullscreenRequest() {
+        boolean requested = sFullscreenRequested
+                && SystemClock.uptimeMillis() - sFullscreenRequestedAtMs <= FULLSCREEN_REQUEST_MS;
+        sFullscreenRequested = false;
+        sFullscreenRequestedAtMs = 0;
+        return requested;
+    }
+
+    /** The player is now rendered by a full-screen host rather than by its own window. */
+    static void activateFullscreen(MobilePlaybackActivity activity) {
+        sActivity = new WeakReference<>(activity);
+        sActive = true;
+        sFullscreen = true;
+    }
+
+    /** True while the session is played in place (the mini card must stay out of the way). */
+    public static boolean isFullscreen() {
+        return sFullscreen && isActive();
+    }
+
+    /** The strings the watch page renders for this short, for the host's info block. */
+    public static void setShortsInfo(@Nullable ShortsInfo info) {
+        sShortsInfo = info;
+        ShortsHost host = getShortsHost();
+        if (host != null) {
+            host.onShortsInfoChanged(info);
+        }
+    }
+
+    @Nullable
+    public static ShortsInfo getShortsInfo() {
+        return sShortsInfo;
+    }
+
+    /** The new stream is READY: the host can stop covering the texture with a thumbnail. */
+    public static void notifyShortsReady() {
+        ShortsHost host = getShortsHost();
+        if (host != null && isFullscreen()) {
+            host.onShortsStreamReady();
+        }
+    }
+
+    /** Prepare the host's full-screen surface before the player's window is reordered away. */
+    static boolean prepareShortsHostForHandoff(Runnable onDrawn) {
+        ShortsHost host = getShortsHost();
+        return host != null && host.prepareForShortsHandoff(onDrawn);
+    }
+
+    /** Swipe up: the player behind us moves to the next short of the queue. */
+    public static void playNextShort() {
+        if (isActive()) {
+            sActivity.get().hostPlayNextShort();
+        }
+    }
+
+    /** Swipe down: the previous short. */
+    public static void playPreviousShort() {
+        if (isActive()) {
+            sActivity.get().hostPlayPreviousShort();
+        }
+    }
+
+    /** The host's scrub line: the same seek the watch page's own bar performs. */
+    public static void seekShortTo(long positionMs) {
+        if (isActive()) {
+            sActivity.get().hostSeekShortTo(positionMs);
+        }
+    }
+
+    /**
+     * The host's real size: the player caps NEW chunks at the window the video is drawn in
+     * (VideoViewportCap), so an in-place full-screen host must be reported as full screen - the
+     * mini card's cap would drop a short to 360p.
+     */
+    public static void setFullscreenViewport(int widthPx, int heightPx) {
+        if (isActive()) {
+            sActivity.get().hostSetViewport(widthPx, heightPx);
+        }
+    }
+
+    /** The host no longer renders the session (it left, or the session ended): stand down. */
+    private static void notifyShortsSessionEnded() {
+        ShortsHost host = getShortsHost();
+        if (host != null) {
+            host.onShortsSessionEnded();
+        }
     }
 
     /**
@@ -196,13 +395,21 @@ public final class MiniPlayerBridge {
 
     /** Called when the playback activity takes its surface back (expand / new video / destroy). */
     public static void deactivate() {
+        // METUBE(shorts): the in-place host loses its picture with the session, whatever ended it -
+        // the player taking the texture back, the bar's X, or the activity dying behind our back.
+        boolean wasFullscreen = sFullscreen;
         sActive = false;
+        sFullscreen = false;
+        sShortsInfo = null;
         sActivity = new WeakReference<>(null);
         sPendingNavigation = new WeakReference<>(null);
         sPendingNavigationAtMs = 0;
         sHandoffStill = null;
         sMiniEntryStill = null;
         sMiniBounds = null;
+        if (wasFullscreen) {
+            notifyShortsSessionEnded();
+        }
     }
 
     /**

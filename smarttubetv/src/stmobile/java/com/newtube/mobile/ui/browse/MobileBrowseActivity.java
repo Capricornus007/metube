@@ -102,7 +102,7 @@ import java.util.List;
  * the real touch player ({@code MobilePlaybackActivity}).
  */
 public class MobileBrowseActivity extends MobileActivity
-        implements BrowseView, MiniPlayerBridge.MiniHost {
+        implements BrowseView, MiniPlayerBridge.MiniHost, MiniPlayerBridge.ShortsHost {
     /** BottomNavigationView item ids must be non-zero; BrowseSection ids start at 0. */
     private static final int ITEM_ID_OFFSET = com.newtube.mobile.ui.common.MobileNavModel.ITEM_ID_OFFSET;
     private static final int SCROLL_END_THRESHOLD_ITEMS = 6;
@@ -170,6 +170,13 @@ public class MobileBrowseActivity extends MobileActivity
     private TextureView mMiniTexture;
     private ImageButton mMiniPlayPause;
     private ProgressBar mMiniProgress;
+    /**
+     * METUBE(shorts): the Shorts tab's player, played IN PLACE on this page: the playback Activity
+     * keeps the player and hides its own window behind ours while this host draws its live surface
+     * full screen (see {@link com.newtube.mobile.ui.playback.MobileShortsHost}). The top bar, the
+     * nav pill and this page never move, so a short is a swipe, not a screen change.
+     */
+    private com.newtube.mobile.ui.playback.MobileShortsHost mShortsHost;
     /** 500ms UI ticker while the bar is visible: progress line, play/pause icon, liveness check. */
     private final Runnable mMiniPlayerTick = this::onMiniPlayerTick;
     private static final long MINI_TICK_MS = 500;
@@ -297,6 +304,11 @@ public class MobileBrowseActivity extends MobileActivity
                 padUnderTopBar(bottom - t);
             }
         });
+
+        // METUBE(shorts): the in-place player (mobile_shorts_host.xml), built right after the mini
+        // card it must never share the session texture with.
+        mShortsHost = new com.newtube.mobile.ui.playback.MobileShortsHost(this,
+                this::loadMoreShortsForHost);
 
         mMiniPlayerBar = findViewById(R.id.mobile_mini_player);
         mMiniPlayerFrame = findViewById(R.id.mobile_mini_player_frame);
@@ -484,6 +496,14 @@ public class MobileBrowseActivity extends MobileActivity
 
     /** Show the card and adopt the live session texture if a mini session is active. */
     private void syncMiniPlayer() {
+        // METUBE(shorts): the in-place player and the card want the SAME session texture, and one
+        // texture feeds one GL consumer: while a short is hosted full screen there is no card.
+        // Checked BEFORE finishMiniClose(), which would close the hosted session along with a card
+        // that was on its way out.
+        if (MiniPlayerBridge.isFullscreen()) {
+            standMiniCardDown();
+            return;
+        }
         finishMiniClose(); // a card closing when this runs is closed, not brought back
         ExoPlayer player = MiniPlayerBridge.getPlayer();
         if (player == null) {
@@ -578,6 +598,103 @@ public class MobileBrowseActivity extends MobileActivity
         mMiniPlayerBar.postDelayed(gate, 100);
         mMiniPlayerBar.invalidate();
         return true;
+    }
+
+    // ---------------------------------------------------------------------------------
+    // METUBE(shorts): the Shorts tab's player, hosted IN PLACE on this page.
+    //
+    // MiniPlayerBridge.ShortsHost is the card host's counterpart at full size: the playback
+    // Activity keeps ExoPlayer, the queue and the media session (so the notification, background
+    // audio and PiP keep working exactly as before) and only its PICTURE moves here. See
+    // com.newtube.mobile.ui.playback.MobileShortsHost for the view work.
+    // ---------------------------------------------------------------------------------
+
+    @Override
+    public boolean prepareForShortsHandoff(Runnable onDrawn) {
+        if (mShortsHost == null) {
+            return false;
+        }
+        // One SurfaceTexture, one GL consumer: the card gives the picture up before the host takes
+        // it, and stays down for as long as the session is full screen (syncMiniPlayer guards it).
+        standMiniCardDown();
+        boolean prepared = mShortsHost.prepareForHandoff(onDrawn);
+        if (prepared) {
+            // The vertical swipe is the pager now; pull-to-refresh would steal the down-drag.
+            mContentSwipe.setRefreshing(false);
+            mContentSwipe.setEnabled(false);
+        }
+        return prepared;
+    }
+
+    @Override
+    public void onShortsInfoChanged(@androidx.annotation.Nullable MiniPlayerBridge.ShortsInfo info) {
+        if (mShortsHost != null) {
+            mShortsHost.onInfoChanged(info);
+        }
+    }
+
+    @Override
+    public void onShortsStreamReady() {
+        if (mShortsHost != null) {
+            mShortsHost.onStreamReady();
+        }
+    }
+
+    @Override
+    public void onShortsSessionEnded() {
+        if (mShortsHost != null) {
+            mShortsHost.onSessionEnded();
+        }
+        mContentSwipe.setEnabled(true);
+    }
+
+    @Override
+    public Class<?> getShortsHostViewClass() {
+        return BrowseView.class;
+    }
+
+    /**
+     * METUBE(shorts): the card releases the session texture and disappears, WITHOUT touching the
+     * session itself - the full-screen host is taking it. A card still animating its own X is
+     * aborted rather than finished: the video the user tapped last is what must keep playing.
+     */
+    private void standMiniCardDown() {
+        abortMiniClose();
+        MiniPlayerBridge.clearPendingCardFold(mMiniCardFold);
+        detachMiniTexture();
+        foldMiniCard();
+    }
+
+    /**
+     * METUBE(shorts): leaving the in-place player (Back, another tab, the You panel): the short ends
+     * with it, like the official app (Shorts has no mini player to hand off to). The session stops
+     * once the host is off screen - finishing the hidden player blocks the main thread for ~60 ms
+     * (measured on the card path) and would otherwise eat the fade.
+     */
+    private void closeShortsHostForNavigation() {
+        if (mShortsHost == null || !mShortsHost.isVisible()) {
+            return;
+        }
+        mContentSwipe.setEnabled(true);
+        MiniPlayerBridge.clearFullscreenRequest();
+        mShortsHost.close(() -> {
+            MiniPlayerBridge.close();
+            // The Shorts tab has no grid of its own to go back to: return to the tab the user came
+            // from, exactly as leaving the old full-screen Shorts player did.
+            if (mCurrentSectionId == MediaGroup.TYPE_SHORTS && shortsTabAutoPlay()
+                    && mBottomNav.getMenu().findItem(mLastNonShortsNavItem) != null) {
+                mBottomNav.setSelectedItemId(mLastNonShortsNavItem);
+            }
+        });
+    }
+
+    /** METUBE(shorts): the swipe reached the end of the queued shorts: ask for the next page. */
+    private void loadMoreShortsForHost() {
+        if (mPresenter == null || mCurrentVideos.isEmpty()
+                || mCurrentSectionId != MediaGroup.TYPE_SHORTS) {
+            return;
+        }
+        mPresenter.onScrollEnd(mCurrentVideos.get(mCurrentVideos.size() - 1));
     }
 
     /**
@@ -898,7 +1015,15 @@ public class MobileBrowseActivity extends MobileActivity
 
     private void setupBottomNav() {
         mBottomNav.setOnItemSelectedListener(item -> {
+            // METUBE(shorts): the pill is on screen while a short plays in place, so it has to
+            // behave like the pill of the Shorts tab in the official app: the tab you are on does
+            // nothing (no re-open, no restart), any other tab ends the session first.
+            if (!mSuppressNavCallback && mShortsHost != null && mShortsHost.isVisible()
+                    && item.getItemId() == toMenuItemId(MediaGroup.TYPE_SHORTS)) {
+                return true;
+            }
             if (!mSuppressNavCallback) {
+                closeShortsHostForNavigation();
                 Motion.nudge(findViewById(R.id.mobile_nav_glass)); // METUBE(motion): the bar acknowledges the switch
                 onNavItemChosen(item.getItemId());
             }
@@ -913,7 +1038,11 @@ public class MobileBrowseActivity extends MobileActivity
             if (item.getItemId() != YOU_ITEM_ID && mContentGrid != null
                     && mContentGrid.getVisibility() == View.VISIBLE && mContentGrid.canScrollVertically(-1)) {
                 smoothScrollGridToTop();
+            } else if (mShortsHost != null && mShortsHost.isVisible()
+                    && item.getItemId() == toMenuItemId(MediaGroup.TYPE_SHORTS)) {
+                // METUBE(shorts): re-tapping Shorts while a short plays: it just keeps playing.
             } else {
+                closeShortsHostForNavigation();
                 onNavItemChosen(item.getItemId());
             }
         });
@@ -1423,6 +1552,17 @@ public class MobileBrowseActivity extends MobileActivity
         // so a swipe up plays the next one (and down the previous) - see ShortsOverlay.
         if (video.belongsToShorts() && video.hasVideo()) {
             queueShorts(video);
+            // ...and with the vertical player on (the default), it plays HERE: the request below is
+            // the one-shot that makes the player hand its session texture to this page instead of
+            // showing its own window (MobileShortsHost). Cleared for anything else, so a playlist /
+            // channel card tapped in between cannot leave a stale request for a later open.
+            if (shortsTabAutoPlay()) {
+                MiniPlayerBridge.requestFullscreenHandoff();
+            } else {
+                MiniPlayerBridge.clearFullscreenRequest();
+            }
+        } else {
+            MiniPlayerBridge.clearFullscreenRequest();
         }
 
         // Cards without a videoId (playlists, mixes, channels) don't open the player - they kick
@@ -1860,6 +2000,14 @@ public class MobileBrowseActivity extends MobileActivity
         // player, minimize docks its card here.
         MiniPlayerBridge.registerMiniHost(this);
         MiniPlayerBridge.clearPendingCardFold(mMiniCardFold);
+        // METUBE(shorts): this page also hosts the in-place Shorts player: re-adopt the live
+        // session after a pause (the picture was frozen) or a backgrounding, and stand down when
+        // the session is a card or gone.
+        MiniPlayerBridge.registerShortsHost(this);
+        if (mShortsHost != null) {
+            mShortsHost.sync();
+            mContentSwipe.setEnabled(!mShortsHost.isVisible());
+        }
         syncMiniPlayer();
         if (mMiniButtonsFadePending) {
             mMiniButtonsFadePending = false;
@@ -1945,6 +2093,13 @@ public class MobileBrowseActivity extends MobileActivity
         // Browse must never hold a stale TextureView on the live player. Audio is unaffected.
         // NEWTUBE(motion): a docked card stays up, frozen on that last frame, until the player
         // covers it (see MiniPlayerBridge.setPendingCardFold) - hiding it here was a blink.
+        // METUBE(shorts): the host drawn here is the player's picture - give the texture back
+        // before this window leaves the foreground, so a returning watch page (an expand, a link
+        // routed onto this player) can re-adopt it without a second consumer. The frozen last frame
+        // stays on screen until the host is covered or the session ends.
+        if (mShortsHost != null && mShortsHost.isVisible()) {
+            mShortsHost.detachTexture();
+        }
         finishMiniClose();
         detachMiniTexture();
         if (mMiniPlayerBar.getVisibility() == View.VISIBLE && MiniPlayerBridge.isActive()) {
@@ -1985,6 +2140,7 @@ public class MobileBrowseActivity extends MobileActivity
         cancelFeedSwap(); // NEWTUBE(feed-swap)
         mContentGrid.removeCallbacks(mRestoreItemAnimator);
         MiniPlayerBridge.unregisterMiniHost(this);
+        MiniPlayerBridge.unregisterShortsHost(this);
         DownloadRegistry.instance(this).removeListener(mDownloadsListener);
         AppUpdates.instance(this).removeListener(mUpdatesListener);
         mBottomNav.removeCallbacks(mAnnounceUpdateInstalled);
@@ -2058,6 +2214,13 @@ public class MobileBrowseActivity extends MobileActivity
     }
 
     private void handleBack() {
+        // METUBE(shorts): a short playing in place is the topmost thing on THIS page, so Back takes
+        // it first (the page itself does not move, and the tab under it comes back), then the usual
+        // rules apply to whatever is left.
+        if (mShortsHost != null && mShortsHost.isVisible()) {
+            closeShortsHostForNavigation();
+            return;
+        }
         // A grid section opened from a You-panel row: back returns to the panel (its natural
         // parent surface), like YouTube's You-tab sub-screens.
         if (mSectionFromYou && !mYouShowing) {

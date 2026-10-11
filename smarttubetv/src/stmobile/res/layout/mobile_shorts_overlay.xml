@@ -147,13 +147,15 @@
 
         </LinearLayout>
 
+        <!-- METUBE(shorts): the text of a short is not one line. Three lines of title, two of
+             counts, two of description show without a tap; tapping any of them opens the rest. -->
         <TextView
             android:id="@+id/mobile_shorts_title"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_marginTop="10dp"
             android:ellipsize="end"
-            android:maxLines="2"
+            android:maxLines="3"
             android:shadowColor="#B3000000"
             android:shadowRadius="4"
             android:textColor="@android:color/white"
@@ -166,12 +168,27 @@
             android:layout_height="wrap_content"
             android:layout_marginTop="4dp"
             android:ellipsize="end"
-            android:maxLines="1"
+            android:maxLines="2"
             android:shadowColor="#B3000000"
             android:shadowRadius="4"
             android:textColor="#CCFFFFFF"
             android:textSize="12sp"
             tools:text="1.2M views · 3 days ago" />
+
+        <TextView
+            android:id="@+id/mobile_shorts_description"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="4dp"
+            android:ellipsize="end"
+            android:maxLines="2"
+            android:shadowColor="#B3000000"
+            android:shadowRadius="4"
+            android:textColor="#CCFFFFFF"
+            android:textSize="13sp"
+            android:visibility="gone"
+            tools:text="The description, folded to two lines until tapped."
+            tools:visibility="visible" />
 
     </LinearLayout>
 

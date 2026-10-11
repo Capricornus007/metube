@@ -231,6 +231,18 @@
 
         </FrameLayout>
 
+        <!-- METUBE(shorts): the Shorts tab played in place, over the grid and UNDER the floating
+             pills (it is inside the GlassSource, so the brand pill and the nav capsule frost the
+             video that is really behind them). See mobile_shorts_host.xml. -->
+        <include
+            layout="@layout/mobile_shorts_host"
+            android:layout_width="0dp"
+            android:layout_height="0dp"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent" />
+
     </androidx.constraintlayout.widget.ConstraintLayout>
 
     </com.newtube.mobile.ui.common.GlassSource>

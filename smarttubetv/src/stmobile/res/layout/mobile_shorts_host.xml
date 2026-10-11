@@ -1,0 +1,159 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!--
+    METUBE(shorts): the Shorts tab played IN PLACE on the browse page.
+
+    This is the surface that shows the playback Activity's live video without leaving the tab: the
+    player keeps ExoPlayer and its session-long SurfaceTexture, hides its own window behind this
+    one, and the TextureView added below in code (MobileShortsHost#attachTexture) re-parents that
+    same texture - the codec never changes output surface, so nothing restarts or stalls.
+
+    Deliberately INSIDE the browse page's GlassSource, under the floating brand pill and the nav
+    capsule: the pills keep frosting the picture that is actually behind them, and the top bar and
+    the bottom nav stay exactly where they always were. The page itself never moves.
+
+    The video, its loading portrait and the info block are wrapped in one "page" FrameLayout: the
+    vertical drag translates that whole page 1:1 with the finger while the neighbour's portrait
+    (mobile_shorts_host_peek, a sibling) slides into the gap it opens, as the official pager does.
+-->
+<FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/mobile_shorts_host"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="@android:color/black"
+    android:clickable="true"
+    android:focusable="true"
+    android:visibility="gone"
+    tools:visibility="gone">
+
+    <FrameLayout
+        android:id="@+id/mobile_shorts_host_page"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent">
+
+        <!-- The player's session texture is added into this frame in code. AspectRatioFrameLayout
+             in ZOOM mode center-crops the 9:16 short to the screen instead of stretching it
+             (MobileShortsHost sets both the mode and the video's ratio). -->
+        <androidx.media3.ui.AspectRatioFrameLayout
+            android:id="@+id/mobile_shorts_host_frame"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:layout_gravity="center" />
+
+        <!-- The short's portrait until its first frame lands, and the last frame when this host
+             hands the texture back to the player. Same Glide request as the peek, so a page turn
+             costs no extra bytes. -->
+        <ImageView
+            android:id="@+id/mobile_shorts_host_still"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:importantForAccessibility="no"
+            android:scaleType="centerCrop"
+            android:visibility="gone"
+            tools:visibility="visible" />
+
+        <View
+            android:layout_width="match_parent"
+            android:layout_height="240dp"
+            android:layout_gravity="bottom"
+            android:background="@drawable/mobile_player_bottom_scrim" />
+
+        <LinearLayout
+            android:id="@+id/mobile_shorts_host_info"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_gravity="bottom"
+            android:layout_marginStart="16dp"
+            android:layout_marginEnd="72dp"
+            android:layout_marginBottom="14dp"
+            android:orientation="vertical">
+
+            <TextView
+                android:id="@+id/mobile_shorts_host_channel"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:ellipsize="end"
+                android:fontFamily="sans-serif-medium"
+                android:maxLines="1"
+                android:maxWidth="240dp"
+                android:shadowColor="#B3000000"
+                android:shadowRadius="4"
+                android:textColor="@android:color/white"
+                android:textSize="15sp"
+                android:textStyle="bold"
+                tools:text="\@channel" />
+
+            <!-- Not capped at two lines: the whole point of this block is that a short's title and
+                 description are readable here (a tap opens the rest of the description). -->
+            <TextView
+                android:id="@+id/mobile_shorts_host_title"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="8dp"
+                android:ellipsize="end"
+                android:maxLines="3"
+                android:shadowColor="#B3000000"
+                android:shadowRadius="4"
+                android:textColor="@android:color/white"
+                android:textSize="14sp"
+                tools:text="A short's title that may run onto a second or third line" />
+
+            <TextView
+                android:id="@+id/mobile_shorts_host_meta"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="4dp"
+                android:ellipsize="end"
+                android:maxLines="2"
+                android:shadowColor="#B3000000"
+                android:shadowRadius="4"
+                android:textColor="#CCFFFFFF"
+                android:textSize="12sp"
+                tools:text="1.2M views · 3 days ago" />
+
+            <TextView
+                android:id="@+id/mobile_shorts_host_description"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="4dp"
+                android:ellipsize="end"
+                android:maxLines="2"
+                android:shadowColor="#B3000000"
+                android:shadowRadius="4"
+                android:textColor="#CCFFFFFF"
+                android:textSize="13sp"
+                tools:text="The description, folded to two lines until tapped." />
+
+        </LinearLayout>
+
+    </FrameLayout>
+
+    <ImageView
+        android:id="@+id/mobile_shorts_host_peek"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:importantForAccessibility="no"
+        android:scaleType="centerCrop"
+        android:visibility="gone" />
+
+    <ImageView
+        android:id="@+id/mobile_shorts_host_flash"
+        android:layout_width="72dp"
+        android:layout_height="72dp"
+        android:layout_gravity="center"
+        android:alpha="0"
+        android:importantForAccessibility="no"
+        android:src="@drawable/ic_player_pause" />
+
+    <ProgressBar
+        android:id="@+id/mobile_shorts_host_progress"
+        style="?android:attr/progressBarStyleHorizontal"
+        android:layout_width="match_parent"
+        android:layout_height="2dp"
+        android:layout_gravity="bottom"
+        android:max="1000"
+        android:progressBackgroundTint="@color/mobile_color_progress_track"
+        android:progressTint="@color/mobile_color_progress"
+        tools:progress="400" />
+
+</FrameLayout>
