@@ -773,11 +773,13 @@
     <string name="enable_conscrypt_desc">Kai kuriuose įrenginiuose pagerina HTTPS, TLS ir VPN suderinamumą, bet kartais gali sukelti atkūrimo problemų ar lėtesnį tinklo darbą</string>
     <string name="network_settings">Tinklo nustatymai</string>
     <string name="comments_disabled">Šiam vaizdo įrašui komentarai išjungti</string>
-    <plurals name="hours">
+    <plurals name="hours">  <item quantity="few">%s valandos</item>
+
         <item quantity="one">%s valanda</item>
         <item quantity="other">%s val.</item>
     </plurals>
-    <plurals name="seconds">
+    <plurals name="seconds">  <item quantity="few">%s sekundės</item>
+
         <item quantity="one">%s sekundė</item>
         <item quantity="other">%s sek.</item>
     </plurals>
