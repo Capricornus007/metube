@@ -748,4 +748,38 @@
   <string name="enable_conscrypt_desc">改进某些设备HTTPS、TLS和VPN的兼容性，但偶尔可能会导致播放问题或降低网络性能</string>
   <string name="network_settings">网络设置</string>
   <string name="comments_disabled">此视频已关闭评论</string>
+  <string name="header_downloads">下载</string>
+  <string name="dialog_download">下载</string>
+  <string name="msg_sign_in_to_save">登录才能将视频保存到播放列表</string>
+  <string name="about_app">关于 %1$s</string>
+  <string name="about_source_code">源代码</string>
+  <string name="about_license">许可证</string>
+  <string name="diagnostic_log_send">发送诊断日志</string>
+  <string name="diagnostic_log_send_desc">用于错误报告。包含你打开过的视频和频道；密码和登录令牌会被移除</string>
+  <string name="diagnostic_log_subject">%1$s %2$s 诊断日志</string>
+  <string name="diagnostic_log_failed">无法创建诊断日志</string>
+  <string name="signed_in_success">已登录</string>
+  <string name="feedback_failed">无法发送到 YouTube。请重试。</string>
+  <string name="subscribed_to_channel_name">已订阅 %1$s</string>
+  <string name="unsubscribed_from_channel_name">已取消订阅 %1$s</string>
+  <string name="subscribe_failed">订阅失败。请重试。</string>
+  <string name="unsubscribe_failed">取消订阅失败。请重试。</string>
+  <string name="action_undo">撤销</string>
+  <string name="msg_player_no_connection_retry">无网络连接。恢复联网后会自动重试，或点按播放重试。</string>
+  <string name="msg_player_no_connection_short">无网络连接 — 正在重试…</string>
+  <string name="msg_player_no_connection_tap">无网络连接 — 点按播放重试</string>
+  <string name="msg_quality_pin_fallback">%1$s 失败 — 此视频的画质已设为自动</string>
+  <string name="msg_audio_pin_fallback">音轨失败 — 此视频使用默认音频</string>
+  <string name="update_check_failed">无法检查更新。请稍后再试。</string>
+  <string name="playlist_name_hint">播放列表名称</string>
+  <string name="player_return_youtube_dislike">不喜欢计数（Return YouTube Dislike）</string>
+  <string name="header_live">直播</string>
+  <plurals name="hours">
+    <item quantity="one">%s 小时</item>
+    <item quantity="other">%s 小时</item>
+  </plurals>
+  <plurals name="seconds">
+    <item quantity="one">%s 秒</item>
+    <item quantity="other">%s 秒</item>
+  </plurals>
 </resources>
