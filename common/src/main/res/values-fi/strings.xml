@@ -746,4 +746,39 @@
   <string name="network_settings">Verkkoasetukset</string>
   <string name="comments_disabled">Kommentit on poistettu käytöstä tässä videossa</string>
   <string name="enable_conscrypt">Ota Conscrypt käyttöön</string>
+  <string name="header_downloads">Lataukset</string>
+  <string name="dialog_download">Lataa</string>
+  <string name="msg_sign_in_to_save">Kirjaudu sisään tallentaaksesi videoita soittolistoille</string>
+  <string name="about_app">Tietoja: %1$s</string>
+  <string name="about_source_code">Lähdekoodi</string>
+  <string name="about_license">Lisenssi</string>
+  <string name="diagnostic_log_send">Lähetä vianetsintäloki</string>
+  <string name="diagnostic_log_send_desc">Virheraportteja varten. Sisältää avaamasi videot ja kanavat; salasanat ja kirjautumistunnisteet poistetaan</string>
+  <string name="diagnostic_log_subject">%1$s %2$s vianetsintäloki</string>
+  <string name="diagnostic_log_failed">Vianetsintälokin luonti epäonnistui</string>
+  <string name="signed_in_success">Kirjautunut sisään</string>
+  <string name="player_toggle_speed">Nopeuden päälle/pois</string>
+  <string name="feedback_failed">Lähettäminen YouTubeen epäonnistui. Yritä uudelleen.</string>
+  <string name="subscribed_to_channel_name">Tilattu %1$s</string>
+  <string name="unsubscribed_from_channel_name">Peruttu tilaus %1$s</string>
+  <string name="subscribe_failed">Tilaaminen epäonnistui. Yritä uudelleen.</string>
+  <string name="unsubscribe_failed">Tilauksen peruminen epäonnistui. Yritä uudelleen.</string>
+  <string name="action_undo">Kumoa</string>
+  <string name="msg_player_no_connection_retry">Ei yhteyttä. Yritetään uudelleen, kun olet taas verkossa, tai napauta toistoa.</string>
+  <string name="msg_player_no_connection_short">Ei yhteyttä — yritetään uudelleen…</string>
+  <string name="msg_player_no_connection_tap">Ei yhteyttä — napauta toistoa</string>
+  <string name="msg_quality_pin_fallback">%1$s ei toimi — laatu asetettu automaattiseksi tälle videolle</string>
+  <string name="msg_audio_pin_fallback">Ääniraita ei toimi — oletusääni käytössä tällä videolla</string>
+  <string name="update_check_failed">Päivitysten tarkistus epäonnistui. Yritä myöhemmin uudelleen.</string>
+  <string name="playlist_name_hint">Soittolistan nimi</string>
+  <string name="player_return_youtube_dislike">Epätykkäysten määrä (Return YouTube Dislike)</string>
+  <string name="header_live">Suora</string>
+  <plurals name="hours">
+    <item quantity="one">%s tunti</item>
+    <item quantity="other">%s tuntia</item>
+  </plurals>
+  <plurals name="seconds">
+    <item quantity="one">%s sekunti</item>
+    <item quantity="other">%s sekuntia</item>
+  </plurals>
 </resources>
