@@ -675,7 +675,7 @@
   <string name="disable_network_error_fixing_desc">Probablemente precises activar esta opción se estás a usar unha VPN</string>
   <string name="recommended">Recomendado</string>
   <string name="video_buffer_size_lowest">A máis baixa</string>
-  <string name="video_buffer_size_highest">A máis alta </string>
+  <string name="video_buffer_size_highest">A máis alta</string>
   <string name="unpin_group_from_sidebar">Eliminar o grupo de subscrición</string>
   <string name="place_comments_left">Coloca os comentarios á esquerda</string>
   <string name="add_to_subscriptions_group">Engadir/Eliminar do grupo de subscrición</string>
