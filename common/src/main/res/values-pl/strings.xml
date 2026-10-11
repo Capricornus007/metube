@@ -571,7 +571,7 @@
   <string name="audio_language">Język audio</string>
   <string name="old_home_look">Poprzedni wygląd sekcji Główna</string>
   <string name="old_channel_look">Poprzedni wygląd sekcji Kanały</string>
-  <string name="hide_shorts_everywhere">Ukryj Shorts we wszystkich sekcjach</string>
+  <string name="hide_shorts_everywhere">Ukryj Szorty we wszystkich sekcjach</string>
   <string name="update_found">Aktualizacja jest dostępna</string>
   <string name="volume_boost_warning">Wszelkie ustawienia powyżej limitu mogą uszkodzić głośniki</string>
   <string name="play_video_incognito">Odtwarzaj w trybie incognito</string>
@@ -634,7 +634,7 @@
   <string name="auto_frame_rate_desc">Opcja ta ma na celu usunięcie szarpania w scenach, w których kamera szybko się porusza, np. w transmisjach sportowych.</string>
   <string name="channel_filter_hint">Filtruj Kanały</string>
   <string name="player_loop_shorts">Zapętl Szorty</string>
-  <string name="player_quick_shorts_skip">Pomijaj Shorts przyciskami w lewo/prawo</string>
+  <string name="player_quick_shorts_skip">Pomijaj Szorty przyciskami w lewo/prawo</string>
   <string name="player_quick_skip_videos">Pomijaj zwykłe wideo przyciskami w lewo/prawo</string>
   <string name="channels_filter">Filtrowanie listy kanałów w sekcji Kanały</string>
   <string name="channel_search_bar">Pasek wyszukiwania w sekcji Kanały</string>
@@ -718,7 +718,7 @@
   <string name="play_from_start">Odtwórz od początku</string>
   <string name="player_chapter_notification2">Przejdź do następnego rozdziału, klikając powiadomienie</string>
   <string name="player_toggle_speed">Przełącz prędkość odtwarzania</string>
-  <string name="player_quick_shorts_skip_alt">Pomijaj Shorts przyciskami w góra/dół</string>
+  <string name="player_quick_shorts_skip_alt">Pomijaj Szorty przyciskami w górę/dół</string>
   <string name="player_quick_skip_videos_alt">Pomijaj zwykłe wideo przyciskami w góra/dół</string>
   <string name="prefer_google_dns">Preferuj Google DNS</string>
   <string name="action_debug_info">Informacje debugowania</string>
