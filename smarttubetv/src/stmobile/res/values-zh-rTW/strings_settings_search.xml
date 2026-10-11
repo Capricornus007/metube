@@ -1,0 +1,38 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="mobile_settings_search_hint">搜尋設定</string>
+    <string name="mobile_settings_search_none">找不到符合「%1$s」的設定</string>
+
+    <string name="mobile_settings_search_kw_account">登入 登出 帳號 帳戶 使用者 切換帳號 切換使用者 個人資料 帳號切換 google</string>
+    <string name="mobile_settings_search_kw_theme">深色 淺色 暗色 亮色 夜間 夜間模式 白天 外觀 樣式 顏色 黑白 theme</string>
+    <string name="mobile_settings_search_kw_country">國家 地區 區域 位置 國別 所在地區</string>
+    <string name="mobile_settings_search_kw_start_screen">啟動 開啟 開啟時 開始畫面 起始頁 預設頁面 預設分頁 首頁 主頁 分頁 標籤 頁面</string>
+    <string name="mobile_settings_search_kw_interface_size">介面 大小 縮放 比例 字體 字型 文字 尺寸 密度 放大 縮小 ui</string>
+    <string name="mobile_settings_search_kw_tabs">分頁 底欄 底部列 導覽 瀏覽 選單 區塊 探索 tab</string>
+    <string name="mobile_settings_search_kw_hidden">隱藏 不顯示 看不到 已觀看 看過了 篩選 即將播出 即將推出 首播 直播 串流</string>
+    <string name="mobile_settings_search_kw_video_menu">選單 功能表 更多 三個點 三點 長按 右鍵 選項 操作</string>
+    <string name="mobile_settings_search_kw_channels_order">排序 排列 順序 訂閱 頻道 訂閱頻道 分組</string>
+    <string name="mobile_settings_search_kw_watch_history">觀看紀錄 歷史紀錄 紀錄 瀏覽紀錄 暫停紀錄 不記錄 無痕 隱私</string>
+    <string name="mobile_settings_search_kw_video_ends">自動播放 連播 重複 循環 隨機 下一部 下一集 播放結束 結束後 autoplay</string>
+    <string name="mobile_settings_search_kw_background">背景播放 後台播放 後台 畫中畫 小窗 浮動視窗 僅音訊 只有聲音 最小化 離開應用</string>
+    <string name="mobile_settings_search_kw_natural_voice">變速 音調 語音 自然語音 自然聲 變聲 加速 放慢 卡帶</string>
+    <string name="mobile_settings_search_kw_audio_focus">來電 通話 電話 通知 其他應用 其他程式 中斷 打斷 音訊焦點 焦點</string>
+    <string name="mobile_settings_search_kw_hide_related">推薦 相關 建議 猜你喜歡 接下來 接下來播放 相關影片</string>
+    <string name="mobile_settings_search_kw_dislikes">不喜歡 倒讚 討厭 踩 dislike youtube ryd</string>
+    <string name="mobile_settings_search_kw_quality">畫質 解析度 清晰度 高畫質 省流量 行動數據 流量 4k 1080p 720p hd</string>
+    <string name="mobile_settings_search_kw_loudness">音量 平衡 響度 一致 忽大忽小 大小聲 自動音量 太靜 安靜</string>
+    <string name="mobile_settings_search_kw_player_volume">音量 聲音 大小聲 主音量 喇叭 太靜 安靜 太大聲</string>
+    <string name="mobile_settings_search_kw_captions">字幕 隱藏式字幕 字幕樣式 字幕語言 字幕大小 字體 顏色 比例 cc</string>
+    <string name="mobile_settings_search_kw_sponsorblock">跳過 略過 廣告 贊助 片頭 片尾 片段 段落 去廣告 sponsorblock</string>
+    <string name="mobile_settings_search_kw_dearrow">標題 縮圖 封面 標題黨 聳動 誇張 換圖 dearrow clickbait</string>
+    <string name="mobile_settings_search_kw_backup">備份 還原 匯出 匯入 輸出 輸入 存檔 復原</string>
+    <string name="mobile_settings_search_kw_video_format">格式 編碼 解碼 影片格式 codec vp9 av1 h264 hevc hdr 60fps</string>
+    <string name="mobile_settings_search_kw_buffer">緩衝 緩衝區 卡頓 快取 記憶體 載入 預載 延遲 cache</string>
+    <string name="mobile_settings_search_kw_dns">dns 域名 網域 解析 伺服器 ip ipv4 ipv6 連線 找不到</string>
+    <string name="mobile_settings_search_kw_conscrypt">安全 憑證 證書 加密 ssl tls https 審查 封鎖 被牆 網路堆疊 相容性 conscrypt byebyedpi</string>
+    <string name="mobile_settings_search_kw_multi_profiles">每帳號 分帳號 個別設定 獨立設定 分開設定 帳號專屬 各自設定 設定檔 profile</string>
+    <string name="mobile_settings_search_kw_updates">更新 升級 版本 新版 新版本 檢查更新 發行 release</string>
+    <string name="mobile_settings_search_kw_diagnostic_log">錯誤 回報 日誌 除錯 當機 閃退 送出 記錄 debug log</string>
+    <string name="mobile_settings_search_kw_gesture_levels">手勢 滑動 上下滑 亮度 音量 雙指</string>
+    <string name="mobile_settings_search_kw_gesture_seek">手勢 滑動 左右滑 快轉 倒帶 跳轉 進度 進度條 前進 後退</string>
+</resources>
