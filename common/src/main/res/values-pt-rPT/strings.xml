@@ -357,7 +357,7 @@
     <string name="update_error">Erro ao atualizar</string>
     <string name="hide_shorts_from_search">Ocultar \'Shorts\' dos resultados de pesquisa</string>
     <string name="hide_shorts_from_history">Ocultar \'Shorts\' do histórico</string>
-    <string name="hide_shorts_from_trending">Ocultar \'Shorts\' das Tendências </string>
+    <string name="hide_shorts_from_trending">Ocultar \'Shorts\' das Tendências</string>
     <string name="disable_screensaver">Desativar proteção de ecrã</string>
     <string name="description_not_found">Descrição não encontrada</string>
     <string name="proxy_port_hint">Porta do proxy</string>
@@ -696,7 +696,7 @@
     <string name="add_to_subscriptions_group">Adicionar/remover do grupo de subscrições</string>
     <string name="new_subscriptions_group">Novo grupo</string>
     <string name="rename_group">Mudar nome do grupo de subscrições</string>
-    <string name="screen_dimming_amount">Valor </string>
+    <string name="screen_dimming_amount">Valor</string>
     <string name="screen_dimming_timeout">Tempo de espera para escurecimento de ecrã</string>
     <string name="playlists_rows">Mostrar secção Listas de reprodução como linhas</string>
     <string name="import_subscriptions_group">Importar</string>
