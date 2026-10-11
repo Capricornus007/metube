@@ -748,4 +748,42 @@
   <string name="enable_conscrypt_desc">Poprawia zgodność z protokołami HTTPS,TLS i VPN na niektórych urządzeniach,ale może czasami powodować problemy z odtwarzaniem lub wolniejszą wydajność sieci</string>
   <string name="network_settings">Ustawienia sieciowe</string>
   <string name="comments_disabled">Komentarze do tego wideo są wyłączone</string>
+  <string name="header_downloads">Pobrane</string>
+  <string name="dialog_download">Pobierz</string>
+  <string name="msg_sign_in_to_save">Zaloguj się, aby zapisywać wideo na listach odtwarzania</string>
+  <string name="about_app">O aplikacji %1$s</string>
+  <string name="about_source_code">Kod źródłowy</string>
+  <string name="about_license">Licencja</string>
+  <string name="diagnostic_log_send">Wyślij dziennik diagnostyczny</string>
+  <string name="diagnostic_log_send_desc">Do zgłoszeń błędów. Zawiera otwarte wideo i kanały; hasła i tokeny logowania są usuwane</string>
+  <string name="diagnostic_log_subject">Dziennik diagnostyczny %1$s %2$s</string>
+  <string name="diagnostic_log_failed">Nie udało się utworzyć dziennika diagnostycznego</string>
+  <string name="signed_in_success">Zalogowano</string>
+  <string name="feedback_failed">Nie udało się wysłać tego do YouTube. Spróbuj ponownie.</string>
+  <string name="subscribed_to_channel_name">Zasubskrybowano %1$s</string>
+  <string name="unsubscribed_from_channel_name">Anulowano subskrypcję %1$s</string>
+  <string name="subscribe_failed">Nie udało się zasubskrybować. Spróbuj ponownie.</string>
+  <string name="unsubscribe_failed">Nie udało się anulować subskrypcji. Spróbuj ponownie.</string>
+  <string name="action_undo">Cofnij</string>
+  <string name="msg_player_no_connection_retry">Brak połączenia. Spróbuje ponownie, gdy wrócisz do sieci; lub dotknij odtwarzania, aby spróbować.</string>
+  <string name="msg_player_no_connection_short">Brak połączenia — ponawiam…</string>
+  <string name="msg_player_no_connection_tap">Brak połączenia — dotknij odtwarzania, aby spróbować</string>
+  <string name="msg_quality_pin_fallback">%1$s nie działa — jakość tego wideo ustawiona na Auto</string>
+  <string name="msg_audio_pin_fallback">Ścieżka audio nie działa — użyto domyślnego dźwięku dla tego wideo</string>
+  <string name="update_check_failed">Nie udało się sprawdzić aktualizacji. Spróbuj później.</string>
+  <string name="playlist_name_hint">Nazwa listy odtwarzania</string>
+  <string name="player_return_youtube_dislike">Liczba łapek w dół (Return YouTube Dislike)</string>
+  <string name="header_live">Na żywo</string>
+  <plurals name="hours">
+    <item quantity="one">%s godzina</item>
+    <item quantity="few">%s godziny</item>
+    <item quantity="many">%s godzin</item>
+    <item quantity="other">%s godziny</item>
+  </plurals>
+  <plurals name="seconds">
+    <item quantity="one">%s sekunda</item>
+    <item quantity="few">%s sekundy</item>
+    <item quantity="many">%s sekund</item>
+    <item quantity="other">%s sekundy</item>
+  </plurals>
 </resources>
