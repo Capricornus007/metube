@@ -748,4 +748,38 @@
   <string name="enable_conscrypt_desc">Améliore la compatibilité HTTPS, TLS et VPN sur certains appareils, mais peut occasionnellement provoquer des problèmes de lecture ou ralentir les performances réseau</string>
   <string name="network_settings">Paramètres réseau</string>
   <string name="comments_disabled">Les commentaires sont désactivés pour cette vidéo</string>
+  <string name="header_downloads">Téléchargements</string>
+  <string name="dialog_download">Télécharger</string>
+  <string name="msg_sign_in_to_save">Connectez-vous pour enregistrer des vidéos dans des playlists</string>
+  <string name="about_app">À propos de %1$s</string>
+  <string name="about_source_code">Code source</string>
+  <string name="about_license">Licence</string>
+  <string name="diagnostic_log_send">Envoyer le journal de diagnostic</string>
+  <string name="diagnostic_log_send_desc">Pour les rapports de bugs. Inclut les vidéos et chaînes ouvertes ; les mots de passe et jetons de connexion sont retirés</string>
+  <string name="diagnostic_log_subject">Journal de diagnostic %1$s %2$s</string>
+  <string name="diagnostic_log_failed">Impossible de créer le journal de diagnostic</string>
+  <string name="signed_in_success">Connecté</string>
+  <string name="feedback_failed">Impossible d\'envoyer cela à YouTube. Réessayez.</string>
+  <string name="subscribed_to_channel_name">Abonné à %1$s</string>
+  <string name="unsubscribed_from_channel_name">Désabonné de %1$s</string>
+  <string name="subscribe_failed">Impossible de s\'abonner. Réessayez.</string>
+  <string name="unsubscribe_failed">Impossible de se désabonner. Réessayez.</string>
+  <string name="action_undo">Annuler</string>
+  <string name="msg_player_no_connection_retry">Pas de connexion. Nouvelle tentative quand vous serez de nouveau connecté ; ou appuyez sur Lecture.</string>
+  <string name="msg_player_no_connection_short">Pas de connexion — nouvelle tentative…</string>
+  <string name="msg_player_no_connection_tap">Pas de connexion — appuyez sur Lecture</string>
+  <string name="msg_quality_pin_fallback">Échec de %1$s — qualité réglée sur Auto pour cette vidéo</string>
+  <string name="msg_audio_pin_fallback">Échec de la piste audio — audio par défaut utilisé pour cette vidéo</string>
+  <string name="update_check_failed">Impossible de vérifier les mises à jour. Réessayez plus tard.</string>
+  <string name="playlist_name_hint">Nom de la playlist</string>
+  <string name="player_return_youtube_dislike">Nombre de Je n\'aime pas (Return YouTube Dislike)</string>
+  <string name="header_live">En direct</string>
+  <plurals name="hours">
+    <item quantity="one">%s heure</item>
+    <item quantity="other">%s heures</item>
+  </plurals>
+  <plurals name="seconds">
+    <item quantity="one">%s seconde</item>
+    <item quantity="other">%s secondes</item>
+  </plurals>
 </resources>
