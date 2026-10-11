@@ -431,7 +431,7 @@
   <string name="remove_playlist_fmt">Remove %s permanently\?</string>
   <string name="removed_from_playlists">Removida da seção \"Biblioteca\"</string>
   <string name="saved_to_playlists">Salva na seção \"Biblioteca\"</string>
-  <string name="create_playlist">Criar nova lista de reprodução (playlist) </string>
+  <string name="create_playlist">Criar nova lista de reprodução (playlist)</string>
   <string name="create_playlist_note">it won\'t be seen in the YouTube app</string>
   <string name="add_video_to_new_playlist">Adicionar à nova lista de reprodução (playlist)</string>
   <string name="cant_delete_empty_playlist">Não é possível excluir uma lista de reprodução (playlist) vazia</string>
@@ -680,7 +680,7 @@
   <string name="prefer_ipv4_desc">Pode corrigir situações em que o aplicativo não está funcionando. \n Observação. Pode causar Lentidões e travamentos (especialmente em dispositivos Android 8 ou Dune HD)</string>
   <string name="long_press_for_settings">mantenha pressionado para configurações</string>
   <string name="long_press_for_options">mantenha pressionado para opções</string>
-  <string name="device_specific_backup">Cópia de segurança somente para neste dispositivo </string>
+  <string name="device_specific_backup">Cópia de segurança somente para neste dispositivo</string>
   <string name="local_backup">Cópia de segurança Local</string>
   <string name="auto_backup">Cópia de segurança automática (diária)</string>
   <string name="repeat_mode_reverse_list">Reproduzir a lista de reprodução (playlist) ou vídeos do canal em ordem reversa</string>
@@ -732,9 +732,9 @@
   <string name="network_settings">Configurações da conexão</string>
   <string name="comments_disabled">Comentários estão desabilitados para este video</string>
   <string name="rounded_card_corners">Cantos arredondados do cartão</string>
-  <string name="fix_empty_subs_and_channels">Corrigir inscrições e canais vazios </string>
+  <string name="fix_empty_subs_and_channels">Corrigir inscrições e canais vazios</string>
   <string name="install_bridge">Instale ATV/Ponte da Amazon</string>
-  <string name="queue_respects_playback_mode">A fila respeitará o modo de reprodução </string>
+  <string name="queue_respects_playback_mode">A fila respeitará o modo de reprodução</string>
   <string name="ignore_short_segments">Ignorar segmentos curtos</string>
   <string name="player_time_stretching">Alongamento do tempo do audio</string>
   <string name="player_time_stretching_desc">Mantenha tom de voz natural quando mudar a velocidade. talvez tenho redução significativa de perfomance em alguns dispositivos</string>
