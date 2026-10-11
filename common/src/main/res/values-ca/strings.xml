@@ -229,7 +229,7 @@
   <string name="share_embed_link">Comparteix l\'enllaç incrustat</string>
   <string name="card_text_scroll_factor">Velocitat de desplaçament del text de la targeta</string>
   <string name="preferred_update_source">Seleccioneu la font d\'actualització</string>
-  <string name="hide_shorts">Amaga els curts de les subscripcions</string>
+  <string name="hide_shorts">Amaga els Shorts de les subscripcions</string>
   <string name="key_remapping">Reassignació de claus</string>
   <string name="screen_dimming">Atenuació de la pantalla</string>
   <string name="removed_from_playback_queue">S\'ha eliminat de la cua de reproducció</string>
@@ -323,11 +323,11 @@
   <string name="player_seek_regular">Regular</string>
   <string name="player_seek_confirmation_pause">Amb confirmació (pausa mentre es cerca)</string>
   <string name="player_seek_confirmation_play">Amb confirmació (juga mentre busques)</string>
-  <string name="hide_shorts_from_home">Amaga els pantalons curts de casa</string>
+  <string name="hide_shorts_from_home">Amaga els Shorts de casa</string>
   <string name="finish_on_disconnect">Finalitzeu l\'aplicació després de desconnectar el telèfon/tauleta</string>
   <string name="update_error">Error d\'actualització</string>
   <string name="update_check_failed">No s\'han pogut cercar actualitzacions. Torna-ho a provar més tard.</string>
-  <string name="hide_shorts_from_history">Amaga els curts de la història</string>
+  <string name="hide_shorts_from_history">Amaga els Shorts de la història</string>
   <string name="disable_screensaver">Desactiva l\'estalvi de pantalla</string>
   <string name="description_not_found">No s\'ha trobat la descripció</string>
   <string name="proxy_port_hint">Port proxy</string>
@@ -503,7 +503,7 @@
   <string name="player_volume">Volum</string>
   <string name="live_stream_fix_4k">Correcció de la reproducció en directe (4K)</string>
   <string name="header_trending">Tendència</string>
-  <string name="hide_shorts_from_trending">Amaga els curts de la tendència</string>
+  <string name="hide_shorts_from_trending">Amaga els Shorts de la tendència</string>
   <string name="disable_history">Desactiva l\'historial</string>
   <string name="enable_history">Activeu l\'historial</string>
   <string name="diagnostic_log_send">Envia el registre de diagnòstic</string>
