@@ -217,6 +217,7 @@ final class AppPages {
     /** Which feeds exist, grouped the way the app shows them: bottom bar, You, Explore. */
     static SettingsPages.Page tabs(Context context) {
         List<SettingsRow> rows = new ArrayList<>();
+        MainUIData mainUIData = MainUIData.instance(context);
         SidebarService sidebar = SidebarService.instance(context);
         Map<Integer, Integer> sections = sidebar.getDefaultSections();
 
