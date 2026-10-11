@@ -565,7 +565,7 @@
   <string name="amazon_frame_drop_fix">Képkocka eldobása #2</string>
   <string name="amazon_frame_drop_fix_desc">Amazon Stick eszközökhöz készült. Működhet más eszközökön is.</string>
   <string name="default_stack_desc">Beépített hálózati verem. Ez a verem bizonyos helyzetekben jobb stabilitású lehet.</string>
-  <string name="item_postion">Pozíciója </string>
+  <string name="item_postion">Pozíciója</string>
   <string name="player_screen_off_dimming">Képernyő kikapcsolásának fényereje</string>
   <string name="screensaver_timout">Képernyővédő időtúllépés</string>
   <string name="screensaver_dimming">Képernyővédő elsötétítés mértéke</string>
@@ -708,7 +708,7 @@
   <string name="remove_playlist_fmt">%s végleges eltávolítása\?</string>
   <string name="play_from_start">Lejátszás az elejétől</string>
   <string name="player_chapter_notification2">Váltson a következő fejezetre az értesítésre kattintva</string>
-  <string name="dont_resize_video_to_fit_dialog">Ne méretezze át a videót </string>
+  <string name="dont_resize_video_to_fit_dialog">Ne méretezze át a videót</string>
   <string name="typing_corrections">Az automatikus javítás letiltása szöveg beírása közben</string>
   <string name="suggestions_horizontally_scrolled">Vízszintesen görgetett Javaslatok</string>
   <string name="stable_restore">Minden beállítás törlése!</string>
