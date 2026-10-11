@@ -774,11 +774,13 @@
     <string name="enable_conscrypt_desc">Побољшава подршку за HTTPS, TLS и VPN на неким уређајима, али повремено може изазвати проблеме при пуштању или спортије перформансе мреже</string>
     <string name="network_settings">Мрежне поставке</string>
     <string name="comments_disabled">Коментари су искључени за овај видео</string>
-    <plurals name="hours">
+    <plurals name="hours">  <item quantity="few">%s сата</item>
+
         <item quantity="one">%s сат</item>
         <item quantity="other">%s сати</item>
     </plurals>
-    <plurals name="seconds">
+    <plurals name="seconds">  <item quantity="few">%s секунде</item>
+
         <item quantity="one">%s секунда</item>
         <item quantity="other">%s секунди</item>
     </plurals>
