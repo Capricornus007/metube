@@ -102,6 +102,7 @@
     <string name="mobile_comments_deleted">已刪除留言</string>
     <string name="mobile_comments_delete_failed">無法刪除留言</string>
     <plurals name="mobile_comments_replies">
+        <item quantity="one">%1$d 則回覆</item>
         <item quantity="other">%1$d 則回覆</item>
     </plurals>
 
@@ -125,7 +126,7 @@
     <string name="mobile_channel_tab_videos">影片</string>
 
     <!-- Bottom-nav "You" tab -->
-    <string name="mobile_nav_you">你的頻道</string>
+    <string name="mobile_nav_you">個人中心</string>
     <string name="mobile_you_explore">探索</string>
 
     <!-- External-link handoff -->
@@ -207,17 +208,17 @@
     <string name="mobile_mini_expand">展開播放器</string>
 
     <!-- Card menu wording for the phone -->
-    <string name="pin_playlist">將播放清單釘選到「你的頻道」</string>
-    <string name="pin_channel">將頻道釘選到「你的頻道」</string>
-    <string name="pinned_to_sidebar">已釘選到「你的頻道」</string>
-    <string name="unpin_from_sidebar">從「你的頻道」取消釘選</string>
-    <string name="unpinned_from_sidebar">已從「你的頻道」取消釘選</string>
+    <string name="pin_playlist">將播放清單釘選到「個人中心」</string>
+    <string name="pin_channel">將頻道釘選到「個人中心」</string>
+    <string name="pinned_to_sidebar">已釘選到「個人中心」</string>
+    <string name="unpin_from_sidebar">從「個人中心」取消釘選</string>
+    <string name="unpinned_from_sidebar">已從「個人中心」取消釘選</string>
     <string name="subscribe_to_channel">訂閱</string>
     <string name="unsubscribe_from_channel">取消訂閱</string>
     <string name="subscribe_unsubscribe_from_channel">訂閱或取消訂閱</string>
     <string name="share_link">分享</string>
     <string name="mobile_you_pinned">已釘選</string>
-    <string name="pin_unpin_from_sidebar">釘選到「你的頻道」</string>
+    <string name="pin_unpin_from_sidebar">釘選到「個人中心」</string>
     <string name="mobile_settings_experimental">實驗功能</string>
     <string name="mobile_settings_gestures">手勢</string>
     <string name="mobile_settings_gesture_levels">滑動調整亮度與音量</string>
