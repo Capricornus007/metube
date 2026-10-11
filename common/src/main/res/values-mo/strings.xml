@@ -773,4 +773,14 @@
     <string name="enable_conscrypt_desc">Îmbunătățește compatibilitatea HTTPS, TLS și VPN pe unele dispozitive, dar poate cauza uneori erori de redare sau o viteză mai mică a rețelei</string>
     <string name="network_settings">Setări de rețea</string>
     <string name="comments_disabled">Comentariile sunt dezactivate pentru acest videoclip</string>
+    <plurals name="hours">
+      <item quantity="one">%s oră</item>
+      <item quantity="few">%s ore</item>
+      <item quantity="other">%s de ore</item>
+    </plurals>
+    <plurals name="seconds">
+      <item quantity="one">%s secundă</item>
+      <item quantity="few">%s secunde</item>
+      <item quantity="other">%s de secunde</item>
+    </plurals>
 </resources>
