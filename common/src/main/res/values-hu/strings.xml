@@ -740,4 +740,46 @@
   <string name="create_playlist_note">MEGJEGYZÉS: Nem lesz látható a YouTube alkalmazásban</string>
   <string name="player_unexpected_error">Váratlan lejátszási hiba</string>
   <string name="player_toggle_speed">Lejátszási sebesség be/ki váltása</string>
+  <string name="header_downloads">Letöltések</string>
+  <string name="dialog_download">Letöltés</string>
+  <string name="msg_sign_in_to_save">Jelentkezzen be a videók videólistákba mentéséhez</string>
+  <string name="about_app">%1$s névjegye</string>
+  <string name="about_source_code">Forráskód</string>
+  <string name="about_license">Licenc</string>
+  <string name="diagnostic_log_send">Diagnosztikai napló küldése</string>
+  <string name="diagnostic_log_send_desc">Hibajelentésekhez. Tartalmazza a megnyitott videókat és csatornákat; a jelszavak és bejelentkezési tokenek eltávolítva</string>
+  <string name="diagnostic_log_subject">%1$s %2$s diagnosztikai napló</string>
+  <string name="diagnostic_log_failed">Nem sikerült létrehozni a diagnosztikai naplót</string>
+  <string name="signed_in_success">Bejelentkezve</string>
+  <string name="feedback_failed">Nem sikerült elküldeni a YouTube-nak. Próbálja újra.</string>
+  <string name="subscribed_to_channel_name">Feliratkozott a(z) %1$s csatornára</string>
+  <string name="unsubscribed_from_channel_name">Leiratkozott a(z) %1$s csatornáról</string>
+  <string name="subscribe_failed">Nem sikerült feliratkozni. Próbálja újra.</string>
+  <string name="unsubscribe_failed">Nem sikerült leiratkozni. Próbálja újra.</string>
+  <string name="action_undo">Visszavonás</string>
+  <string name="msg_player_no_connection_retry">Nincs kapcsolat. Újrapróbáljuk, amikor újra online lesz, vagy nyomja meg a lejátszást.</string>
+  <string name="msg_player_no_connection_short">Nincs kapcsolat — újrapróbálás…</string>
+  <string name="msg_player_no_connection_tap">Nincs kapcsolat — nyomja meg a lejátszást az újrapróbáláshoz</string>
+  <string name="msg_quality_pin_fallback">%1$s nem működik — a videó minősége Auto-ra állítva</string>
+  <string name="msg_audio_pin_fallback">A hangfelvétel nem működik — alapértelmezett hang ebben a videóban</string>
+  <string name="update_check_failed">Nem sikerült ellenőrizni a frissítéseket. Próbálja később.</string>
+  <string name="playlist_name_hint">Videólista neve</string>
+  <string name="remove_from_search_history">Eltávolítás a keresési előzményekből</string>
+  <string name="player_return_youtube_dislike">Nem tetszik számláló (Return YouTube Dislike)</string>
+  <string name="header_live">Élő</string>
+  <string name="app_restore_desc">MEGJEGYZÉS: A biztonsági mentés zip fájlját kézzel vagy a fájlkezelővel kell ebbe a mappába másolni, használd a \'Megnyitás ezzel\' lehetőséget</string>
+  <string name="app_backup_desc">MEGJEGYZÉS: A biztonsági mentés zip formátumban készül</string>
+  <string name="add_video_to_watch_later">Hozzáadás a Megnézendő videók listához</string>
+  <string name="enable_conscrypt">Conscrypt engedélyezése</string>
+  <string name="enable_conscrypt_desc">Néhány eszközön javítja a HTTPS, TLS és VPN kompatibilitást, de néha lejátszási problémákat vagy lassabb hálózati teljesítményt okozhat</string>
+  <string name="network_settings">Hálózati beállítások</string>
+  <string name="comments_disabled">Ehhez a videóhoz le vannak tiltva a hozzászólások</string>
+  <plurals name="hours">
+    <item quantity="one">%s óra</item>
+    <item quantity="other">%s óra</item>
+  </plurals>
+  <plurals name="seconds">
+    <item quantity="one">%s másodperc</item>
+    <item quantity="other">%s másodperc</item>
+  </plurals>
 </resources>
