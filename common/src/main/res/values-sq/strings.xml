@@ -745,7 +745,7 @@
   <string name="sidebar_notification">Shfaq njoftimin në shiritin anësor</string>
   <string name="player_return_youtube_dislike">Numri i mospëlqimeve (Return YouTube Dislike)</string>
   <string name="color_scheme_dark_blue_oled">Blu e Errët (OLED)</string>
-  <string name="player_quick_shorts_skip_alt">Kapërce Shorts me butonët lart/poshtë</string>
+  <string name="player_quick_shorts_skip_alt">Kapërce videot e shkurtra me butonat lart/poshtë</string>
   <string name="player_quick_skip_videos_alt">Kapërce videot e rregullta me butonët lart/poshtë</string>
   <string name="header_live">Drejtpërdrejtë</string>
   <string name="prefer_google_dns">Prefero DNS-në e Google</string>
