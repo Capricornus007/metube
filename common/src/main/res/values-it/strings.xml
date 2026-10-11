@@ -756,4 +756,30 @@
         <item quantity="one">%s secondo</item>
         <item quantity="other">%s secondi</item>
     </plurals>
+    <string name="header_downloads">Download</string>
+    <string name="dialog_download">Scarica</string>
+    <string name="msg_sign_in_to_save">Accedi per salvare i video nelle playlist</string>
+    <string name="about_app">Informazioni su %1$s</string>
+    <string name="about_source_code">Codice sorgente</string>
+    <string name="about_license">Licenza</string>
+    <string name="diagnostic_log_send">Invia il log di diagnostica</string>
+    <string name="diagnostic_log_send_desc">Per le segnalazioni di bug. Include i video e i canali che hai aperto; password e token di accesso vengono rimossi</string>
+    <string name="diagnostic_log_subject">Log di diagnostica %1$s %2$s</string>
+    <string name="diagnostic_log_failed">Impossibile creare il log di diagnostica</string>
+    <string name="signed_in_success">Accesso effettuato</string>
+    <string name="feedback_failed">Impossibile inviare a YouTube. Riprova.</string>
+    <string name="subscribed_to_channel_name">Iscritto a %1$s</string>
+    <string name="unsubscribed_from_channel_name">Disiscritto da %1$s</string>
+    <string name="subscribe_failed">Iscrizione non riuscita. Riprova.</string>
+    <string name="unsubscribe_failed">Disiscrizione non riuscita. Riprova.</string>
+    <string name="action_undo">Annulla</string>
+    <string name="msg_player_no_connection_retry">Nessuna connessione. Riproverà quando sarai di nuovo online, oppure tocca riproduci per riprovare.</string>
+    <string name="msg_player_no_connection_short">Nessuna connessione — nuovo tentativo…</string>
+    <string name="msg_player_no_connection_tap">Nessuna connessione — tocca riproduci per riprovare</string>
+    <string name="msg_quality_pin_fallback">%1$s non funziona — qualità impostata su Auto per questo video</string>
+    <string name="msg_audio_pin_fallback">Traccia audio non funzionante — per questo video viene usato l\'audio predefinito</string>
+    <string name="update_check_failed">Impossibile controllare gli aggiornamenti. Riprova più tardi.</string>
+    <string name="playlist_name_hint">Nome playlist</string>
+    <string name="player_return_youtube_dislike">Conteggio Non mi piace (Return YouTube Dislike)</string>
+    <string name="header_live">Live</string>
 </resources>
