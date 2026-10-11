@@ -269,6 +269,6 @@
   <string name="mobile_settings_legacy_feeds_summary">改用 YouTube 電視版 App 的方式載入訂閱內容、頻道與播放清單，若載入空白可試試</string>
   <string name="mobile_settings_version">版本</string>
   <string name="mobile_settings_update_notify_summary">有新版本發布時通知</string>
-    <string name="mobile_settings_shorts_grid">Shorts 顯示為清單</string>
-    <string name="mobile_settings_shorts_grid_summary">點 Shorts 分頁時留在本頁顯示清單，不再直接進入播放器</string>
+    <string name="mobile_settings_shorts_player">Shorts 分頁直接滑動播放</string>
+    <string name="mobile_settings_shorts_player_summary">點 Shorts 分頁就進入直向播放器，上下滑換下一支（跟官方 App 一樣）。關閉時改為在本頁顯示清單。</string>
 </resources>

@@ -123,9 +123,10 @@ public class MainUIData extends DataChangeBase implements ProfileChangeListener 
     private int mCardPreviewType;
     private final Runnable mPersistStateInt = this::persistStateInt;
     private boolean mIsUnlocalizedTitlesEnabled;
-    // METUBE(shorts): the Shorts tab shows its own grid instead of jumping straight into the
-    // vertical player. Default on; the toggle lives in Settings > Tabs & feeds.
-    private boolean mIsShortsTabGridEnabled = true;
+    // METUBE(shorts): the Shorts tab IS the vertical player - it opens a short and you swipe up
+    // and down through the feed, the way the official app's Shorts tab works. Default on; the
+    // toggle (for people who want the old grid back) lives in Settings > Tabs & feeds.
+    private boolean mIsShortsTabPlayerEnabled = true;
     private long mUiTweaks;
 
     private MainUIData(Context context) {
@@ -401,12 +402,12 @@ public class MainUIData extends DataChangeBase implements ProfileChangeListener 
         persistState();
     }
 
-    public boolean isShortsTabGridEnabled() {
-        return mIsShortsTabGridEnabled;
+    public boolean isShortsTabPlayerEnabled() {
+        return mIsShortsTabPlayerEnabled;
     }
 
-    public void setShortsTabGridEnabled(boolean enabled) {
-        mIsShortsTabGridEnabled = enabled;
+    public void setShortsTabPlayerEnabled(boolean enabled) {
+        mIsShortsTabPlayerEnabled = enabled;
         persistState();
     }
 
@@ -504,7 +505,7 @@ public class MainUIData extends DataChangeBase implements ProfileChangeListener 
         mCardPreviewType = Helpers.parseInt(split, 21, CARD_PREVIEW_DISABLED);
         mIsUnlocalizedTitlesEnabled = Helpers.parseBoolean(split, 22, false);
         mUiTweaks = Helpers.parseLong(split, 23, UI_TWEAK_DEFAULT);
-        mIsShortsTabGridEnabled = Helpers.parseBoolean(split, 24, true);
+        mIsShortsTabPlayerEnabled = Helpers.parseBoolean(split, 24, true);
 
         int idx = -1;
         for (Long menuItem : MENU_ITEM_DEFAULT_ORDER) {
@@ -552,7 +553,7 @@ public class MainUIData extends DataChangeBase implements ProfileChangeListener 
                 mIsUploadsOldLookEnabled, mIsUploadsAutoLoadEnabled, mCardTextScrollSpeed, mMenuItems, mTopButtons,
                 null, mThumbQuality, mIsCardMultilineSubtitleEnabled, Helpers.mergeList(mMenuItemsOrdered),
                 mIsChannelsFilterEnabled, mIsChannelSearchBarEnabled, mIsPinnedChannelRowsEnabled, mCardPreviewType,
-                mIsUnlocalizedTitlesEnabled, mUiTweaks, mIsShortsTabGridEnabled));
+                mIsUnlocalizedTitlesEnabled, mUiTweaks, mIsShortsTabPlayerEnabled));
     }
 
     public static class ColorScheme {

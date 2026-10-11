@@ -1291,4 +1291,24 @@
 
     </com.newtube.mobile.ui.playback.WatchRootLayout>
 
+    <!-- METUBE(shorts): the same pill the browse page uses, floating at the bottom. Only the
+         Shorts tab shows it (onShortsModeChanged) - that tab is the vertical player, and the
+         bar staying put is what makes it read as the same page rather than a new screen. -->
+    <com.newtube.mobile.ui.common.GlassView
+        android:id="@+id/mobile_player_nav_glass"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_gravity="bottom"
+        android:layout_marginHorizontal="16dp"
+        android:layout_marginBottom="12dp"
+        android:elevation="6dp"
+        android:padding="6dp"
+        android:visibility="gone"
+        app:glassCornerRadius="34dp"
+        app:glassTint="@color/metube_glass_tint">
+
+        <include layout="@layout/mobile_bottom_nav" />
+
+    </com.newtube.mobile.ui.common.GlassView>
+
 </com.newtube.mobile.ui.playback.PlayerContainerLayout>

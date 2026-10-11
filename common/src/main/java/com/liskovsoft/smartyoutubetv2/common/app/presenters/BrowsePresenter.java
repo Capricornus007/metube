@@ -1534,6 +1534,16 @@ public class BrowsePresenter extends BasePresenter<BrowseView> implements Sectio
         return mCurrentSection;
     }
 
+    /**
+     * METUBE(shorts): the sections as the browse view currently knows them. The watch page needs
+     * the same list to rebuild the bottom pill (the Shorts tab is the player, so the bar has to
+     * survive the switch), and reading it off the presenter is the only way to get it without
+     * going through the browse activity - which is the very screen being covered.
+     */
+    public java.util.List<BrowseSection> getSections() {
+        return new java.util.ArrayList<>(mSections);
+    }
+
     private BrowseSection findSectionById(int sectionId) {
         for (BrowseSection section : mErrorSections) {
             if (section.getId() == sectionId) {

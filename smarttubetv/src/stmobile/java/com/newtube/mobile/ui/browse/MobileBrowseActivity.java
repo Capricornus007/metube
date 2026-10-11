@@ -104,7 +104,7 @@ import java.util.List;
 public class MobileBrowseActivity extends MobileActivity
         implements BrowseView, MiniPlayerBridge.MiniHost {
     /** BottomNavigationView item ids must be non-zero; BrowseSection ids start at 0. */
-    private static final int ITEM_ID_OFFSET = 1_000_000;
+    private static final int ITEM_ID_OFFSET = com.newtube.mobile.ui.common.MobileNavModel.ITEM_ID_OFFSET;
     private static final int SCROLL_END_THRESHOLD_ITEMS = 6;
     /**
      * NEWTUBE(lazy-home): Home's next section page is requested when the last visible card is this
@@ -112,36 +112,20 @@ public class MobileBrowseActivity extends MobileActivity
      * (one /browse, ~0.2-0.5 s) lands before the reader reaches the end. See HomeSectionPacer.
      */
     private static final int NEAR_END_LOOKAHEAD_ITEMS = 16;
-    /** BottomNavigationView hard-caps at this many items. */
-    private static final int MAX_NAV_ITEMS = 5;
     /**
      * Menu item id of the synthetic "You" tab (account + extra sections + settings). Far above
      * {@link #ITEM_ID_OFFSET} + any real section id, so it can never collide with one.
      */
-    private static final int YOU_ITEM_ID = 2_000_000;
+    private static final int YOU_ITEM_ID = com.newtube.mobile.ui.common.MobileNavModel.YOU_ITEM_ID;
     private static final int REQUEST_POST_NOTIFICATIONS = 1;
     /** Intent action (download notifications) that lands on the Downloads tab. */
     public static final String ACTION_OPEN_DOWNLOADS = "com.newtube.mobile.OPEN_DOWNLOADS";
-
     /**
-     * Preferred bottom-nav sections, in priority order. Matched primarily by
-     * {@link BrowseSection#getId()} (stable {@link MediaGroup} TYPE_* constants in
-     * this codebase); the parallel {@link #PREFERRED_SECTION_TITLE_RES} array is a
-     * title-string fallback in case a section ever arrives with a non-standard id.
+     * METUBE(shorts): a bottom-nav item id the Shorts player asked to switch to before it closed.
+     * A plain static rather than an Intent extra: the player finishes back into this same running
+     * instance, so there is no Intent to carry it on.
      */
-    private static final int[] PREFERRED_SECTION_IDS = {
-            MediaGroup.TYPE_HOME,
-            // METUBE(shorts): Shorts takes History's tab (History lives on in the You panel).
-            MediaGroup.TYPE_SHORTS,
-            MediaGroup.TYPE_SUBSCRIPTIONS,
-            VideoDownloads.SECTION_ID,
-    };
-    private static final int[] PREFERRED_SECTION_TITLE_RES = {
-            R.string.header_home,
-            R.string.header_shorts,
-            R.string.header_subscriptions,
-            R.string.header_downloads,
-    };
+    public static int openTabOnReturn = -1;
 
     private BrowsePresenter mPresenter;
 
@@ -955,12 +939,13 @@ public class MobileBrowseActivity extends MobileActivity
     }
 
     /**
-     * METUBE(shorts): whether the Shorts tab should still behave the old way - hide the grid and
-     * open the first unseen short by itself. Off by default: the tab keeps its grid on screen.
+     * METUBE(shorts): whether the Shorts tab opens the vertical player by itself. On by default -
+     * that is what the tab is in the official app. Off, it keeps the grid and you tap into a short
+     * like any other card.
      */
     private boolean shortsTabAutoPlay() {
-        return !com.liskovsoft.smartyoutubetv2.common.prefs.MainUIData.instance(this)
-                .isShortsTabGridEnabled();
+        return com.liskovsoft.smartyoutubetv2.common.prefs.MainUIData.instance(this)
+                .isShortsTabPlayerEnabled();
     }
 
     /** METUBE(shorts): the Shorts tab is waiting to open the player. */
@@ -1819,80 +1804,22 @@ public class MobileBrowseActivity extends MobileActivity
     }
 
     /** The icon a nav tab shows for this section: its outline/filled pair, else the stock icon. */
-    private static int navIconOrResFor(BrowseSection section) {
-        int navIcon = navIconFor(section.getId());
-        return navIcon != 0 ? navIcon : Math.max(section.getResId(), 0);
-    }
-
     /**
-     * State-list icons (outline when idle, filled when selected - the YouTube bar's
-     * active-tab signal, since both states tint plain white) for the curated bottom-nav
-     * sections. Sections without a pair (drawer-only ones) keep their stock
-     * {@link BrowseSection#getResId()} icon.
+     * METUBE(shorts): the tab list lives in {@link com.newtube.mobile.ui.common.MobileNavModel}
+     * now, because the watch page paints the very same pill while the Shorts tab plays.
      */
-    private static int navIconFor(int sectionId) {
-        switch (sectionId) {
-            case MediaGroup.TYPE_HOME:
-                return R.drawable.ic_nav_home;
-            case MediaGroup.TYPE_SUBSCRIPTIONS:
-                return R.drawable.ic_nav_subscriptions;
-            case MediaGroup.TYPE_HISTORY:
-                return R.drawable.ic_nav_history;
-            case MediaGroup.TYPE_SHORTS:
-                return R.drawable.ic_nav_shorts;
-            case VideoDownloads.SECTION_ID:
-                return R.drawable.ic_nav_downloads;
-            default:
-                return 0;
-        }
+    private static int navIconOrResFor(BrowseSection section) {
+        return com.newtube.mobile.ui.common.MobileNavModel.navIconOrResFor(section);
     }
 
     /**
-     * The bottom nav shows ONLY the {@link #PREFERRED_SECTION_IDS} (in priority
-     * order, when present and enabled) — no backfill from the other delivered
-     * sections; everything else lives in the You panel. BrowsePresenter can deliver
-     * many more sections, and the {@link BottomNavigationView} itself hard-caps at
-     * {@link #MAX_NAV_ITEMS}.
+     * The bottom nav shows ONLY the preferred sections (in priority order, when present and
+     * enabled) — no backfill from the other delivered sections; everything else lives in the You
+     * panel. BrowsePresenter can deliver many more sections, and the
+     * {@link BottomNavigationView} itself hard-caps at the model's maximum.
      */
     private List<BrowseSection> selectNavSections() {
-        List<BrowseSection> enabledSections = new ArrayList<>();
-
-        for (BrowseSection section : mSections) {
-            if (section.isEnabled() && section.getId() != MediaGroup.TYPE_SETTINGS) {
-                enabledSections.add(section);
-            }
-        }
-
-        List<BrowseSection> chosen = new ArrayList<>();
-
-        for (int i = 0; i < PREFERRED_SECTION_IDS.length && chosen.size() < MAX_NAV_ITEMS; i++) {
-            BrowseSection match = findPreferredSection(
-                    enabledSections, chosen, PREFERRED_SECTION_IDS[i], PREFERRED_SECTION_TITLE_RES[i]);
-
-            if (match != null) {
-                chosen.add(match);
-            }
-        }
-
-        return chosen;
-    }
-
-    /** Matches primarily by section id; falls back to a title-string match. */
-    private BrowseSection findPreferredSection(
-            List<BrowseSection> candidates, List<BrowseSection> alreadyChosen, int id, int titleResId) {
-        String fallbackTitle = getString(titleResId);
-
-        for (BrowseSection section : candidates) {
-            if (alreadyChosen.contains(section)) {
-                continue;
-            }
-
-            if (section.getId() == id || Helpers.equals(section.getTitle(), fallbackTitle)) {
-                return section;
-            }
-        }
-
-        return null;
+        return com.newtube.mobile.ui.common.MobileNavModel.selectNavSections(this, mSections);
     }
 
     // ---------------------------------------------------------------------------------
@@ -1907,9 +1834,19 @@ public class MobileBrowseActivity extends MobileActivity
             mPresenter.onViewResumed();
         }
 
-        // METUBE(shorts): back from the Shorts player - return to the tab before Shorts.
-        if (mCurrentSectionId == MediaGroup.TYPE_SHORTS && !mShortsLaunchPending && !mYouShowing
+        // METUBE(shorts): the pill on the Shorts player lets you tap straight to another tab. That
+        // request wins over the "come back where you were" default below.
+        if (openTabOnReturn >= 0) {
+            int target = openTabOnReturn;
+            openTabOnReturn = -1;
+            if (mBottomNav.getMenu().findItem(target) != null) {
+                mBottomNav.setSelectedItemId(target);
+            } else {
+                maybeLaunchShorts();
+            }
+        } else if (mCurrentSectionId == MediaGroup.TYPE_SHORTS && !mShortsLaunchPending && !mYouShowing
                 && mBottomNav.getMenu().findItem(mLastNonShortsNavItem) != null) {
+            // METUBE(shorts): back from the Shorts player - return to the tab before Shorts.
             mBottomNav.setSelectedItemId(mLastNonShortsNavItem);
         } else {
             maybeLaunchShorts();

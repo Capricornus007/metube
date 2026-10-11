@@ -260,6 +260,16 @@ public class MobilePlaybackActivity extends MobileActivity
     private AmbientGlow mAmbient;
     /** METUBE(shorts): the vertical player mode for videos from the Shorts tab. */
     private ShortsOverlay mShorts;
+    /**
+     * METUBE(shorts): the browse page's bottom pill, on the watch page. The Shorts tab IS the
+     * vertical player, so the bar has to stay put while it plays - that persistence is what makes
+     * swiping through shorts read as one page rather than a screen change. Hidden everywhere else
+     * (a normal video keeps its immersive chrome).
+     */
+    private com.google.android.material.bottomnavigation.BottomNavigationView mShortsNav;
+    private android.view.View mShortsNavGlass;
+    /** Whether the pill currently shows the tab list it was built for. */
+    private boolean mShortsNavBuilt;
     private TextView mWatchDescription;
     private View mWatchLike;
     private ImageView mWatchLikeIcon;
@@ -686,6 +696,12 @@ public class MobilePlaybackActivity extends MobileActivity
         mContainer = findViewById(R.id.mobile_player_container);
         mVideoArea = findViewById(R.id.mobile_video_area);
         mZoomHintView = findViewById(R.id.mobile_player_zoom_hint);
+        // METUBE(shorts): the shared bottom pill (gone until shorts mode opens).
+        mShortsNavGlass = findViewById(R.id.mobile_player_nav_glass);
+        mShortsNav = findViewById(R.id.mobile_bottom_nav);
+        if (mShortsNavGlass != null) {
+            com.newtube.mobile.ui.common.Glass.blur(mShortsNavGlass, findViewById(R.id.mobile_watch_root));
+        }
         mPlayerView = findViewById(R.id.mobile_player_view);
         // NEWTUBE(seek bar): the video box leaves its children unclipped so that the seek bar's dot
         // can hang over the page - but the picture must stay in the box: zoomed to fill, a vertical
@@ -791,6 +807,14 @@ public class MobilePlaybackActivity extends MobileActivity
                 applyShortsLayout();
                 if (on) {
                     hideControls();
+                }
+                // METUBE(shorts): the pill comes and goes with shorts mode; rebuilt each time it
+                // opens so a tab the user enabled/disabled in the meantime is reflected.
+                if (mShortsNavGlass != null) {
+                    if (on && !mShortsNavBuilt) {
+                        buildShortsNav();
+                    }
+                    mShortsNavGlass.setVisibility(on && mShortsNavBuilt ? View.VISIBLE : View.GONE);
                 }
             }
 
@@ -5315,6 +5339,40 @@ public class MobilePlaybackActivity extends MobileActivity
     }
 
     /** Re-lays the video box and its fill for the current shorts state. */
+    /**
+     * METUBE(shorts): fill the pill with the browse page's own tabs and wire it to "go back to
+     * that tab". Tapping one closes the player without a transition and leaves a note the browse
+     * page picks up in onResume, so the user lands on the tab they pressed rather than on Shorts.
+     */
+    private void buildShortsNav() {
+        if (mShortsNav == null) {
+            return;
+        }
+
+        com.liskovsoft.smartyoutubetv2.common.app.presenters.BrowsePresenter presenter =
+                com.liskovsoft.smartyoutubetv2.common.app.presenters.BrowsePresenter.instance(this);
+        com.newtube.mobile.ui.common.MobileNavModel.build(
+                this, mShortsNav, presenter != null ? presenter.getSections() : null);
+
+        int shortsItem = com.newtube.mobile.ui.common.MobileNavModel
+                .toMenuItemId(com.liskovsoft.mediaserviceinterfaces.data.MediaGroup.TYPE_SHORTS);
+        if (mShortsNav.getMenu().findItem(shortsItem) != null) {
+            mShortsNav.setSelectedItemId(shortsItem);
+        }
+
+        mShortsNav.setOnItemSelectedListener(item -> {
+            if (item.getItemId() == shortsItem) {
+                return true; // the tab you are already on: the player keeps swiping
+            }
+            com.newtube.mobile.ui.browse.MobileBrowseActivity.openTabOnReturn = item.getItemId();
+            finish();
+            overridePendingTransition(0, 0);
+            return true;
+        });
+
+        mShortsNavBuilt = true;
+    }
+
     private void applyShortsLayout() {
         applyWatchLayoutForOrientation(getResources().getConfiguration().orientation);
         setResizeMode(PlayerData.instance(this).getResizeMode());

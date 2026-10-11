@@ -227,9 +227,9 @@ final class AppPages {
 
         rows.add(SettingsRow.header(context.getString(R.string.mobile_settings_tabs_bottom_bar)));
         addSectionToggles(context, rows, sections, bottomBar, true);
-        rows.add(SettingsRow.toggle(context.getString(R.string.mobile_settings_shorts_grid),
-                context.getString(R.string.mobile_settings_shorts_grid_summary),
-                mainUIData::isShortsTabGridEnabled, mainUIData::setShortsTabGridEnabled));
+        rows.add(SettingsRow.toggle(context.getString(R.string.mobile_settings_shorts_player),
+                context.getString(R.string.mobile_settings_shorts_player_summary),
+                mainUIData::isShortsTabPlayerEnabled, mainUIData::setShortsTabPlayerEnabled));
         rows.add(SettingsRow.header(context.getString(R.string.mobile_settings_tabs_you)));
         addSectionToggles(context, rows, sections, you, true);
         rows.add(SettingsRow.header(context.getString(R.string.mobile_you_explore)));

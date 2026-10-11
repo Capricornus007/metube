@@ -1,0 +1,27 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!--
+  METUBE(shorts): the bottom navigation pill, shared by the browse page and the watch page.
+  The Shorts tab is the vertical player, so the watch page has to keep the very same bar on
+  screen (official YouTube does the same) - duplicating it would drift the second either
+  side's styling changes. Wrapped by a GlassView at each call site, because the blur target
+  and the placement differ: the browse page pins it with constraints, the watch page floats
+  it with layout_gravity="bottom".
+-->
+<com.google.android.material.bottomnavigation.BottomNavigationView
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:id="@+id/mobile_bottom_nav"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:background="@android:color/transparent"
+    app:elevation="0dp"
+    app:itemBackground="@drawable/bg_nav_item"
+    app:itemIconSize="24dp"
+    app:itemIconTint="@color/mobile_bottom_nav_item"
+    app:itemRippleColor="@android:color/transparent"
+    app:itemTextAppearanceActive="@style/MobileBottomNavText"
+    app:itemTextAppearanceActiveBoldEnabled="false"
+    app:itemTextAppearanceInactive="@style/MobileBottomNavText"
+    app:itemTextColor="@color/mobile_bottom_nav_item"
+    app:labelVisibilityMode="labeled"
+    app:paddingBottomSystemWindowInsets="false" />
