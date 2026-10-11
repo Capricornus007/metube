@@ -223,7 +223,7 @@
   <string name="card_text_scroll_factor">Kortin tekstin nopeus</string>
   <string name="preferred_update_source">Valitse päivityssivusto</string>
   <string name="hide_shorts">Piilota Shorts-videot</string>
-  <string name="key_remapping">Näppäimien uudelleenohjelmointi </string>
+  <string name="key_remapping">Näppäimien uudelleenohjelmointi</string>
   <string name="screen_dimming">Näytön pimennys</string>
   <string name="removed_from_playback_queue">Poistettu toistojonosta</string>
   <string name="added_to_playback_queue">Lisätty toistojonoon</string>
@@ -254,7 +254,7 @@
   <string name="added_to">Lisätty %s</string>
   <string name="removed_from">Poistettu %s</string>
   <string name="video_preset_adaptive">Mukautuva</string>
-  <string name="player_time_correction">Näytä aika suhteessa nopeuteen </string>
+  <string name="player_time_correction">Näytä aika suhteessa nopeuteen</string>
   <string name="player_show_global_ending_time">Näytä loppuaika koko ajan</string>
   <string name="content_block_preview_recap">Esikatselu tai tiivistelmä videosta</string>
   <string name="content_block_highlight">Kohta videosta tai kohokohta</string>
@@ -518,7 +518,7 @@
   <string name="pressing_back">painamalla takaisin</string>
   <string name="clear_search_history">Tyhjennä hakuhistoria</string>
   <string name="remove_from_subscriptions">Piilota</string>
-  <string name="player_long_speed_list">Laaja nopeuslista </string>
+  <string name="player_long_speed_list">Laaja nopeuslista</string>
   <string name="alt_app_icon">Vaihtoehtoinen sovelluskuvake (vaatii uudelleenkäynnistyksen)</string>
   <string name="network_stack">Suosi %s verkkopinoa</string>
   <string name="cronet_desc">Cronet on Chromiumin verkkopino. Cronet voi vähentää latenssia ja lisätä verkon suorituskykyä, mikä voi auttaa puskurointiongelmissa.</string>
@@ -631,7 +631,7 @@
   <string name="skip_shorts">Ohita shortit</string>
   <string name="speech_engine">Äänihaun tekniikka</string>
   <string name="dearrow_status">Tarkista DeArrow-palvelimen tilanne</string>
-  <string name="player_extra_long_speed_list">Extralaaja nopeuslista </string>
+  <string name="player_extra_long_speed_list">Extralaaja nopeuslista</string>
   <string name="player_network_stack">Verkkotekniikka</string>
   <string name="old_channel_look">Kanavatilausten vanha ulkoasu</string>
   <string name="remember_position_pinned">Muista viimeksi katsottu sijainti soittolistoissa</string>
