@@ -776,11 +776,13 @@
     <string name="enable_conscrypt_desc">Poboljšava kompatibilnost s HTTPS, TLS i VPN na nekim uređajima, ali povremeno može uzrokovati probleme s reprodukcijom ili sporiju mrežu</string>
     <string name="network_settings">Mrežne postavke</string>
     <string name="comments_disabled">Komentari za ovaj video su onemogućeni</string>
-    <plurals name="hours">
+    <plurals name="hours">  <item quantity="few">%s sata</item>
+
         <item quantity="one">%s sat</item>
         <item quantity="other">%s sati</item>
     </plurals>
-    <plurals name="seconds">
+    <plurals name="seconds">  <item quantity="few">%s sekunde</item>
+
         <item quantity="one">%s sekunda</item>
         <item quantity="other">%s sekundi</item>
     </plurals>
