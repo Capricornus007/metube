@@ -740,4 +740,46 @@
   <string name="rounded_card_corners">カードを角丸にする</string>
   <string name="fix_empty_subs_and_channels">空白の登録チャンネルとチャンネル欄を修正</string>
   <string name="local_backup_not_supported">システム制限のため、Android 11 以降では自動バックアップに対応していません。Google Driveを使用してください。</string>
+  <string name="header_downloads">ダウンロード</string>
+  <string name="dialog_download">ダウンロード</string>
+  <string name="msg_sign_in_to_save">ログインして動画を再生リストに保存</string>
+  <string name="about_app">%1$s について</string>
+  <string name="about_source_code">ソースコード</string>
+  <string name="about_license">ライセンス</string>
+  <string name="diagnostic_log_send">診断ログを送信</string>
+  <string name="diagnostic_log_send_desc">バグ報告用。開いた動画とチャンネルが含まれます。パスワードとログイントークンは削除されます</string>
+  <string name="diagnostic_log_subject">%1$s %2$s 診断ログ</string>
+  <string name="diagnostic_log_failed">診断ログを作成できません</string>
+  <string name="signed_in_success">ログインしました</string>
+  <string name="feedback_failed">YouTube に送信できません。もう一度お試しください。</string>
+  <string name="subscribed_to_channel_name">%1$s をチャンネル登録しました</string>
+  <string name="unsubscribed_from_channel_name">%1$s のチャンネル登録を解除しました</string>
+  <string name="subscribe_failed">チャンネル登録できません。もう一度お試しください。</string>
+  <string name="unsubscribe_failed">チャンネル登録を解除できません。もう一度お試しください。</string>
+  <string name="action_undo">元に戻す</string>
+  <string name="msg_player_no_connection_retry">接続がありません。オンラインに戻ると再試行します。再生をタップしての再試行も可能です。</string>
+  <string name="msg_player_no_connection_short">接続なし — 再試行中…</string>
+  <string name="msg_player_no_connection_tap">接続なし — 再生をタップして再試行</string>
+  <string name="msg_quality_pin_fallback">%1$s が失敗 — この動画の画質は自動に設定されました</string>
+  <string name="msg_audio_pin_fallback">音声トラックが失敗 — この動画は既定の音声を使用</string>
+  <string name="update_check_failed">更新を確認できません。しばらくしてからもう一度お試しください。</string>
+  <string name="playlist_name_hint">再生リスト名</string>
+  <string name="remove_from_search_history">検索履歴から削除</string>
+  <string name="player_return_youtube_dislike">低評価の数 (Return YouTube Dislike)</string>
+  <string name="header_live">ライブ</string>
+  <string name="app_restore_desc">注意: バックアップの zip ファイルをこのフォルダに手動またはファイルマネージャーでコピーしてください。\'このアプリで開く\' を使用</string>
+  <string name="app_backup_desc">注意: バックアップは zip 形式で作成されます</string>
+  <string name="add_video_to_watch_later">「後で見る」に保存</string>
+  <string name="enable_conscrypt">Conscrypt を有効にする</string>
+  <string name="enable_conscrypt_desc">一部の端末で HTTPS、TLS、VPN の互換性を改善しますが、再生の問題や通信の遅れが起きる場合があります</string>
+  <string name="network_settings">ネットワーク設定</string>
+  <string name="comments_disabled">この動画はコメントできません</string>
+  <plurals name="hours">
+    <item quantity="one">%s 時間</item>
+    <item quantity="other">%s 時間</item>
+  </plurals>
+  <plurals name="seconds">
+    <item quantity="one">%s 秒</item>
+    <item quantity="other">%s 秒</item>
+  </plurals>
 </resources>
