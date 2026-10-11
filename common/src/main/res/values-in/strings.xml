@@ -141,7 +141,7 @@
   <string name="player_exit_shortcut">Keluar dari pemutar</string>
   <string name="search_exit_shortcut">Keluar dari pencarian</string>
   <string name="app_exit_none">Jangan keluar</string>
-  <string name="app_double_back_exit">Tekan BACK 2X </string>
+  <string name="app_double_back_exit">Tekan BACK 2X</string>
   <string name="app_single_back_exit">Tekan BACK sekali</string>
   <string name="action_video_zoom">Pembesaran video</string>
   <string name="video_zoom">Pembesaran video</string>
@@ -197,7 +197,7 @@
   <string name="content_block_notify_toast">Pop Up</string>
   <string name="content_block_notify_dialog">Dialog konfirmasi</string>
   <string name="return_to_launcher">Kembali ke Launcher dari channel/pencarian ATV</string>
-  <string name="intent_force_close">Keluar paksa jika video telah dibuka dari sumber eksternal </string>
+  <string name="intent_force_close">Keluar paksa jika video telah dibuka dari sumber eksternal</string>
   <string name="btn_confirm">Konfirmasi</string>
   <string name="player_low_video_quality">Kualitas video rendah</string>
   <string name="remote_session_closed">Sesi jarak jauh telah ditutup</string>
