@@ -744,11 +744,13 @@
     <string name="app_restore_desc">POZOR: Zálohu ZIP je nutné do této složky zkopírovat ručně nebo přes správce souborů, pomocí \'Otevřít v\'</string>
     <string name="app_backup_desc">POZOR: Záloha bude vytvořena ve formátu ZIP</string>
     <string name="add_video_to_watch_later">Přidat do Přehrát později</string>
-    <plurals name="hours">
+    <plurals name="hours">  <item quantity="few">%s hodiny</item>
+
         <item quantity="one">%s hodina</item>
         <item quantity="other">%s hodin</item>
     </plurals>
-    <plurals name="seconds">
+    <plurals name="seconds">  <item quantity="few">%s sekundy</item>
+
         <item quantity="one">%s sekunda</item>
         <item quantity="other">%s sekund</item>
     </plurals>
