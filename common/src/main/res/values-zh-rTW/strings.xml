@@ -729,4 +729,53 @@
   <string name="channel_unblocked">已解除封鎖</string>
   <string name="header_blocked_channels">封鎖的頻道</string>
   <string name="msg_no_blocked_channels">沒有封鎖的頻道</string>
+
+  <!-- 2026-10-11 補：上一輪 l10n 只做了手機 flavor，共用模組這 46 條漏掉，
+         底欄「Downloads」就是其中之一（key=header_downloads）。
+         URL 與 MIT 那三條不翻（專有名詞／連結）。 -->
+  <string name="about_app">關於 %1$s</string>
+  <string name="about_license">授權條款</string>
+  <string name="about_source_code">原始碼</string>
+  <string name="action_undo">復原</string>
+  <string name="add_video_to_watch_later">存到「稍後觀看」</string>
+  <string name="app_backup_desc">注意：備份會以 zip 格式建立</string>
+  <string name="app_restore_desc">注意：備份 zip 要自行複製到此資料夾，或在檔案管理員用「開啟檔案方式」</string>
+  <string name="color_scheme_dark_blue_oled">深藍（OLED）</string>
+  <string name="comments_disabled">這個影片已停用留言</string>
+  <string name="diagnostic_log_failed">無法建立診斷紀錄</string>
+  <string name="diagnostic_log_send">送出診斷紀錄</string>
+  <string name="diagnostic_log_send_desc">用於回報錯誤。內容含你開過的影片與頻道；密碼與登入權杖會被移除</string>
+  <string name="diagnostic_log_subject">%1$s %2$s 診斷紀錄</string>
+  <string name="dialog_download">下載</string>
+  <string name="enable_conscrypt">啟用 Conscrypt</string>
+  <string name="enable_conscrypt_desc">改善部分裝置的 HTTPS、TLS 與 VPN 相容性，但偶爾可能造成播放問題或網路變慢</string>
+  <string name="feedback_failed">無法回報給 YouTube，請再試一次。</string>
+  <string name="fix_empty_subs_and_channels">修正訂閱與頻道清單為空的問題</string>
+  <string name="header_downloads">下載</string>
+  <string name="header_live">直播</string>
+  <string name="ignore_short_segments">忽略短片段</string>
+  <string name="install_bridge">安裝 ATV/Amazon 橋接</string>
+  <string name="local_backup_not_supported">Android TV 11+ 因系統限制不支援自動備份，請改用 GDrive。</string>
+  <string name="msg_audio_pin_fallback">音軌失敗 — 此影片改用預設音軌</string>
+  <string name="msg_player_no_connection_retry">無網路連線。回到線上時會自動重試，或點播放重試。</string>
+  <string name="msg_player_no_connection_short">無網路連線 — 重試中…</string>
+  <string name="msg_player_no_connection_tap">無網路連線 — 點播放可重試</string>
+  <string name="msg_quality_pin_fallback">%1$s 失敗 — 此影片畫質改為自動</string>
+  <string name="msg_sign_in_to_save">登入後才能存進播放清單</string>
+  <string name="network_settings">網路設定</string>
+  <string name="player_return_youtube_dislike">不喜歡數（Return YouTube Dislike）</string>
+  <string name="player_time_stretching">音訊時間伸縮</string>
+  <string name="player_time_stretching_desc">變速時維持語音自然。部分裝置會明顯影響效能。</string>
+  <string name="player_unexpected_error">播放發生未預期的錯誤</string>
+  <string name="playlist_name_hint">播放清單名稱</string>
+  <string name="queue_respects_playback_mode">佇列遵循播放模式</string>
+  <string name="remove_from_search_history">從搜尋紀錄移除</string>
+  <string name="rounded_card_corners">卡片圓角</string>
+  <string name="sidebar_notification">側欄顯示通知</string>
+  <string name="signed_in_success">已登入</string>
+  <string name="subscribe_failed">訂閱失敗，請再試一次。</string>
+  <string name="subscribed_to_channel_name">已訂閱 %1$s</string>
+  <string name="unsubscribe_failed">取消訂閱失敗，請再試一次。</string>
+  <string name="unsubscribed_from_channel_name">已取消訂閱 %1$s</string>
+  <string name="update_check_failed">無法檢查更新，請稍後再試。</string>
 </resources>
