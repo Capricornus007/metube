@@ -777,4 +777,12 @@
     <string name="enable_conscrypt_desc">కొన్ని పరికరాల్లో HTTPS, TLS, VPN అనుకూలతను మెరుగుపరుస్తుంది, కానీ అప్పుడప్పుడు ప్లేబ్యాక్ సమస్యలు లేదా నెమ్మదైన నెట్‌వర్క్ పనితీరు రావచ్చు</string>
     <string name="network_settings">నెట్‌వర్క్ సెట్టింగులు</string>
     <string name="comments_disabled">ఈ వీడియోకు వ్యాఖ్యలు నిలిపివేయబడ్డాయి</string>
+    <plurals name="hours">
+      <item quantity="one">%s గంట</item>
+      <item quantity="other">%s గంటలు</item>
+    </plurals>
+    <plurals name="seconds">
+      <item quantity="one">%s సెకను</item>
+      <item quantity="other">%s సెకన్లు</item>
+    </plurals>
 </resources>
