@@ -773,11 +773,15 @@
   <string name="enable_conscrypt_desc">Na nekaterih napravah izboljša združljivost HTTPS, TLS in VPN, a občasno lahko povzroči težave s predvajanjem ali počasnejše omrežje</string>
   <string name="network_settings">Omrežne nastavitve</string>
   <string name="comments_disabled">Komentarji za ta videoposnetek so onemogočeni</string>
-  <plurals name="hours">
+  <plurals name="hours">  <item quantity="few">%s ure</item>
+  <item quantity="two">%s uri</item>
+
     <item quantity="one">%s ura</item>
     <item quantity="other">%s ur</item>
   </plurals>
-  <plurals name="seconds">
+  <plurals name="seconds">  <item quantity="few">%s sekundi</item>
+  <item quantity="two">%s sekundi</item>
+
     <item quantity="one">%s sekunda</item>
     <item quantity="other">%s sekund</item>
   </plurals>
