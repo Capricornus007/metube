@@ -212,7 +212,7 @@
   <string name="channels_old_look">Επαναφορά στη προηγούμενη εμφάνιση του τμήματος Κανάλια</string>
   <string name="channels_auto_load">Αυτόματη φόρτωση του περιεχομένου του τμήματος Κανάλια</string>
   <string name="return_to_background_video">Επιστροφή στο βίντεο που παίζει στο παρασκήνιο</string>
-  <string name="pin_unpin_from_sidebar">Προσθήκη/Αφαίρεση από τη πλαϊνή στήλη </string>
+  <string name="pin_unpin_from_sidebar">Προσθήκη/Αφαίρεση από τη πλαϊνή στήλη</string>
   <string name="pin_unpin_playlist">Προσθήκη/Αφαίρεση playlist από τη πλαϊνή στήλη</string>
   <string name="pin_unpin_channel">Προσθήκη/Αφαίρεση καναλιού από τη πλαϊνή στήλη</string>
   <string name="pinned_to_sidebar">Προστέθηκε στη πλαϊνή στήλη</string>
@@ -237,7 +237,7 @@
   <string name="playlists_row_name">Δημιουργημένες playlist</string>
   <string name="popular_uploads_row_name">Δημοφιλείς μεταφορτώσεις</string>
   <string name="breaking_news_row_name">Έκτακτες ειδήσεις</string>
-  <string name="covid_news_row_name">Ειδήσεις για COVID-19 </string>
+  <string name="covid_news_row_name">Ειδήσεις για COVID-19</string>
   <string name="enable_voice_search">Ενεργοποίηση φωνητικής αναζήτησης</string>
   <string name="subscribe_unsubscribe_from_channel">Εγγραφή/Απεγγραφή από το κανάλι</string>
   <string name="app_backup_restore">Αντίγραφο ασφαλείας/επαναφορά</string>
@@ -516,7 +516,7 @@
   <string name="sort_by_relevance">Σχετικότητα</string>
   <string name="sort_by_views">Πλήθος προβολών</string>
   <string name="sort_by_date">Ημερομηνία μεταμόρφωσης</string>
-  <string name="sort_by_rating">Βαθμολογία </string>
+  <string name="sort_by_rating">Βαθμολογία</string>
   <string name="clear_search_history">Διαγραφή ιστορικού αναζήτησης</string>
   <string name="remove_from_subscriptions">Απόκρυψη</string>
   <string name="player_long_speed_list">Λίστα υψηλής ταχύτητας</string>
@@ -557,10 +557,10 @@
   <string name="subtitle_remember">Απομνημόνευση ενεργών υποτίτλων ανά κανάλι</string>
   <string name="amazon_frame_drop_fix">Επιδιόρθωση απώλειας καρέ #2</string>
   <string name="amazon_frame_drop_fix_desc">Προορίζεται για συσκευές Amazon Stick. Ίσως δουλεύει και σε άλλες.</string>
-  <string name="default_stack_desc">Ενσωματωμένη στοίβα δικτύου. Αυτή η στοίβα ίσως είναι πιο σταθερή σε κάποιες περιπτώσεις. </string>
+  <string name="default_stack_desc">Ενσωματωμένη στοίβα δικτύου. Αυτή η στοίβα ίσως είναι πιο σταθερή σε κάποιες περιπτώσεις.</string>
   <string name="item_postion">Θέση του</string>
   <string name="player_screen_off_dimming">Ποσότητα συσκότισης οθόνης</string>
-  <string name="screensaver_timout">Λήξη χρονικού ορίου προφύλαξης οθόνης </string>
+  <string name="screensaver_timout">Λήξη χρονικού ορίου προφύλαξης οθόνης</string>
   <string name="screensaver_dimming">Ποσότητα σκοτεινιάσματος προφύλαξης οθόνης</string>
   <string name="player_network_stack">Στοίβα δικτύου</string>
   <string name="header_shorts">Shorts</string>
