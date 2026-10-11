@@ -272,10 +272,10 @@
   <string name="add_remove_from_recent_playlist">إضافة/إزالة من قائمة التشغيل الأخيرة</string>
   <string name="hide_settings_section">إخفاء قسم الإعدادات (خطير!)</string>
   <string name="volume">الصوت %s%%</string>
-  <string name="auto_frame_rate_sec">	%s ثانية</string>
-  <string name="audio_shift_sec">	%s ثانية</string>
-  <string name="ui_hide_timeout_sec">	%s ثانية</string>
-  <string name="screen_dimming_timeout_min">	%s دقيقة</string>
+  <string name="auto_frame_rate_sec">%s ثانية</string>
+  <string name="audio_shift_sec">%s ثانية</string>
+  <string name="ui_hide_timeout_sec">%s ثانية</string>
+  <string name="screen_dimming_timeout_min">%s دقيقة</string>
   <string name="mark_all_channels_watched">حدد جميع القنوات على أنها تمت مشاهدتها</string>
   <string name="move_section_up">حَرِّك القسم لأعلى</string>
   <string name="move_section_down">حَرِّك القسم لأسفل</string>
@@ -323,7 +323,7 @@
   <string name="intent_force_close">فرض الخروج إذا تم فتح الفيديو من مصدر خارجي</string>
   <string name="pin_unpin_playlist">إضافة/إزالة قائمة التشغيل من الشريط الجانبي</string>
   <string name="pin_unpin_channel">إضافة/إزالة القناة من الشريط الجانبي</string>
-  <string name="action_video_info">وصف الفيديو </string>
+  <string name="action_video_info">وصف الفيديو</string>
   <string name="description_not_found">الوصف غير موجود</string>
   <string name="subtitle_white_transparent">بيضاء على خلفية شفافة</string>
   <string name="proxy_port_hint">منفذ الخادم الوكيل</string>
@@ -432,7 +432,7 @@
   <string name="signin_view_title">يتم تحميل رمز المستخدم ...</string>
   <string name="signin_view_description">لتسجيل الدخول ، أدخل هذا الرمز في الصفحة%s\n ملاحظة: يعمل فقط مع متصفح Firefox أو Chrome.</string>
   <string name="signin_view_action_text">تم</string>
-  <string name="require_checked"> \"%sيتطلب</string>
+  <string name="require_checked">\"%sيتطلب</string>
   <string name="msg_press_again_to_exit">اضغط مرة أخرى للخروج</string>
   <string name="player_remaining_time">متبقي:\"%s</string>
   <string name="player_ending_time">ينتهي عند \"%s</string>
