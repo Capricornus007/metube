@@ -754,6 +754,36 @@
         <item quantity="one">%s sekunda</item>
         <item quantity="other">%s sekund</item>
     </plurals>
+    <string name="header_downloads">Stažené</string>
+    <string name="dialog_download">Stáhnout</string>
+    <string name="msg_sign_in_to_save">Přihlaste se pro ukládání videí do playlistů</string>
+    <string name="about_app">O aplikaci %1$s</string>
+    <string name="about_source_code">Zdrojový kód</string>
+    <string name="about_license">Licence</string>
+    <string name="diagnostic_log_send">Odeslat diagnostický protokol</string>
+    <string name="diagnostic_log_send_desc">Pro hlášení chyb. Obsahuje videa a kanály, které jste otevřeli; hesla a přihlašovací tokeny jsou odstraněny</string>
+    <string name="diagnostic_log_subject">Diagnostický protokol %1$s %2$s</string>
+    <string name="diagnostic_log_failed">Nepodařilo se vytvořit diagnostický protokol</string>
+    <string name="signed_in_success">Přihlášeni</string>
+    <string name="feedback_failed">Nepodařilo se to poslat na YouTube. Zkuste to znovu.</string>
+    <string name="subscribed_to_channel_name">Přihlášeno k odběru %1$s</string>
+    <string name="unsubscribed_from_channel_name">Odběr %1$s zrušen</string>
+    <string name="subscribe_failed">Nepodařilo se přihlásit k odběru. Zkuste to znovu.</string>
+    <string name="unsubscribe_failed">Nepodařilo se zrušit odběr. Zkuste to znovu.</string>
+    <string name="action_undo">Vrátit zpět</string>
+    <string name="msg_player_no_connection_retry">Žádné připojení. Až budete znovu online, zkusíme to znovu; nebo klepnutím na přehrávání to zkuste.</string>
+    <string name="msg_player_no_connection_short">Žádné připojení — zkouším znovu…</string>
+    <string name="msg_player_no_connection_tap">Žádné připojení — klepnutím na přehrávání to zkuste</string>
+    <string name="msg_quality_pin_fallback">%1$s nefunguje — kvalita tohoto videa nastavena na Auto</string>
+    <string name="msg_audio_pin_fallback">Nefunguje zvuková stopa — toto video používá výchozí zvuk</string>
+    <string name="update_check_failed">Nepodařilo se zkontrolovat aktualizace. Zkuste to později.</string>
+    <string name="playlist_name_hint">Název playlistu</string>
+    <string name="player_return_youtube_dislike">Počet nelajků (Return YouTube Dislike)</string>
+    <string name="header_live">Živě</string>
+    <string name="enable_conscrypt">Povolit Conscrypt</string>
+    <string name="enable_conscrypt_desc">Na některých zařízeních zlepšuje kompatibilitu HTTPS, TLS a VPN, ale občas může způsobit problémy s přehráváním nebo nižší rychlost sítě</string>
+    <string name="network_settings">Nastavení sítě</string>
+    <string name="comments_disabled">Komentáře jsou pro toto video vypnuty</string>
 </resources>
 
 
