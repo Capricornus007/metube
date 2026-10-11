@@ -747,4 +747,39 @@
   <string name="enable_conscrypt">Activar Conscrypt</string>
   <string name="enable_conscrypt_desc">Mellora a compatibilidade con HTTPS, TLS e VPN nalgúns dispositivos, pero ás veces pode causar problemas de reprodución ou un rendemento de rede máis lento</string>
   <string name="network_settings">Axustes de rede</string>
+  <string name="header_downloads">Descargas</string>
+  <string name="dialog_download">Descargar</string>
+  <string name="msg_sign_in_to_save">Inicia sesión para gardar vídeos en listas de reprodución</string>
+  <string name="about_app">Acerca de %1$s</string>
+  <string name="about_source_code">Código fonte</string>
+  <string name="about_license">Licenza</string>
+  <string name="diagnostic_log_send">Enviar rexistro de diagnóstico</string>
+  <string name="diagnostic_log_send_desc">Para informes de erros. Inclúe os vídeos e canles que abriches; contrasinais e tokens de sesión retíranse</string>
+  <string name="diagnostic_log_subject">Rexistro de diagnóstico %1$s %2$s</string>
+  <string name="diagnostic_log_failed">Non se puido crear o rexistro de diagnóstico</string>
+  <string name="signed_in_success">Sesión iniciada</string>
+  <string name="feedback_failed">Non se puido enviar a YouTube. Téntao de novo.</string>
+  <string name="subscribed_to_channel_name">Subscriches %1$s</string>
+  <string name="unsubscribed_from_channel_name">Deixaches de subscribir %1$s</string>
+  <string name="subscribe_failed">Non se puido subscribir. Téntao de novo.</string>
+  <string name="unsubscribe_failed">Non se puido cancelar a subscrición. Téntao de novo.</string>
+  <string name="action_undo">Desfacer</string>
+  <string name="msg_player_no_connection_retry">Sen conexión. Reintentará cando volvas estar en liña, ou preme reproducir para reintentar.</string>
+  <string name="msg_player_no_connection_short">Sen conexión — reintentando…</string>
+  <string name="msg_player_no_connection_tap">Sen conexión — preme reproducir para reintentar</string>
+  <string name="msg_quality_pin_fallback">Falla %1$s — a calidade axustouse a Auto neste vídeo</string>
+  <string name="msg_audio_pin_fallback">Falla a pista de audio — úsase o audio predeterminado neste vídeo</string>
+  <string name="update_check_failed">Non se puido buscar actualizacións. Téntao máis tarde.</string>
+  <string name="playlist_name_hint">Nome da lista de reprodución</string>
+  <string name="player_return_youtube_dislike">Conta de \'Non me gusta\' (Return YouTube Dislike)</string>
+  <string name="header_live">Ao vivo</string>
+  <string name="comments_disabled">Os comentarios están desactivados neste vídeo</string>
+  <plurals name="hours">
+    <item quantity="one">%s hora</item>
+    <item quantity="other">%s horas</item>
+  </plurals>
+  <plurals name="seconds">
+    <item quantity="one">%s segundo</item>
+    <item quantity="other">%s segundos</item>
+  </plurals>
 </resources>
