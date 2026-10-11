@@ -773,4 +773,14 @@
     <string name="enable_conscrypt_desc">Dažās ierīcēs uzlabo HTTPS, TLS un VPN savietojamību, bet reizēm var izraisīt atskaņošanas problēmas vai lēnāku tīkla darbību</string>
     <string name="network_settings">Tīkla iestatījumi</string>
     <string name="comments_disabled">Šim video komentāri ir atspējoti</string>
+    <plurals name="hours">
+      <item quantity="zero">%s stundu</item>
+      <item quantity="one">%s stunda</item>
+      <item quantity="other">%s stundas</item>
+    </plurals>
+    <plurals name="seconds">
+      <item quantity="zero">%s sekundi</item>
+      <item quantity="one">%s sekunde</item>
+      <item quantity="other">%s sekundes</item>
+    </plurals>
 </resources>
