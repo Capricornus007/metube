@@ -750,7 +750,7 @@
   <string name="player_return_youtube_dislike">싫어요 수 (Return YouTube Dislike)</string>
   <string name="player_chapter_notification2">알림을 눌러 다음 챕터로 이동</string>
   <string name="color_scheme_dark_blue_oled">진한 파란색 (OLED)</string>
-  <string name="player_quick_shorts_skip_alt">위/아래 버튼으로 Shorts 건너뛰기</string>
+  <string name="player_quick_shorts_skip_alt">위/아래 버튼으로 쇼츠 건너뛰기</string>
   <string name="player_quick_skip_videos_alt">위/아래 버튼으로 일반 동영상 건너뛰기</string>
   <string name="header_live">실시간</string>
   <string name="prefer_google_dns">Google DNS 선호</string>
