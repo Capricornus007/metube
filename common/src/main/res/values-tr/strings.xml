@@ -754,4 +754,32 @@
         <item quantity="one">%s saniye</item>
         <item quantity="other">%s saniye</item>
     </plurals>
+    <string name="header_downloads">İndirilenler</string>
+    <string name="dialog_download">İndir</string>
+    <string name="msg_sign_in_to_save">Videoları oynatma listelerine kaydetmek için oturum açın</string>
+    <string name="about_app">%1$s hakkında</string>
+    <string name="about_source_code">Kaynak kodu</string>
+    <string name="about_license">Lisans</string>
+    <string name="diagnostic_log_send">Teşhis günlüğünü gönder</string>
+    <string name="diagnostic_log_send_desc">Hata bildirimleri için. Açtığınız videolar ve kanallar da eklenir; parolalar ve oturum belirteçleri çıkarılır</string>
+    <string name="diagnostic_log_subject">%1$s %2$s teşhis günlüğü</string>
+    <string name="diagnostic_log_failed">Teşhis günlüğü oluşturulamadı</string>
+    <string name="signed_in_success">Oturum açıldı</string>
+    <string name="feedback_failed">Bu, YouTube\'a gönderilemedi. Yeniden deneyin.</string>
+    <string name="subscribed_to_channel_name">%1$s kanalına abone olundu</string>
+    <string name="unsubscribed_from_channel_name">%1$s aboneliğinden çıkıldı</string>
+    <string name="subscribe_failed">Abone olunamadı. Yeniden deneyin.</string>
+    <string name="unsubscribe_failed">Abonelikten çıkılamadı. Yeniden deneyin.</string>
+    <string name="action_undo">Geri al</string>
+    <string name="msg_player_no_connection_retry">Bağlantı yok. Çevrimiçi olduğunuzda yeniden denenecek; ya da yeniden denemek için oynatmaya dokunun.</string>
+    <string name="msg_player_no_connection_short">Bağlantı yok — yeniden deneniyor…</string>
+    <string name="msg_player_no_connection_tap">Bağlantı yok — yeniden denemek için oynatmaya dokunun</string>
+    <string name="msg_quality_pin_fallback">%1$s başarısız — bu video için kalite Oto olarak ayarlandı</string>
+    <string name="msg_audio_pin_fallback">Ses parçası başarısız — bu video için varsayılan ses kullanılıyor</string>
+    <string name="update_check_failed">Güncellemeler denetlenemedi. Daha sonra yeniden deneyin.</string>
+    <string name="playlist_name_hint">Oynatma listesi adı</string>
+    <string name="player_return_youtube_dislike">Dislike sayıları (Return YouTube Dislike)</string>
+    <string name="header_live">Canlı</string>
+    <string name="install_bridge">ATV/Amazon köprüsünü kur</string>
+    <string name="fix_empty_subs_and_channels">Boş Abonelikler ve Kanalları düzelt</string>
 </resources>
