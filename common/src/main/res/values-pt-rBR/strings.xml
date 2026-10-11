@@ -654,9 +654,9 @@
   <string name="channel_filter_hint">Filtrar canais</string>
   <string name="player_loop_shorts">Assistir shorts (vídeos curtos) em loop</string>
   <string name="player_quick_shorts_skip">Passar os shorts (vídeos curtos) com os botões direito/esquerdo</string>
-  <string name="player_quick_shorts_skip_alt">Skip Shorts with up/down buttons</string>
+  <string name="player_quick_shorts_skip_alt">Pular Shorts com os botões para cima/baixo</string>
   <string name="player_quick_skip_videos">Passar os vídeos com botões direito/esquerdo</string>
-  <string name="player_quick_skip_videos_alt">Skip regular videos with up/down buttons</string>
+  <string name="player_quick_skip_videos_alt">Pular vídeos normais com os botões para cima/baixo</string>
   <string name="channels_filter">Filtrar lista de canais dentro da seção \"Canais\"</string>
   <string name="channel_search_bar">Barra de pesquisa dentro da seção \"Canais\"</string>
   <string name="header_sports">Esportes</string>
@@ -748,4 +748,38 @@
   <string name="remove_from_search_history">Remover do histórico de pesquisa</string>
   <string name="sidebar_notification">Mostrar notificação na barra lateral</string>
   <string name="color_scheme_dark_blue_oled">Azul Escuro (OLED)</string>
+  <string name="header_downloads">Downloads</string>
+  <string name="dialog_download">Baixar</string>
+  <string name="msg_sign_in_to_save">Faça login para salvar vídeos em listas de reprodução</string>
+  <string name="about_app">Sobre %1$s</string>
+  <string name="about_source_code">Código-fonte</string>
+  <string name="about_license">Licença</string>
+  <string name="diagnostic_log_send">Enviar registro de diagnóstico</string>
+  <string name="diagnostic_log_send_desc">Para relatórios de bugs. Inclui os vídeos e canais que você abriu; senhas e tokens de login são removidos</string>
+  <string name="diagnostic_log_subject">Registro de diagnóstico %1$s %2$s</string>
+  <string name="diagnostic_log_failed">Não foi possível criar o registro de diagnóstico</string>
+  <string name="signed_in_success">Login realizado</string>
+  <string name="feedback_failed">Não foi possível enviar ao YouTube. Tente novamente.</string>
+  <string name="subscribed_to_channel_name">Inscrito em %1$s</string>
+  <string name="unsubscribed_from_channel_name">Inscrição cancelada em %1$s</string>
+  <string name="subscribe_failed">Não foi possível se inscrever. Tente novamente.</string>
+  <string name="unsubscribe_failed">Não foi possível cancelar a inscrição. Tente novamente.</string>
+  <string name="action_undo">Desfazer</string>
+  <string name="msg_player_no_connection_retry">Sem conexão. Nova tentativa quando você voltar a ficar online; ou toque em reproduzir para tentar.</string>
+  <string name="msg_player_no_connection_short">Sem conexão — tentando novamente…</string>
+  <string name="msg_player_no_connection_tap">Sem conexão — toque em reproduzir para tentar</string>
+  <string name="msg_quality_pin_fallback">Falha em %1$s — qualidade ajustada para Automática neste vídeo</string>
+  <string name="msg_audio_pin_fallback">Falha na faixa de áudio — usando o áudio padrão neste vídeo</string>
+  <string name="update_check_failed">Não foi possível verificar atualizações. Tente mais tarde.</string>
+  <string name="playlist_name_hint">Nome da lista de reprodução</string>
+  <string name="player_return_youtube_dislike">Contagem de \'Não gostei\' (Return YouTube Dislike)</string>
+  <string name="header_live">Ao vivo</string>
+  <plurals name="hours">
+    <item quantity="one">%s hora</item>
+    <item quantity="other">%s horas</item>
+  </plurals>
+  <plurals name="seconds">
+    <item quantity="one">%s segundo</item>
+    <item quantity="other">%s segundos</item>
+  </plurals>
 </resources>
