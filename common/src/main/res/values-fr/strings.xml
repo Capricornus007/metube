@@ -434,7 +434,7 @@
   <string name="playlist_order_published_date_newer_first">Date de publication (plus récentes)</string>
   <string name="playlist_order_published_date_older_first">Date de publication (plus anciennes)</string>
   <string name="playlist_order_popularity">Les plus populaires</string>
-  <string name="cant_do_this_for_foreign_playlist">Impossible de faire cela pour une playlist étrangère	</string>
+  <string name="cant_do_this_for_foreign_playlist">Impossible de faire cela pour une playlist étrangère</string>
   <string name="owned_playlist_warning">Erreur : cette action est possible uniquement pour vos propres playlists</string>
   <string name="content_block_alt_server">Utiliser un serveur alternatif</string>
   <string name="content_block_alt_server_desc">Activer cette option si SponsorBlock refuse de fonctionner pour différentes raisons.</string>
@@ -575,7 +575,7 @@
   <string name="amazon_frame_drop_fix">Correction de pertes d\'images n°2</string>
   <string name="amazon_frame_drop_fix_desc">Corrige les ralentissements sur les appareils Amazon Fire TV Stick et certains autres appareils.</string>
   <string name="default_stack_desc">Pile réseau intégrée. Cette pile peut apporter une meilleure stabilité dans certaines situations.</string>
-  <string name="item_postion">Position de : </string>
+  <string name="item_postion">Position de :</string>
   <string name="player_screen_off_dimming">Réduction de la luminosité de l\'écran</string>
   <string name="screensaver_timout">Délai d\'activation de l\'économiseur d\'écran</string>
   <string name="screensaver_dimming">Réduction de la luminosité de l\'économiseur d\'écran</string>
@@ -628,7 +628,7 @@
   <string name="channels_filter">Filtrer la liste des chaînes dans la section Chaînes</string>
   <string name="player_quick_shorts_skip">Sauter les Shorts avec les boutons gauche/droite</string>
   <string name="channel_search_bar">Barre de recherche à l’intérieur de la page Chaîne</string>
-  <string name="header_sports">Sports	</string>
+  <string name="header_sports">Sports</string>
   <string name="keep_finished_activities">Conserver les activités terminées</string>
   <string name="disable_channels_service">Désactiver le service Chaînes</string>
   <string name="replace_titles">Remplacer les titres</string>
