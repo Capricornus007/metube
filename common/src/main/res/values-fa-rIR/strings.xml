@@ -439,7 +439,7 @@
   <string name="badge_live">پخش زنده</string>
   <string name="add_device_view_description">برای اتصال دستگاه، این کد را در برنامه YouTube در تلفن خود در بخش تنظیمات/تماشا در تلویزیون وارد کنید\nتوجه: این فقط با صفحه کلید Gboard کار می‌کند!</string>
   <string name="playback_controls_repeat_pause">توقف تکرار</string>
-  <string name="playback_controls_repeat_list">تکرار فهرست </string>
+  <string name="playback_controls_repeat_list">تکرار فهرست</string>
   <string name="action_subscribe_off">اشتراک غیرفعال</string>
   <string name="action_subscribe_on">اشتراک فعال</string>
   <string name="skip_24_rate">رد کردن فرمت‌های ۲۴ فریم در ثانیه (رفع حالت سینمای واقعی؟)</string>
