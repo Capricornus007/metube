@@ -358,7 +358,7 @@
   <string name="proxy_not_supported">Utilizar un Proxy Web (requiere Android 4.4+)</string>
   <string name="proxy_test_btn">Probar</string>
   <string name="proxy_settings_title">Configuración del Servidor Proxy</string>
-  <string name="proxy_test_urls">https://www.youtube.com\nhttps://www.google.com	</string>
+  <string name="proxy_test_urls">https://www.youtube.com\nhttps://www.google.com</string>
   <string name="proxy_test_cancelled">Prueba #%d: cancelada.</string>
   <string name="proxy_type_invalid">Tipo de proxy no configurado.</string>
   <string name="proxy_host_invalid">Proxy host no configurado.</string>
@@ -666,7 +666,7 @@
   <string name="fullscreen_mode">Modo pantalla completa (sin barras del sistema)</string>
   <string name="player_exit_shortcut">Salir del reproductor</string>
   <string name="action_sound_off">Apagar sonido</string>
-  <string name="dearrow_status">Comprobar el estado de DeArrow </string>
+  <string name="dearrow_status">Comprobar el estado de DeArrow</string>
   <string name="old_channel_look">Aspecto antiguo de la página Canal</string>
   <string name="player_only_mode">Mostrar sólo el reproductor si el vídeo se abre fuera de la aplicación</string>
   <string name="pinned_channel_rows">Mostrar el canal fijado como filas</string>
@@ -726,11 +726,11 @@
   <string name="search_exit_shortcut">Salir del buscador</string>
   <string name="original_lang">Original</string>
   <string name="suggestions">Sugerencias</string>
-  <string name="remove_playlist_fmt">Eliminar %s permanentemente </string>
+  <string name="remove_playlist_fmt">Eliminar %s permanentemente</string>
   <string name="player_chapter_notification2">Avanzar al siguiente capítulo presionando en la notificación</string>
   <string name="dont_resize_video_to_fit_dialog">No redimensione el video para ajustar al cuadro de diálogo</string>
   <string name="typing_corrections">Desactivar auto corrección mientras ingresa texto</string>
-  <string name="suggestions_horizontally_scrolled">Desplazamiento horizontal de Sugerencias </string>
+  <string name="suggestions_horizontally_scrolled">Desplazamiento horizontal de Sugerencias</string>
   <string name="dialog_block_channel">Bloquear canal</string>
   <string name="dialog_unblock_channel">Desbloquear canal</string>
   <string name="confirm_block_channel">¿Ocultar todo el contenido de %s?</string>
