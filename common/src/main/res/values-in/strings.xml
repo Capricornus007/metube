@@ -748,4 +748,38 @@
   <string name="enable_conscrypt_desc">Meningkatkan kompatibilitas HTTPS, TLS, dan VPN di beberapa perangkat, tapi juga dapat menyebabkan masalah pemutaran atau jaringan</string>
   <string name="network_settings">Setelan jaringan</string>
   <string name="comments_disabled">Komentar dimatikan</string>
+  <string name="header_downloads">Unduhan</string>
+  <string name="dialog_download">Unduh</string>
+  <string name="msg_sign_in_to_save">Masuk untuk menyimpan video ke playlist</string>
+  <string name="about_app">Tentang %1$s</string>
+  <string name="about_source_code">Kode sumber</string>
+  <string name="about_license">Lisensi</string>
+  <string name="diagnostic_log_send">Kirim log diagnostik</string>
+  <string name="diagnostic_log_send_desc">Untuk laporan bug. Berisi video dan channel yang Anda buka; kata sandi dan token masuk dihapus</string>
+  <string name="diagnostic_log_subject">Log diagnostik %1$s %2$s</string>
+  <string name="diagnostic_log_failed">Gagal membuat log diagnostik</string>
+  <string name="signed_in_success">Berhasil masuk</string>
+  <string name="feedback_failed">Gagal mengirim itu ke YouTube. Coba lagi.</string>
+  <string name="subscribed_to_channel_name">Berlangganan %1$s</string>
+  <string name="unsubscribed_from_channel_name">Berhenti berlangganan %1$s</string>
+  <string name="subscribe_failed">Gagal berlangganan. Coba lagi.</string>
+  <string name="unsubscribe_failed">Gagal berhenti berlangganan. Coba lagi.</string>
+  <string name="action_undo">Urungkan</string>
+  <string name="msg_player_no_connection_retry">Tidak ada koneksi. Akan mencoba lagi saat Anda online lagi, atau ketuk putar untuk mencoba.</string>
+  <string name="msg_player_no_connection_short">Tidak ada koneksi — mencoba lagi…</string>
+  <string name="msg_player_no_connection_tap">Tidak ada koneksi — ketuk putar untuk mencoba</string>
+  <string name="msg_quality_pin_fallback">%1$s gagal — kualitas disetel ke Auto untuk video ini</string>
+  <string name="msg_audio_pin_fallback">Trek audio gagal — memakai audio default untuk video ini</string>
+  <string name="update_check_failed">Gagal memeriksa pembaruan. Coba lagi nanti.</string>
+  <string name="playlist_name_hint">Nama playlist</string>
+  <string name="player_return_youtube_dislike">Jumlah tidak suka (Return YouTube Dislike)</string>
+  <string name="header_live">Live</string>
+  <plurals name="hours">
+    <item quantity="one">%s jam</item>
+    <item quantity="other">%s jam</item>
+  </plurals>
+  <plurals name="seconds">
+    <item quantity="one">%s detik</item>
+    <item quantity="other">%s detik</item>
+  </plurals>
 </resources>
