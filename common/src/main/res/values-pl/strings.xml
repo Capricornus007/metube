@@ -69,7 +69,7 @@
   <string name="card_animated_previews">Animowany podgląd</string>
   <string name="web_site">Strona internetowa</string>
   <string name="donation">Darowizna na dalszy rozwój</string>
-  <string name="dialog_about">O. </string>
+  <string name="dialog_about">O.</string>
   <string name="dialog_player_ui">Odtwarzacz wideo</string>
   <string name="player_show_ui_on_pause">Pokaż interfejs podczas pauzy</string>
   <string name="player_pause_on_ok">Przycisk OK wstrzymuje odtwarzanie</string>
@@ -117,7 +117,7 @@
   <string name="repeat_mode_pause_alt">Wstrzymaj odtwarzanie po każdym wideo spoza listy odtwarzania</string>
   <string name="repeat_mode_none">Wstrzymaj odtwarzanie po bieżącym wideo</string>
   <string name="subscribed_to_channel">Zasubskrybowano</string>
-  <string name="unsubscribed_from_channel">Nie subskybujesz </string>
+  <string name="unsubscribed_from_channel">Nie subskybujesz</string>
   <string name="subtitle_yellow_transparent">Żółte na przezroczystym tle</string>
   <string name="subtitle_white_transparent">Białe na przezroczystym tle</string>
   <string name="subtitle_white_black">Białe na czarnym tle</string>
@@ -606,7 +606,7 @@
   <string name="auto_history">Automatyczne (użyj ustawień konta)</string>
   <string name="remember_position_subscriptions">Zapamiętaj ostatnio oglądaną pozycję w Subskrypcjach</string>
   <string name="remember_position_pinned">Zapamiętaj pozycję ostatnio oglądanego wideo w przypiętej liście odtwarzania</string>
-  <string name="msg_player_unknown_error">Nieznany błąd </string>
+  <string name="msg_player_unknown_error">Nieznany błąd</string>
   <string name="header_notifications">Powiadomienia</string>
   <string name="disable_search_history">Wyłącz historię wyszukiwania</string>
   <string name="unlock_high_bitrate_formats">Odblokuj formaty vp9 z wysokim bitrate 1080p</string>
@@ -734,7 +734,7 @@
   <string name="queue_respects_playback_mode">Kolejka respektuje tryb odtwarzania</string>
   <string name="ignore_short_segments">Pomiń krótkie segmenty</string>
   <string name="fix_empty_subs_and_channels">Napraw puste subskrypcje i kanały</string>
-  <string name="local_backup_not_supported">Automatyczne tworzenie kopii zapasowych na telewizorach z systemem Android TV 11 i nowszym nie jest obsługiwane ze względu na ograniczenia systemowe. Zamiast tego użyj GDrive. </string>
+  <string name="local_backup_not_supported">Automatyczne tworzenie kopii zapasowych na telewizorach z systemem Android TV 11 i nowszym nie jest obsługiwane ze względu na ograniczenia systemowe. Zamiast tego użyj GDrive.</string>
   <string name="rounded_card_corners">Zaokrąglone rogi kart</string>
   <string name="install_bridge">Zainstaluj most ATV/Amazon</string>
   <string name="sidebar_notification">Pokaż powiadomienie na pasku bocznym</string>
