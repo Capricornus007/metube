@@ -940,7 +940,7 @@ public class MobileBrowseActivity extends MobileActivity
         // loads the feed (spinner only) and opens its first unseen short; leaving the player comes
         // back to the tab you were on (onResume).
         boolean shorts = itemId == toMenuItemId(MediaGroup.TYPE_SHORTS);
-        mShortsLaunchPending = shorts;
+        mShortsLaunchPending = shorts && shortsTabAutoPlay();
         if (!shorts) {
             mLastNonShortsNavItem = itemId;
         }
@@ -952,6 +952,15 @@ public class MobileBrowseActivity extends MobileActivity
             onSectionChosen(itemId - ITEM_ID_OFFSET);
         }
         maybeLaunchShorts();
+    }
+
+    /**
+     * METUBE(shorts): whether the Shorts tab should still behave the old way - hide the grid and
+     * open the first unseen short by itself. Off by default: the tab keeps its grid on screen.
+     */
+    private boolean shortsTabAutoPlay() {
+        return !com.liskovsoft.smartyoutubetv2.common.prefs.MainUIData.instance(this)
+                .isShortsTabGridEnabled();
     }
 
     /** METUBE(shorts): the Shorts tab is waiting to open the player. */
@@ -1315,7 +1324,7 @@ public class MobileBrowseActivity extends MobileActivity
         syncNavHighlight(sectionId);
         onYouPanelToggled(); // METUBE: the large title names the tab on screen
         updateGridSpanCount(computeSpanCount());
-        showShortsTab(sectionId == MediaGroup.TYPE_SHORTS);
+        showShortsTab(sectionId == MediaGroup.TYPE_SHORTS && shortsTabAutoPlay());
 
         if (mPresenter != null) {
             mPresenter.onSectionFocused(sectionId);

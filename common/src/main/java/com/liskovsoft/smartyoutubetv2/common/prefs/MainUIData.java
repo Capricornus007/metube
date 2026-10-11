@@ -123,6 +123,9 @@ public class MainUIData extends DataChangeBase implements ProfileChangeListener 
     private int mCardPreviewType;
     private final Runnable mPersistStateInt = this::persistStateInt;
     private boolean mIsUnlocalizedTitlesEnabled;
+    // METUBE(shorts): the Shorts tab shows its own grid instead of jumping straight into the
+    // vertical player. Default on; the toggle lives in Settings > Tabs & feeds.
+    private boolean mIsShortsTabGridEnabled = true;
     private long mUiTweaks;
 
     private MainUIData(Context context) {
@@ -398,6 +401,15 @@ public class MainUIData extends DataChangeBase implements ProfileChangeListener 
         persistState();
     }
 
+    public boolean isShortsTabGridEnabled() {
+        return mIsShortsTabGridEnabled;
+    }
+
+    public void setShortsTabGridEnabled(boolean enabled) {
+        mIsShortsTabGridEnabled = enabled;
+        persistState();
+    }
+
     public boolean isUiTweakEnabled(long uiTweaks) {
         return (mUiTweaks & uiTweaks) == uiTweaks;
     }
@@ -492,6 +504,7 @@ public class MainUIData extends DataChangeBase implements ProfileChangeListener 
         mCardPreviewType = Helpers.parseInt(split, 21, CARD_PREVIEW_DISABLED);
         mIsUnlocalizedTitlesEnabled = Helpers.parseBoolean(split, 22, false);
         mUiTweaks = Helpers.parseLong(split, 23, UI_TWEAK_DEFAULT);
+        mIsShortsTabGridEnabled = Helpers.parseBoolean(split, 24, true);
 
         int idx = -1;
         for (Long menuItem : MENU_ITEM_DEFAULT_ORDER) {
@@ -539,7 +552,7 @@ public class MainUIData extends DataChangeBase implements ProfileChangeListener 
                 mIsUploadsOldLookEnabled, mIsUploadsAutoLoadEnabled, mCardTextScrollSpeed, mMenuItems, mTopButtons,
                 null, mThumbQuality, mIsCardMultilineSubtitleEnabled, Helpers.mergeList(mMenuItemsOrdered),
                 mIsChannelsFilterEnabled, mIsChannelSearchBarEnabled, mIsPinnedChannelRowsEnabled, mCardPreviewType,
-                mIsUnlocalizedTitlesEnabled, mUiTweaks));
+                mIsUnlocalizedTitlesEnabled, mUiTweaks, mIsShortsTabGridEnabled));
     }
 
     public static class ColorScheme {

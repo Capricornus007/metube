@@ -296,4 +296,6 @@
     <!-- About -->
     <string name="mobile_settings_version">Version</string>
     <string name="mobile_settings_update_notify_summary">Tells you when a new version is out</string>
+    <string name="mobile_settings_shorts_grid">Show Shorts as a list</string>
+    <string name="mobile_settings_shorts_grid_summary">Keep the Shorts tab on this page instead of opening the player right away</string>
 </resources>
