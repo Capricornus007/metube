@@ -578,8 +578,7 @@
     <string name="disable_stream_buffer">Отключить буфер на стримах</string>
     <string name="disable_stream_buffer_desc">Исправляет ситуации, когда стрим сильно отстает. Внимание: стрим может начать тормозить.</string>
     <string name="sony_frame_drop_fix">Исправление выпадения кадров #1</string>
-    <string name="sony_frame_drop_fix_desc">Исправляет лаги на телевизорах Сони и некоторых других устройствах. Внимание: возможны проблемы с синхронизацией аудио.
-    </string>
+    <string name="sony_frame_drop_fix_desc">Исправляет лаги на телевизорах Сони и некоторых других устройствах. Внимание: возможны проблемы с синхронизацией аудио.</string>
     <string name="audio_language">Язык аудио</string>
     <string name="old_home_look">Старый вид Главного раздела</string>
     <string name="old_channel_look">Старый вид страницы Канала</string>
