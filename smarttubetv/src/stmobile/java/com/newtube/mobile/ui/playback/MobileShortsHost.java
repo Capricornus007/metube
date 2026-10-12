@@ -378,9 +378,17 @@ public final class MobileShortsHost {
         int height = pill != null && pill.getHeight() > 0
                 ? pill.getHeight() : Math.round(68 * density);
         mPillInsetPx = height + Math.round(12 * density);
-        LinearLayout.LayoutParams lp = (LinearLayout.LayoutParams) mInfo.getLayoutParams();
+        // ⚠️ 參數型別看的是「父容器」不是「自己」：mobile_shorts_host_info 本身是 LinearLayout，
+        //    但它掛在 mobile_shorts_host_page（FrameLayout）底下，所以 getLayoutParams() 回的是
+        //    FrameLayout.LayoutParams —— 直接強轉 LinearLayout.LayoutParams 會 ClassCastException
+        //    （實測崩潰日誌 app_errors_stacktrace_*.log：android.widget.FrameLayout$LayoutParams
+        //    cannot be cast to android.widget.LinearLayout$LayoutParams，打開 Shorts 必閃退）。
+        //    兩者的共同父類是 MarginLayoutParams，bottomMargin 就定義在那裡。
+        ViewGroup.LayoutParams raw = mInfo.getLayoutParams();
         int infoBottom = mPillInsetPx + mScrubBandPx;
-        if (lp != null && lp.bottomMargin != infoBottom) {
+        if (raw instanceof ViewGroup.MarginLayoutParams
+                && ((ViewGroup.MarginLayoutParams) raw).bottomMargin != infoBottom) {
+            ViewGroup.MarginLayoutParams lp = (ViewGroup.MarginLayoutParams) raw;
             lp.bottomMargin = infoBottom;
             mInfo.setLayoutParams(lp);
         }
