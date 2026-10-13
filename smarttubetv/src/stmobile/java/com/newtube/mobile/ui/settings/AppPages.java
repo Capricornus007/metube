@@ -332,7 +332,7 @@ final class AppPages {
      * it does instead of the menu's order. Left out: items whose switch the phone ignores (Return to
      * background video and Open playlist always show when they apply; Move section up follows Move
      * section down), and the ones PhoneOnlyPrefs keeps off: two broken there (Open comments, Pause
-     * history) and three from the TV (QR code, the TV's account picker, Check for updates, in About).
+     * history) and two from the TV (QR code, the TV's account picker).
      * No per-item position picker: "Usual order" puts back the phone's order.
      */
     static SettingsPages.Page videoMenu(Context context) {

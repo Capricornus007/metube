@@ -36,8 +36,6 @@
   <string name="video_buffer_size_low">Matala</string>
   <string name="video_buffer_size_med">Keski</string>
   <string name="video_buffer_size_high">Korkea</string>
-  <string name="update_changelog">Muutokset</string>
-  <string name="install_update">Asenna päivitys</string>
   <string name="section_is_empty">Oops! Täällä ei ole mitään.</string>
   <string name="dialog_add_to_playlist">Lisää/poista soittolistasta</string>
   <string name="msg_signed_users_only">Vain sisäänkirjautuneille</string>
@@ -75,9 +73,6 @@
   <string name="player_only_ui">Vain valikko</string>
   <string name="player_ui_and_pause">Valikko ja pysäytys</string>
   <string name="player_only_pause">Vain pysäytys</string>
-  <string name="check_for_updates">Tarkista päivitykset</string>
-  <string name="update_not_found">Uusin versio on jo käytössä.</string>
-  <string name="update_in_progress">Odota</string>
   <string name="player_ui_hide_behavior">Piilota valikko automaattisesti</string>
   <string name="option_never">Ei koskaan</string>
   <string name="side_panel_sections">Järjestä valikot</string>
@@ -90,9 +85,7 @@
   <string name="color_scheme_red_grey">Puna-harmaa</string>
   <string name="color_scheme_red">Punainen</string>
   <string name="color_scheme_dark_grey">Tummanharmaa</string>
-  <string name="disable_update_check">Poista päivitysten tarkistus käytöstä</string>
   <string name="show_again">Näytä uudelleen</string>
-  <string name="check_updates_auto">Ilmoita uusista päivityksistä</string>
   <string name="select_account_on_boot">Valitse tili käynnistettäessä</string>
   <string name="player_other">Muut</string>
   <string name="player_full_date">Tarkka päivämäärä kuvauksessa</string>
@@ -221,7 +214,6 @@
   <string name="settings_language_country">Kieli/maa</string>
   <string name="share_embed_link">Jaa linkki</string>
   <string name="card_text_scroll_factor">Kortin tekstin nopeus</string>
-  <string name="preferred_update_source">Valitse päivityssivusto</string>
   <string name="hide_shorts">Piilota Shorts-videot</string>
   <string name="key_remapping">Näppäimien uudelleenohjelmointi</string>
   <string name="screen_dimming">Näytön pimennys</string>
@@ -316,7 +308,6 @@
   <string name="player_seek_confirmation_play">Vahvistuksella (toista kun etsitään)</string>
   <string name="hide_shorts_from_home">Piilota Shorts-videot Koti-näkymästä</string>
   <string name="finish_on_disconnect">Lopeta sovellus kun laite irroitetaan</string>
-  <string name="update_error">Päivitys ei onnistunut</string>
   <string name="unpin_from_sidebar">Poista sivuvalikosta</string>
   <string name="player_show_ending_time">Näytä loppuaika</string>
   <string name="hide_shorts_from_history">Piilota Shorts-videot katseluhistoriasta</string>
@@ -536,7 +527,6 @@
   <string name="audio_language">Ääniraidan kieli</string>
   <string name="old_home_look">Päämenun vanha ulkoasu</string>
   <string name="hide_shorts_everywhere">Piilota Shorts-videot kaikkialta</string>
-  <string name="update_found">Päivitä</string>
   <string name="volume_boost_warning">Kaikki rajan ylittävät asetukset voivat mahdollisesti vahingoittaa kaiuttimia</string>
   <string name="play_video_incognito">Toista tuntemattomana</string>
   <string name="header_kids_home">Lapset</string>
@@ -549,7 +539,6 @@
   <string name="header_trending">Suosittua nyt</string>
   <string name="screensaver">Näytönsäästäjä</string>
   <string name="player_screen_off_timeout">Näytön sammuttamisen aikakatkaisu</string>
-  <string name="old_update_notifications">Päivitysilmoitusten vanha ulkoasu</string>
   <string name="mark_as_watched">Merkitse katselluksi</string>
   <string name="player_ui_animations">Ota ohjauspaneelin animaatiot käyttöön</string>
   <string name="player_likes_count">Näytä tykkäysten/alapeukkujen määrä</string>
@@ -572,7 +561,6 @@
   <string name="header_shorts">Short-videot</string>
   <string name="amazon_frame_drop_fix">Frame drop korjaus #2</string>
   <string name="player_global_focus">Saumaton navigointi soittimen painikerivien välillä</string>
-  <string name="dialog_notification">Ilmoita päivityksestä ponnahdusikkunassa</string>
   <string name="open_comments">Näytä kommentit</string>
   <string name="msg_player_error_video_source">Videon URL-osoite ei toimi tai laitteen aika on väärä.\nYleensä sovellusongelma.</string>
   <string name="msg_player_error_audio_source">Ääniraidan URL-osoite ei toimi tai laitteen aika on väärä.\nYleensä sovellusongelma.</string>
@@ -736,7 +724,6 @@
   <string name="player_unexpected_error">Odottamaton toistovirhe</string>
   <string name="color_scheme_dark_blue_oled">Tummansininen OLED</string>
   <string name="prefer_google_dns">Suosi Googlen DNS:ää</string>
-  <string name="sidebar_notification">Näytä ilmoitus sivupalkissa</string>
   <string name="player_chapter_notification2">Siirry seuraavaan lukuun napsauttamalla ilmoitusta</string>
   <string name="app_restore_desc">Varmuuskopiotiedosto zip tulee kopioida tähän kansioon manuaalisesti tai tiedostonhallinnassa käyttämällä \'Avaa sovelluksella\' -toimintoa.</string>
   <string name="app_backup_desc">Varmuuskopio luodaan zip-muodossa</string>
@@ -769,7 +756,6 @@
   <string name="msg_player_no_connection_tap">Ei yhteyttä — napauta toistoa</string>
   <string name="msg_quality_pin_fallback">%1$s ei toimi — laatu asetettu automaattiseksi tälle videolle</string>
   <string name="msg_audio_pin_fallback">Ääniraita ei toimi — oletusääni käytössä tällä videolla</string>
-  <string name="update_check_failed">Päivitysten tarkistus epäonnistui. Yritä myöhemmin uudelleen.</string>
   <string name="playlist_name_hint">Soittolistan nimi</string>
   <string name="player_return_youtube_dislike">Epätykkäysten määrä (Return YouTube Dislike)</string>
   <string name="header_live">Suora</string>

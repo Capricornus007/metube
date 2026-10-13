@@ -35,8 +35,6 @@
   <string name="video_buffer_size_low">Väike</string>
   <string name="video_buffer_size_med">Keskmine</string>
   <string name="video_buffer_size_high">Suur</string>
-  <string name="update_changelog">Äpi muudatused</string>
-  <string name="install_update">Paigalda uuendus</string>
   <string name="section_is_empty">Ups! Siin ei ole midagi</string>
   <string name="dialog_add_to_playlist">Lisa esitusloendisse</string>
   <string name="msg_signed_users_only">Vajalik kontole sisselogimine</string>
@@ -75,9 +73,6 @@
   <string name="player_only_ui">Kuva kasutajaliides</string>
   <string name="player_ui_and_pause">Kuva kasutajaliides ja peata taasesitus</string>
   <string name="player_only_pause">Peata taasesitus</string>
-  <string name="check_for_updates">Kontrolli uuendusi</string>
-  <string name="update_not_found">Teie äpp ei vaja uuendamist</string>
-  <string name="update_in_progress">Oodake…</string>
   <string name="player_ui_hide_behavior">Kasutajaliidese automaatse peitmise aeg</string>
   <string name="option_never">Ära peida</string>
   <string name="side_panel_sections">Kuvatavad jaotised</string>
@@ -90,9 +85,7 @@
   <string name="color_scheme_red_grey">Punahall</string>
   <string name="color_scheme_red">Punane</string>
   <string name="color_scheme_dark_grey">Tumehall</string>
-  <string name="disable_update_check">Lülita uuenduste otsimine välja</string>
   <string name="show_again">Näita uuesti</string>
-  <string name="check_updates_auto">Teavita uuendustest</string>
   <string name="select_account_on_boot">Näita käivitamisel kontovalikut</string>
   <string name="player_other">Muu</string>
   <string name="player_full_date">Täpne kuupäev kirjelduses</string>
@@ -237,7 +230,6 @@
   <string name="unpin_from_sidebar">Eemalda külgribalt</string>
   <string name="share_embed_link">Jaga manuse linki</string>
   <string name="card_text_scroll_factor">Eelvaate teksti kerimise kiirus</string>
-  <string name="preferred_update_source">Vali värskendusallikas</string>
   <string name="hide_shorts">Peida lühivideod tellimustest</string>
   <string name="hide_shorts_channel">Peida lühivideod kanalilt</string>
   <string name="key_remapping">Nuppude funktsioonide eelistused</string>
@@ -342,7 +334,6 @@
   <string name="player_seek_confirmation_play">Keri ja kinnita (mängib)</string>
   <string name="hide_shorts_from_home">Peida lühivideod avalehelt</string>
   <string name="finish_on_disconnect">Lülita äpp pärast seadme lahtiühenamist välja</string>
-  <string name="update_error">Viga uuendamisel</string>
   <string name="hide_shorts_from_history">Peida lühivideod ajaloost</string>
   <string name="hide_shorts_from_trending">Peida lühivideod populaarsetest videotest</string>
   <string name="disable_screensaver">Keela ekraanisäästja</string>
@@ -562,7 +553,6 @@
   <string name="audio_language">Heli keel</string>
   <string name="old_home_look">Kodu jaotise vana välimus</string>
   <string name="hide_shorts_everywhere">Peida lühivideod kõikjalt</string>
-  <string name="update_found">Uuenda</string>
   <string name="volume_boost_warning">Kõik seadistused, mis ületavad piiri, võivad kõlareid kahjustada</string>
   <string name="play_video_incognito">Mängi privaatselt</string>
   <string name="header_kids_home">Lapsed</string>
@@ -570,8 +560,6 @@
   <string name="header_trending">Populaarsed</string>
   <string name="screensaver">Ekraanisäästja</string>
   <string name="player_screen_off_timeout">Ekraani väljalülitamise aeg</string>
-  <string name="old_update_notifications">Uuendusteatiste vana stiil</string>
-  <string name="dialog_notification">Teavita uuendustest hüpikaknaga</string>
   <string name="mark_as_watched">Märgi vaadatuks</string>
   <string name="player_ui_animations">Luba animeeritud kasutajaliides</string>
   <string name="player_likes_count">Näita meeldimiste/mittemeeldimiste arvu</string>
@@ -656,7 +644,6 @@
   <string name="action_sound_off">Vaigista</string>
   <string name="msg_quality_pin_fallback">%1$s ei tööta — selle video kvaliteet seatud automaatseks</string>
   <string name="msg_audio_pin_fallback">Helirada ei tööta — selle video jaoks kasutatakse vaikeheli</string>
-  <string name="update_check_failed">Uuendusi ei õnnestunud kontrollida. Proovi hiljem uuesti.</string>
   <string name="hide_shorts_from_search">Peida lühivideod otsingutulemustest</string>
   <string name="remember_position_of_live_videos">Jäta meelde otseülekande koht</string>
   <string name="save_playlist">Lisa esitusloend esitusloendite jaotisesse</string>
@@ -673,7 +660,6 @@
   <string name="player_extra_long_speed_list">Erit suur kiirustevalik</string>
   <string name="old_channel_look">Kanali lehe vana välimus</string>
   <string name="play_from_start">Esita algusest</string>
-  <string name="sidebar_notification">Kuva teavitus külgribal</string>
   <string name="player_return_youtube_dislike">Eitavate häälte arv (Return YouTube Dislike)</string>
   <string name="player_chapter_notification2">Vajuta teavitusele, et liikuda järgmisse peatükki</string>
   <string name="remember_position_pinned">Jäta meelde viimane vaadatud koht kinnitatud esitusloendites</string>

@@ -27,8 +27,7 @@ import com.liskovsoft.smartyoutubetv2.common.utils.Utils;
  * settings that don't make sense because they were from the tv app ... we just remove it"), off:
  * child mode and the start-up, Settings and account passwords (anyone could clear or get past them
  * on the phone, and child mode never locked what it said), the account picker on start (the TV's),
- * and three card menu items (the QR code to scan with a phone, the TV's account picker, Check for
- * updates, which is in About).</p>
+ * and two card menu items (the QR code to scan with a phone, the TV's account picker).</p>
  *
  * <p>Applied at every start and whenever the settings profile changes (with "separate settings
  * per account" each account has its own copy), writing only what differs. A one-shot migration
@@ -38,7 +37,7 @@ import com.liskovsoft.smartyoutubetv2.common.utils.Utils;
 final class PhoneOnlyPrefs implements AppPrefs.ProfileChangeListener {
     private static final int UI_HIDE_TIMEOUT_SEC = 3;
     private static final long[] OFF_MENU_ITEMS = {MainUIData.MENU_ITEM_OPEN_COMMENTS, MainUIData.MENU_ITEM_TOGGLE_HISTORY,
-            MainUIData.MENU_ITEM_SHARE_QR_LINK, MainUIData.MENU_ITEM_SELECT_ACCOUNT, MainUIData.MENU_ITEM_UPDATE_CHECK};
+            MainUIData.MENU_ITEM_SHARE_QR_LINK, MainUIData.MENU_ITEM_SELECT_ACCOUNT};
 
     private final Context mContext;
 

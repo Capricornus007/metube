@@ -36,8 +36,6 @@
     <string name="video_buffer_size_low">Scăzut</string>
     <string name="video_buffer_size_med">Mediu</string>
     <string name="video_buffer_size_high">Ridicat</string>
-    <string name="update_changelog">Istoric modificări</string>
-    <string name="install_update">Instalează actualizarea</string>
     <string name="section_is_empty">Hopa! Nu e nimic aici.</string>
     <string name="dialog_add_to_playlist">Adaugă în playlist</string>
     <string name="msg_signed_users_only">Numai pentru utilizatorii conectați</string>
@@ -75,9 +73,6 @@
     <string name="player_only_ui">Doar interfața</string>
     <string name="player_ui_and_pause">Interfață și pauză</string>
     <string name="player_only_pause">Doar pauză</string>
-    <string name="check_for_updates">Verifică actualizările</string>
-    <string name="update_not_found">Folosiți cea mai recentă versiune</string>
-    <string name="update_in_progress">Așteptați…</string>
     <string name="player_ui_hide_behavior">Ascunderea automată a interfeței</string>
     <string name="option_never">Niciodată</string>
     <string name="side_panel_sections">Configurarea secțiunilor</string>
@@ -90,9 +85,7 @@
     <string name="color_scheme_red_grey">Roșu-gri</string>
     <string name="color_scheme_red">Roșu</string>
     <string name="color_scheme_dark_grey">Închis</string>
-    <string name="disable_update_check">Dezactivează verificarea actualizărilor</string>
     <string name="show_again">Arată din nou</string>
-    <string name="check_updates_auto">Actualizare automată</string>
     <string name="select_account_on_boot">Alege la pornire</string>
     <string name="player_other">Diverse</string>
     <string name="player_full_date">Dată exactă în descriere</string>
@@ -268,7 +261,6 @@
     <string name="settings_language_country">Limbă/Țară</string>
     <string name="share_embed_link">Partajează link de încorporare</string>
     <string name="card_text_scroll_factor">Viteză de defilare a textului din card</string>
-    <string name="preferred_update_source">Alege sursa de actualizări</string>
     <string name="hide_shorts">Ascunde Shorts din Abonamente</string>
     <string name="hide_shorts_channel">Ascunde Shorts dintr-un canal</string>
     <string name="key_remapping">Reatribuire taste</string>
@@ -377,8 +369,6 @@
     <string name="player_seek_confirmation_play">Cu confirmare (redare la derulare)</string>
     <string name="hide_shorts_from_home">Ascunde Shorts din Acasă</string>
     <string name="finish_on_disconnect">Închide aplicația după deconectarea telefonului sau tabletei</string>
-    <string name="update_error">Eroare la actualizare</string>
-    <string name="update_check_failed">Verificarea actualizărilor a eșuat. Încercați mai târziu.</string>
     <string name="hide_shorts_from_search">Ascunde Shorts din rezultatele căutării</string>
     <string name="hide_shorts_from_history">Ascunde Shorts din Istoric</string>
     <string name="hide_shorts_from_trending">Ascunde Shorts din Tendințe</string>
@@ -612,7 +602,6 @@
     <string name="old_home_look">Aspect vechi al secțiunii Acasă</string>
     <string name="old_channel_look">Aspect vechi al paginii de canal</string>
     <string name="hide_shorts_everywhere">Ascunde Shorts peste tot</string>
-    <string name="update_found">Actualizare</string>
     <string name="volume_boost_warning">Orice valoare peste limită poate defecta difuzoarele</string>
     <string name="play_video_incognito">Redare incognito</string>
     <string name="play_from_start">Redă de la început</string>
@@ -621,9 +610,6 @@
     <string name="header_trending">Tendințe</string>
     <string name="screensaver">Economisitor de ecran</string>
     <string name="player_screen_off_timeout">Timp până la oprirea ecranului</string>
-    <string name="old_update_notifications">Aspect vechi al notificărilor de actualizare</string>
-    <string name="sidebar_notification">Arată notificarea în bara laterală</string>
-    <string name="dialog_notification">Notifică printr-un dialog pop-up</string>
     <string name="mark_as_watched">Marchează ca vizionat</string>
     <string name="player_ui_animations">Activează animațiile interfeței playerului</string>
     <string name="player_likes_count">Arată numărul de aprecieri/dezaprecieri</string>

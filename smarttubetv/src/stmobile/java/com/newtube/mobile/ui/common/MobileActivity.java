@@ -261,10 +261,10 @@ public abstract class MobileActivity extends MotherActivity {
     }
 
     /**
-     * NEWTUBE(update-flow): false for a transient sheet over whatever screen is below it (the update
-     * sheet), which must stay out of ViewManager's back stack: addTop() of a class with no parent
-     * mapping CLEARS that stack, and finish() then read "no parent" as "leave the app" - closing the
-     * sheet sent the whole app to the background.
+     * Hook: false for a transient sheet over whatever screen is below it, which must stay out of
+     * ViewManager's back stack - addTop() of a class with no parent mapping CLEARS that stack, and
+     * finish() then reads "no parent" as "leave the app", so closing the sheet sends the whole app
+     * to the background. Every ordinary screen keeps the default true.
      */
     protected boolean isBackStackScreen() {
         return true;

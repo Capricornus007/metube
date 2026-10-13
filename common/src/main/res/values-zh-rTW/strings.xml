@@ -38,8 +38,6 @@
   <string name="video_buffer_size_low">低</string>
   <string name="video_buffer_size_med">中</string>
   <string name="video_buffer_size_high">高</string>
-  <string name="update_changelog">更新日誌</string>
-  <string name="install_update">安裝更新</string>
   <string name="section_is_empty">糟糕！這裡什麼都沒有。</string>
   <string name="dialog_add_to_playlist">新增/刪除播放清單</string>
   <string name="msg_signed_users_only">僅限已登入的使用者</string>
@@ -77,9 +75,6 @@
   <string name="player_only_ui">只有使用者介面</string>
   <string name="player_ui_and_pause">使用者介面和暫停</string>
   <string name="player_only_pause">只有暫停</string>
-  <string name="check_for_updates">檢查更新</string>
-  <string name="update_not_found">已經是最新版本</string>
-  <string name="update_in_progress">請稍候…</string>
   <string name="player_ui_hide_behavior">自動隱藏使用者介面</string>
   <string name="option_never">從不</string>
   <string name="side_panel_sections">設定側邊欄區塊</string>
@@ -92,9 +87,7 @@
   <string name="color_scheme_red_grey">紅灰色</string>
   <string name="color_scheme_red">紅色</string>
   <string name="color_scheme_dark_grey">深灰色</string>
-  <string name="disable_update_check">停用更新檢查</string>
   <string name="show_again">再次顯示</string>
-  <string name="check_updates_auto">有新版本時通知我</string>
   <string name="select_account_on_boot">開機時自動選擇</string>
   <string name="player_other">其他</string>
   <string name="player_full_date">於描述框顯示完整日期</string>
@@ -228,7 +221,6 @@
   <string name="settings_language_country">語言/國家</string>
   <string name="share_embed_link">分享嵌入連結</string>
   <string name="card_text_scroll_factor">卡片文字捲動速度</string>
-  <string name="preferred_update_source">選擇更新來源</string>
   <string name="hide_shorts">從訂閱頻道中隱藏 Shorts</string>
   <string name="key_remapping">按鍵重新對應</string>
   <string name="screen_dimming">螢幕調光</string>
@@ -324,7 +316,6 @@
   <string name="player_seek_confirmation_play">確認後再跳轉（快轉時維持播放）</string>
   <string name="hide_shorts_from_home">在首頁隱藏 Shorts</string>
   <string name="finish_on_disconnect">手機 / 平板電腦中斷連線後，關閉應用程式</string>
-  <string name="update_error">更新錯誤</string>
   <string name="hide_shorts_from_history">在觀看紀錄中隱藏 Shorts</string>
   <string name="disable_screensaver">關閉螢幕保護程式</string>
   <string name="description_not_found">沒有找到影片描述</string>
@@ -530,7 +521,6 @@
   <string name="audio_language">音訊語言</string>
   <string name="old_home_look">舊版首頁區塊外觀</string>
   <string name="hide_shorts_everywhere">在所有地方隱藏 Shorts</string>
-  <string name="update_found">有更新</string>
   <string name="volume_boost_warning">超出限制的任何設定可能會損壞喇叭</string>
   <string name="play_video_incognito">無痕播放</string>
   <string name="header_kids_home">兒童</string>
@@ -538,7 +528,6 @@
   <string name="header_trending">熱門</string>
   <string name="screensaver">螢幕保護程式</string>
   <string name="player_screen_off_timeout">螢幕關閉逾時</string>
-  <string name="old_update_notifications">舊版更新通知外觀</string>
   <string name="mark_as_watched">標記為已觀看</string>
   <string name="player_ui_animations">啟用播放器介面動畫</string>
   <string name="player_likes_count">顯示喜歡/不喜歡數量</string>
@@ -568,7 +557,6 @@
   <string name="open_comments">開啟評論</string>
   <string name="disable_history">停用歷史紀錄</string>
   <string name="enable_history">啟用歷史紀錄</string>
-  <string name="dialog_notification">彈出對話框通知更新</string>
   <string name="header_shorts">Shorts</string>
   <string name="player_global_focus">在播放器按鈕行之間無縫切換</string>
   <string name="auto_history">自動（使用帳戶設定）</string>
@@ -771,13 +759,11 @@
   <string name="queue_respects_playback_mode">佇列遵循播放模式</string>
   <string name="remove_from_search_history">從搜尋紀錄移除</string>
   <string name="rounded_card_corners">卡片圓角</string>
-  <string name="sidebar_notification">側欄顯示通知</string>
   <string name="signed_in_success">已登入</string>
   <string name="subscribe_failed">訂閱失敗，請再試一次。</string>
   <string name="subscribed_to_channel_name">已訂閱 %1$s</string>
   <string name="unsubscribe_failed">取消訂閱失敗，請再試一次。</string>
   <string name="unsubscribed_from_channel_name">已取消訂閱 %1$s</string>
-  <string name="update_check_failed">無法檢查更新，請稍後再試。</string>
   <plurals name="hours">
     <item quantity="one">%s 小時</item>
     <item quantity="other">%s 小時</item>
@@ -786,4 +772,5 @@
     <item quantity="one">%s 秒</item>
     <item quantity="other">%s 秒</item>
   </plurals>
+    <string name="cancel">取消</string>
 </resources>

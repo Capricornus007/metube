@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <manifest xmlns:android="http://schemas.android.com/apk/res/android">
     <queries>
-        <package android:name="io.github.aleixrodriala.arc" />
-        <package android:name="io.github.aleixrodriala.arc.debug" />
+        <package android:name="io.github.capricornus007.metube" />
+        <package android:name="io.github.capricornus007.metube.debug" />
     </queries>
 </manifest>

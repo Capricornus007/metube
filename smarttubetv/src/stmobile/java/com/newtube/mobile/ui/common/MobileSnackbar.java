@@ -17,7 +17,6 @@ import com.google.android.material.snackbar.Snackbar;
 import com.liskovsoft.sharedutils.helpers.MessageHelpers;
 import com.liskovsoft.smartyoutubetv2.tv.R;
 import com.newtube.mobile.ui.dialog.MobileAppDialogActivity;
-import com.newtube.mobile.ui.update.MobileUpdateActivity;
 
 import java.lang.ref.WeakReference;
 
@@ -233,7 +232,7 @@ public final class MobileSnackbar {
 
     /** A screen that is only a sheet over the one behind it: its message goes to that one. */
     private static boolean isOverlay(@Nullable Activity activity) {
-        return activity instanceof MobileAppDialogActivity || activity instanceof MobileUpdateActivity;
+        return activity instanceof MobileAppDialogActivity;
     }
 
     private static void make(Activity activity, CharSequence text, @Nullable CharSequence action,

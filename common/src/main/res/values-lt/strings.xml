@@ -36,8 +36,6 @@
     <string name="video_buffer_size_low">Mažas</string>
     <string name="video_buffer_size_med">Vidutinis</string>
     <string name="video_buffer_size_high">Didelis</string>
-    <string name="update_changelog">Pakeitimai</string>
-    <string name="install_update">Įdiegti naujinį</string>
     <string name="section_is_empty">Oi! Čia nieko nėra.</string>
     <string name="dialog_add_to_playlist">Pridėti prie grojaraščio</string>
     <string name="msg_signed_users_only">Tik prisijungusiems naudotojams</string>
@@ -75,9 +73,6 @@
     <string name="player_only_ui">Tik naudotojo sąsaja</string>
     <string name="player_ui_and_pause">Naudotojo sąsaja ir atkūrimo pristabdymas</string>
     <string name="player_only_pause">Tik atkūrimo pristabdymas</string>
-    <string name="check_for_updates">Patikrinti, ar yra naujinių</string>
-    <string name="update_not_found">Naudojate naujausią versiją</string>
-    <string name="update_in_progress">Palaukite…</string>
     <string name="player_ui_hide_behavior">Automatiškai slėpti naudotojo sąsają</string>
     <string name="option_never">Niekada</string>
     <string name="side_panel_sections">Šoninio meniu skyriai</string>
@@ -90,9 +85,7 @@
     <string name="color_scheme_red_grey">Raudonai pilka</string>
     <string name="color_scheme_red">Raudona</string>
     <string name="color_scheme_dark_grey">Tamsus</string>
-    <string name="disable_update_check">Išjungti automatinį naujinių tikrinimą</string>
     <string name="show_again">Rodyti dar kartą</string>
-    <string name="check_updates_auto">Pranešti apie naują versiją</string>
     <string name="select_account_on_boot">Pasirinkti programos paleidimo metu</string>
     <string name="player_other">Įvairūs</string>
     <string name="player_full_date">Tiksli data apraše</string>
@@ -226,7 +219,6 @@
     <string name="settings_language_country">Kalba ir šalis</string>
     <string name="share_embed_link">Dalintis įterpimo nuoroda</string>
     <string name="card_text_scroll_factor">Kortelės teksto slinkimo greitis</string>
-    <string name="preferred_update_source">Pasirinkti programos naujinių šaltinį</string>
     <string name="hide_shorts">Paslėpti klipukus prenumeratų skyriuje</string>
     <string name="key_remapping">Mygtukų funkcijų keitimas</string>
     <string name="screen_dimming">Ekrano pritemdymas</string>
@@ -321,7 +313,6 @@
     <string name="player_seek_confirmation_play">Su patvirtinimu (tęsti peržiūrą prasukant)</string>
     <string name="hide_shorts_from_home">Paslėpti klipukus pagrindiniame skyriuje</string>
     <string name="finish_on_disconnect">Išjungti programą atjungus telefoną</string>
-    <string name="update_error">Klaida vykdant atnaujinimą</string>
     <string name="hide_shorts_from_history">Paslėpti klipukus istorijoje</string>
     <string name="disable_screensaver">Išjungti ekrano užsklandą</string>
     <string name="description_not_found">Aprašymas nerastas</string>
@@ -466,7 +457,6 @@
     <string name="msg_audio_pin_fallback">Garso takas neveikia – šiam vaizdo įrašui naudojamas numatytasis garsas</string>
     <string name="hide_upcoming_channel">Slėpti būsimus vaizdo įrašus kanale</string>
     <string name="hide_upcoming_home">Slėpti būsimus vaizdo įrašus pagrindiniame skyriuje</string>
-    <string name="update_check_failed">Nepavyko patikrinti, ar yra naujinių. Bandykite vėliau.</string>
     <string name="hide_shorts_from_search">Paslėpti klipukus paieškos rezultatuose</string>
     <string name="hide_shorts_from_trending">Paslėpti klipukus skiltyje \„Populiaru\“</string>
     <string name="live_stream_fix_4k_desc">Dėmesio: šis pataisymas išjungia transliacijos sukinėjimą atgal. Ženkliai pagerina tiesioginių transliacijų našumą. Didžiausia raiška – 4K.</string>
@@ -612,7 +602,6 @@
     <string name="old_home_look">Senas pagrindinio skyriaus vaizdas</string>
     <string name="old_channel_look">Senas kanalo puslapio vaizdas</string>
     <string name="hide_shorts_everywhere">Slėpti klipukus visur</string>
-    <string name="update_found">Naujinys</string>
     <string name="volume_boost_warning">Garsumas virš limito gali pažeisti garsiakalbius</string>
     <string name="play_video_incognito">Leisti inkognito režimu</string>
     <string name="play_from_start">Leisti nuo pradžių</string>
@@ -621,9 +610,6 @@
     <string name="header_trending">Populiaru</string>
     <string name="screensaver">Ekrano užsklanda</string>
     <string name="player_screen_off_timeout">Ekrano išjungimo laukimas</string>
-    <string name="old_update_notifications">Senas naujinimų pranešimų vaizdas</string>
-    <string name="sidebar_notification">Rodyti pranešimą šoniniame meniu</string>
-    <string name="dialog_notification">Pranešti iššokančiu langu</string>
     <string name="mark_as_watched">Pažymėti kaip peržiūrėtą</string>
     <string name="player_ui_animations">Įjungti grotuvo sąsajos animacijas</string>
     <string name="player_likes_count">Rodyti \„Patinka\“ / \„Nepatinka\“ skaičių</string>

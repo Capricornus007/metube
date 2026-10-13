@@ -16,7 +16,6 @@ import com.liskovsoft.smartyoutubetv2.common.app.models.data.Video;
 import com.liskovsoft.smartyoutubetv2.common.app.models.playback.service.VideoStateService;
 import com.liskovsoft.smartyoutubetv2.common.app.presenters.base.BasePresenter;
 import com.liskovsoft.smartyoutubetv2.common.app.presenters.dialogs.AccountSelectionPresenter;
-import com.liskovsoft.smartyoutubetv2.common.app.presenters.dialogs.BootDialogPresenter;
 import com.liskovsoft.smartyoutubetv2.common.app.views.BrowseView;
 import com.liskovsoft.smartyoutubetv2.common.app.views.SplashView;
 import com.liskovsoft.smartyoutubetv2.common.app.views.ViewManager;
@@ -45,7 +44,6 @@ public class SplashPresenter extends BasePresenter<SplashView> {
     private final List<IntentProcessor> mIntentChain = new ArrayList<>();
     private String mBridgePackageName;
     private final Runnable mRunBackgroundTasks = this::runBackgroundTasks;
-    private final Runnable mCheckForUpdates = this::checkForUpdates;
 
     private interface IntentProcessor {
         boolean process(Intent intent);
@@ -143,7 +141,6 @@ public class SplashPresenter extends BasePresenter<SplashView> {
     }
 
     private void runPerViewTasks() {
-        Utils.postDelayed(mCheckForUpdates, APP_INIT_DELAY_MS);
         Utils.updateRemoteControlService(getContext());
 
         checkMasterPassword(() -> applyNewIntent(getView().getNewIntent()));
@@ -172,11 +169,6 @@ public class SplashPresenter extends BasePresenter<SplashView> {
             PlaybackPresenter.instance(getContext()).forceFinish();
             BrowsePresenter.instance(getContext()).updateSections();
         }
-    }
-
-    private void checkForUpdates() {
-        BootDialogPresenter updatePresenter = BootDialogPresenter.instance(getContext());
-        updatePresenter.start();
     }
 
     private void initVideoStateService() {

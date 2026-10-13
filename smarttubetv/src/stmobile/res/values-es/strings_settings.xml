@@ -293,5 +293,4 @@
 
     <!-- About -->
     <string name="mobile_settings_version">Versión</string>
-    <string name="mobile_settings_update_notify_summary">Te avisa cuando sale una versión nueva</string>
 </resources>

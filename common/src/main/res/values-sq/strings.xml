@@ -38,8 +38,6 @@
   <string name="video_buffer_size_low">I ulët</string>
   <string name="video_buffer_size_med">I mesëm</string>
   <string name="video_buffer_size_high">I lartë</string>
-  <string name="update_changelog">Ditari i ndryshimeve</string>
-  <string name="install_update">Instalo përditësimin</string>
   <string name="section_is_empty">Uf! Nuk ka asgjë këtu</string>
   <string name="dialog_add_to_playlist">Shto/Hiq nga lista e luajtjes</string>
   <string name="msg_signed_users_only">Vetëm përdoruesit e regjistruar</string>
@@ -77,9 +75,6 @@
   <string name="player_only_ui">Vetëm ndërfaqja</string>
   <string name="player_ui_and_pause">Ndërfaqja e përdoruesit dhe pezullimi</string>
   <string name="player_only_pause">Thjesht pezullo</string>
-  <string name="check_for_updates">Kontrollo përditësimet</string>
-  <string name="update_not_found">Po përdor versionin më të fundit</string>
-  <string name="update_in_progress">Prit…</string>
   <string name="player_ui_hide_behavior">Fshih automatikisht ndërfaqen e përdoruesit</string>
   <string name="option_never">Kurrë</string>
   <string name="side_panel_sections">Redakto kategoritë</string>
@@ -92,9 +87,7 @@
   <string name="color_scheme_red_grey">E kuqe dhe gri</string>
   <string name="color_scheme_red">E kuqe</string>
   <string name="color_scheme_dark_grey">Gri e errët</string>
-  <string name="disable_update_check">Çaktivizo kontrollin e përditësimit</string>
   <string name="show_again">Shfaq përsëri</string>
-  <string name="check_updates_auto">Njofto për përditësimet</string>
   <string name="select_account_on_boot">Shfaq përzgjedhjen e llogarisë në nisje</string>
   <string name="player_other">Të ndryshme</string>
   <string name="player_full_date">Data e saktë në përshkrim</string>
@@ -240,7 +233,6 @@
   <string name="settings_language_country">Gjuha/Shteti</string>
   <string name="share_embed_link">Shpërndaj lidhjen e përfshirë</string>
   <string name="card_text_scroll_factor">Shpejtësia e lëvizjes së tekstit të skedave</string>
-  <string name="preferred_update_source">Zgjidh burimin e përditësimit</string>
   <string name="hide_shorts">Fshih videot e shkurtra nga Abonimet</string>
   <string name="hide_shorts_channel">Fshih videot e shkurtra nga kanali</string>
   <string name="key_remapping">Ndryshimi i butonëve</string>
@@ -346,7 +338,6 @@
   <string name="player_seek_confirmation_play">Me pranim (luaj gjatë kërkimit)</string>
   <string name="hide_shorts_from_home">Fshih videot e shkurtra nga Kryefaqja</string>
   <string name="finish_on_disconnect">Mbyll aplikacionin pasi të kesh shkëputur telefonin tënd</string>
-  <string name="update_error">Gabim përditësimi</string>
   <string name="hide_shorts_from_history">Fshih videot e shkurtra nga Historiku</string>
   <string name="hide_shorts_from_trending">Fshih videot e shkurtra nga Më të shikuarat</string>
   <string name="disable_screensaver">Çaktivizo mbrojtësin e ekranit</string>
@@ -572,7 +563,6 @@
   <string name="old_home_look">Pamja e vjetër e seksionit Kryefaqe</string>
   <string name="old_channel_look">Pamja e vjetër e faqes Kanali</string>
   <string name="hide_shorts_everywhere">Fshih video të shkurtra kudo</string>
-  <string name="update_found">Përditësim</string>
   <string name="volume_boost_warning">Çdo cilësim përtej kufirit mund të dëmtojë lartfolësin</string>
   <string name="play_video_incognito">Luaj në mënyrë të fshehtë</string>
   <string name="header_kids_home">Fëmijë</string>
@@ -580,8 +570,6 @@
   <string name="header_trending">Më të shikuarat</string>
   <string name="screensaver">Mbrojtësi i ekranit</string>
   <string name="player_screen_off_timeout">Koha për fikjen e ekranit</string>
-  <string name="old_update_notifications">Pamja e vjetër e njoftimeve të përditësimit</string>
-  <string name="dialog_notification">Njoftohu për përditësimet me një dialog flluskë</string>
   <string name="mark_as_watched">Shëno si të shikuar</string>
   <string name="player_ui_animations">Aktivizo animacionet e ndërfaqes të luajtësit</string>
   <string name="player_likes_count">Shfaq numrin e pëlqimeve/mospëlqimeve</string>
@@ -737,12 +725,10 @@
   <string name="player_unexpected_error">Gabim i papritur luajtjeje</string>
   <string name="msg_quality_pin_fallback">%1$s po dështon — cilësia u vendos në Automatike për këtë video</string>
   <string name="msg_audio_pin_fallback">Pista e tingullit po dështon — po përdoret tingulli i paracaktuar për këtë video</string>
-  <string name="update_check_failed">Përditësimet nuk mund të kontrollohen. Provo më vonë.</string>
   <string name="create_playlist_note">SHËNIM: Nuk do të shihet në aplikacionin YouTube</string>
   <string name="playlist_name_hint">Emri i listës së luajtjes</string>
   <string name="remove_from_search_history">Hiq nga historiku i kërkimit</string>
   <string name="play_from_start">Luaj nga fillimi</string>
-  <string name="sidebar_notification">Shfaq njoftimin në shiritin anësor</string>
   <string name="player_return_youtube_dislike">Numri i mospëlqimeve (Return YouTube Dislike)</string>
   <string name="color_scheme_dark_blue_oled">Blu e Errët (OLED)</string>
   <string name="player_quick_shorts_skip_alt">Kapërce videot e shkurtra me butonat lart/poshtë</string>

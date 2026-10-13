@@ -38,8 +38,6 @@
   <string name="video_buffer_size_low">低</string>
   <string name="video_buffer_size_med">中</string>
   <string name="video_buffer_size_high">高</string>
-  <string name="update_changelog">更新日志</string>
-  <string name="install_update">安装更新</string>
   <string name="section_is_empty">哎呀！这里什么都没有</string>
   <string name="dialog_add_to_playlist">添加至播放列表或从中移除</string>
   <string name="msg_signed_users_only">仅限已登录用户</string>
@@ -77,9 +75,6 @@
   <string name="player_only_ui">仅用户界面</string>
   <string name="player_ui_and_pause">用户界面和暂停</string>
   <string name="player_only_pause">仅暂停</string>
-  <string name="check_for_updates">检查更新</string>
-  <string name="update_not_found">已是最新版本</string>
-  <string name="update_in_progress">请稍等……</string>
   <string name="option_never">从不</string>
   <string name="side_panel_sections">设置分区</string>
   <string name="boot_to_section">启动时进入的分区</string>
@@ -91,9 +86,7 @@
   <string name="color_scheme_red_grey">红-灰</string>
   <string name="color_scheme_red">红色</string>
   <string name="color_scheme_dark_grey">深灰</string>
-  <string name="disable_update_check">禁用检查更新</string>
   <string name="show_again">再次显示</string>
-  <string name="check_updates_auto">通知更新</string>
   <string name="select_account_on_boot">启动时显示账号选择</string>
   <string name="player_ui_hide_behavior">用户界面自动隐藏</string>
   <string name="player_other">杂项</string>
@@ -240,7 +233,6 @@
   <string name="settings_language_country">语言/位置</string>
   <string name="share_embed_link">分享嵌入链接</string>
   <string name="card_text_scroll_factor">卡片文本滚动速度</string>
-  <string name="preferred_update_source">选择更新源</string>
   <string name="hide_shorts">隐藏订阅分区的短视频</string>
   <string name="hide_shorts_channel">隐藏频道分区的短视频</string>
   <string name="key_remapping">按键重映射</string>
@@ -346,7 +338,6 @@
   <string name="player_seek_confirmation_play">带确认（快进时播放）</string>
   <string name="hide_shorts_from_home">隐藏首页的短视频</string>
   <string name="finish_on_disconnect">手机/平板断开连接后关闭应用</string>
-  <string name="update_error">更新错误</string>
   <string name="hide_shorts_from_history">隐藏历史记录的短视频</string>
   <string name="hide_shorts_from_trending">隐藏热门分区的短视频</string>
   <string name="disable_screensaver">禁用屏保</string>
@@ -570,7 +561,6 @@
   <string name="old_home_look">旧版首页</string>
   <string name="old_channel_look">旧版频道</string>
   <string name="hide_shorts_everywhere">隐藏所有分区的短视频</string>
-  <string name="update_found">更新</string>
   <string name="volume_boost_warning">任何超出限制的设置都可能损坏扬声器</string>
   <string name="play_video_incognito">隐私模式播放</string>
   <string name="header_kids_home">儿童</string>
@@ -578,8 +568,6 @@
   <string name="header_trending">热门</string>
   <string name="screensaver">屏保</string>
   <string name="player_screen_off_timeout">息屏超时</string>
-  <string name="old_update_notifications">旧版更新通知</string>
-  <string name="dialog_notification">弹出对话框通知</string>
   <string name="mark_as_watched">标记为已观看</string>
   <string name="player_ui_animations">启用播放器用户界面动画</string>
   <string name="player_likes_count">显示点赞/点踩数</string>
@@ -736,7 +724,6 @@
   <string name="install_bridge">安装ATV/Amazon桥接器</string>
   <string name="fix_empty_subs_and_channels">修复空白订阅和频道</string>
   <string name="local_backup_not_supported">由于系统限制，Android TV 11及以上版本不支持自动备份。请改用Google云端硬盘。</string>
-  <string name="sidebar_notification">在侧边栏显示通知</string>
   <string name="rounded_card_corners">圆角卡片</string>
   <string name="color_scheme_dark_blue_oled">深蓝（OLED）</string>
   <string name="player_unexpected_error">意外的播放错误</string>
@@ -770,7 +757,6 @@
   <string name="msg_player_no_connection_tap">无网络连接 — 点按播放重试</string>
   <string name="msg_quality_pin_fallback">%1$s 失败 — 此视频的画质已设为自动</string>
   <string name="msg_audio_pin_fallback">音轨失败 — 此视频使用默认音频</string>
-  <string name="update_check_failed">无法检查更新。请稍后再试。</string>
   <string name="playlist_name_hint">播放列表名称</string>
   <string name="player_return_youtube_dislike">不喜欢计数（Return YouTube Dislike）</string>
   <string name="header_live">直播</string>
@@ -782,4 +768,5 @@
     <item quantity="one">%s 秒</item>
     <item quantity="other">%s 秒</item>
   </plurals>
+  <string name="cancel">取消</string>
 </resources>

@@ -37,8 +37,6 @@
     <string name="video_buffer_size_low">ต่ำ</string>
     <string name="video_buffer_size_med">กลาง</string>
     <string name="video_buffer_size_high">สูง</string>
-    <string name="update_changelog">บันทึกการเปลี่ยนแปลง</string>
-    <string name="install_update">ติดตั้งการอัปเดต</string>
     <string name="section_is_empty">อ๊ะ! ไม่เจออะไรที่นี่</string>
     <string name="dialog_add_to_playlist">บันทึกไปยังเพลย์ลิสต์</string>
     <string name="msg_signed_users_only">ลงชื่อเข้าใช้แล้วเท่านั้น</string>
@@ -76,9 +74,6 @@
     <string name="player_only_ui">แสดง UI เท่านั้น</string>
     <string name="player_ui_and_pause">แสดง UI และหยุดชั่วคราว</string>
     <string name="player_only_pause">หยุดชั่วคราวเท่านั้น</string>
-    <string name="check_for_updates">ตรวจสอบการอัปเดต</string>
-    <string name="update_not_found">คุณใช้เวอร์ชั่นล่าสุด</string>
-    <string name="update_in_progress">รอ…</string>
     <string name="player_ui_hide_behavior">ซ่อน UI อัตโนมัติ</string>
     <string name="option_never">ไม่เลย</string>
     <string name="side_panel_sections">ตั้งค่าเมนูหลัก</string>
@@ -91,9 +86,7 @@
     <string name="color_scheme_red_grey">แดง-เทา</string>
     <string name="color_scheme_red">แดง</string>
     <string name="color_scheme_dark_grey">เทาเข้ม</string>
-    <string name="disable_update_check">ปิดตรวจสอบการอัปเดต</string>
     <string name="show_again">แสดงอีกครั้ง</string>
-    <string name="check_updates_auto">แจ้งเตือนเมื่อมีเวอร์ชั่นใหม่</string>
     <string name="select_account_on_boot">เริ่มต้นด้วยการเลือกบัญชี</string>
     <string name="player_other">อื่นๆ</string>
     <string name="player_full_date">วันที่และเวลาในคำอธิบายวิดีโอ</string>
@@ -226,7 +219,6 @@
     <string name="settings_language_country">ภาษา/ประเทศ</string>
     <string name="share_embed_link">Share embed link</string>
     <string name="card_text_scroll_factor">Card text scroll speed</string>
-    <string name="preferred_update_source">Select update source</string>
     <string name="hide_shorts">Hide shorts from Subscriptions</string>
     <string name="key_remapping">Key remapping</string>
     <string name="screen_dimming">การลดแสงหน้าจอ</string>
@@ -320,7 +312,6 @@
     <string name="player_seek_confirmation_play">With confirmation (เล่นขณะกรอวิดีโอ)</string>
     <string name="hide_shorts_from_home">ซ่อน shorts จากหน้าแรก</string>
     <string name="finish_on_disconnect">ปิดแอปเมื่อยกเลิกการเชื่อมโยงกับโทรศัพท์</string>
-    <string name="update_error">อัปเดตข้อผิดพลาด</string>
     <string name="hide_shorts_from_history">ซ่อน shorts จากประวัติการเข้าชม</string>
     <string name="disable_screensaver">Disable screensaver</string>
     <string name="header_downloads">ดาวน์โหลด</string>
@@ -383,7 +374,6 @@
     <string name="msg_audio_pin_fallback">แทร็กเสียงมีปัญหา — ใช้เสียงเริ่มต้นของวิดีโอนี้</string>
     <string name="hide_upcoming_channel">ซ่อนรายการที่กำลังมาถึงจากหน้าช่อง</string>
     <string name="hide_upcoming_home">ซ่อนรายการที่กำลังมาถึงจากหน้าแรก</string>
-    <string name="update_check_failed">ตรวจสอบการอัปเดตไม่สำเร็จ ลองอีกครั้งภายหลัง</string>
     <string name="hide_shorts_from_search">ซ่อน shorts จากผลลัพธ์การค้นหา</string>
     <string name="hide_shorts_from_trending">ซ่อน shorts จากที่ได้รับความนิยม</string>
     <string name="description_not_found">ไม่พบคำอธิบาย</string>
@@ -616,7 +606,6 @@
     <string name="old_home_look">ใช้รูปลักษณ์เก่าของส่วนหน้าแรก</string>
     <string name="old_channel_look">ใช้รูปลักษณ์เก่าของหน้าช่อง</string>
     <string name="hide_shorts_everywhere">ซ่อน shorts ทุกที่</string>
-    <string name="update_found">มีอัปเดต</string>
     <string name="volume_boost_warning">การตั้งค่าเกินขีดจำกัดอาจทำให้ลำโพงเสียหายได้</string>
     <string name="play_video_incognito">เล่นโดยไม่บันทึกประวัติ</string>
     <string name="play_from_start">เล่นตั้งแต่ต้น</string>
@@ -625,9 +614,6 @@
     <string name="header_trending">ที่ได้รับความนิยม</string>
     <string name="screensaver">สกรีนเซฟเวอร์</string>
     <string name="player_screen_off_timeout">หน่วงเวลาก่อนปิดหน้าจอ</string>
-    <string name="old_update_notifications">ใช้รูปลักษณ์เก่าของการแจ้งเตือนอัปเดต</string>
-    <string name="sidebar_notification">แสดงการแจ้งเตือนในแถบด้านข้าง</string>
-    <string name="dialog_notification">แจ้งเตือนเป็นกล่องโต้ตอบ</string>
     <string name="mark_as_watched">ทำเครื่องหมายว่าดูแล้ว</string>
     <string name="player_ui_animations">เปิดแอนิเมชัน UI ของเครื่องเล่น</string>
     <string name="player_likes_count">แสดงจำนวนชอบ/ไม่ชอบ</string>

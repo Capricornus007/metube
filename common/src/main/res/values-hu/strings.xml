@@ -36,8 +36,6 @@
   <string name="video_buffer_size_low">Alacsony</string>
   <string name="video_buffer_size_med">Közepes</string>
   <string name="video_buffer_size_high">Magas</string>
-  <string name="update_changelog">Változások</string>
-  <string name="install_update">Új verzió telepítése</string>
   <string name="section_is_empty">Hoppá! Itt nincs semmi.</string>
   <string name="dialog_add_to_playlist">Hozzáadás egy videólistához</string>
   <string name="msg_signed_users_only">Csak bejelentkezett felhasználóknak</string>
@@ -75,9 +73,6 @@
   <string name="player_only_ui">Csak felhasználói felület</string>
   <string name="player_ui_and_pause">Felhasználói felület és szünet</string>
   <string name="player_only_pause">Csak szünet</string>
-  <string name="check_for_updates">Frissítés keresése</string>
-  <string name="update_not_found">A legújabb verziót használja</string>
-  <string name="update_in_progress">Kis türelmet…</string>
   <string name="player_ui_hide_behavior">A felhasználói felület automatikus elrejtése</string>
   <string name="option_never">Soha</string>
   <string name="side_panel_sections">Főmenü testreszabása</string>
@@ -90,9 +85,7 @@
   <string name="color_scheme_red_grey">Vörös-szürke</string>
   <string name="color_scheme_red">Vörös</string>
   <string name="color_scheme_dark_grey">Sötétszürke</string>
-  <string name="disable_update_check">Frissítés ellenőrzésének kikapcsolása</string>
   <string name="show_again">Újra</string>
-  <string name="check_updates_auto">Új verzió automatikus ellenőrzése</string>
   <string name="select_account_on_boot">Fiókválasztás induláskor</string>
   <string name="player_other">Egyéb beállítások</string>
   <string name="player_full_date">Pontos dátum a leírásban</string>
@@ -229,7 +222,6 @@
   <string name="settings_language_country">Nyelv/Ország</string>
   <string name="share_embed_link">Beágyazási hivatkozás megosztása</string>
   <string name="card_text_scroll_factor">Indexkép szöveg görgetési sebessége</string>
-  <string name="preferred_update_source">Válassza ki a frissítési forrást</string>
   <string name="hide_shorts">Rövid klipek elrejtése a Feliratkozások menüből</string>
   <string name="key_remapping">Billentyű hozzárendelések cseréje</string>
   <string name="screen_dimming">Képernyő elsötétítése</string>
@@ -326,7 +318,6 @@
   <string name="player_seek_confirmation_play">Megerősítéssel (lejátszás tekerés közben)</string>
   <string name="hide_shorts_from_home">Rövid klipek elrejtése a kezdőlapon</string>
   <string name="finish_on_disconnect">Az alkalmazás bezárása a telefon/táblagép leválasztása után</string>
-  <string name="update_error">Frissítési hiba!</string>
   <string name="hide_shorts_from_history">Rövid klipek elrejtése az előzményekből</string>
   <string name="disable_screensaver">Képernyővédő tiltása</string>
   <string name="description_not_found">Leírás nem található</string>
@@ -539,7 +530,6 @@
   <string name="audio_language">Hang nyelve</string>
   <string name="old_home_look">A Kezdőlap régi megjelenése</string>
   <string name="hide_shorts_everywhere">Rövid klipek elrejtése mindenhol</string>
-  <string name="update_found">Frissítés</string>
   <string name="volume_boost_warning">A határértéket meghaladó beállítások károsíthatják a hangszórókat</string>
   <string name="play_video_incognito">Lejátszás inkognitó módban</string>
   <string name="header_kids_home">Gyermekvideók</string>
@@ -550,7 +540,6 @@
   <string name="header_trending">Felkapott</string>
   <string name="screensaver">Képernyővédő</string>
   <string name="player_screen_off_timeout">Képernyő kikapcsolása</string>
-  <string name="old_update_notifications">A frissítési értesítések régi megjelenése</string>
   <string name="mark_as_watched">Megjelölés nézettként</string>
   <string name="player_ui_animations">UI animációk engedélyezése</string>
   <string name="player_likes_count">A Tetszik/Nem tetszik számának megjelenítése</string>
@@ -574,7 +563,6 @@
   <string name="player_auto_volume">Automatikus hangerő beállítás</string>
   <string name="header_shorts">Rövid klipek</string>
   <string name="player_global_focus">Zökkenőmentes navigáció a lejátszó gombsorai között</string>
-  <string name="dialog_notification">Értesítés a frissítésről, felugró párbeszédpanelen</string>
   <string name="disable_history">Előzmények tiltása</string>
   <string name="enable_history">Előzmények engedélyezése</string>
   <string name="open_comments">Hozzászólások megnyitása</string>
@@ -736,7 +724,6 @@
   <string name="player_quick_shorts_skip_alt">Rövid klip lapozás fel/le gomb</string>
   <string name="player_quick_skip_videos_alt">A normál videók kihagyása a fel/le gombokkal</string>
   <string name="color_scheme_dark_blue_oled">Sötétkék (OLED)</string>
-  <string name="sidebar_notification">Értesítés megjelenítése az oldalsávon</string>
   <string name="create_playlist_note">MEGJEGYZÉS: Nem lesz látható a YouTube alkalmazásban</string>
   <string name="player_unexpected_error">Váratlan lejátszási hiba</string>
   <string name="player_toggle_speed">Lejátszási sebesség be/ki váltása</string>
@@ -762,7 +749,6 @@
   <string name="msg_player_no_connection_tap">Nincs kapcsolat — nyomja meg a lejátszást az újrapróbáláshoz</string>
   <string name="msg_quality_pin_fallback">%1$s nem működik — a videó minősége Auto-ra állítva</string>
   <string name="msg_audio_pin_fallback">A hangfelvétel nem működik — alapértelmezett hang ebben a videóban</string>
-  <string name="update_check_failed">Nem sikerült ellenőrizni a frissítéseket. Próbálja később.</string>
   <string name="playlist_name_hint">Videólista neve</string>
   <string name="remove_from_search_history">Eltávolítás a keresési előzményekből</string>
   <string name="player_return_youtube_dislike">Nem tetszik számláló (Return YouTube Dislike)</string>

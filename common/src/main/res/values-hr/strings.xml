@@ -38,8 +38,6 @@
     <string name="video_buffer_size_low">Nizak</string>
     <string name="video_buffer_size_med">Srednji</string>
     <string name="video_buffer_size_high">Velik</string>
-    <string name="update_changelog">Zapis promjena</string>
-    <string name="install_update">Instaliraj ažuriranje</string>
     <string name="section_is_empty">Ups! Ne postoji ništa ovdje.</string>
     <string name="dialog_add_to_playlist">Dodaj/Ukloni iz popisa izvođenja</string>
     <string name="msg_signed_users_only">Samo prijavljeni korisnici</string>
@@ -77,9 +75,6 @@
     <string name="player_only_ui">Samo korisničko sučelje</string>
     <string name="player_ui_and_pause">Korisničko sučelje i pauza</string>
     <string name="player_only_pause">Samo pauza</string>
-    <string name="check_for_updates">Provjeri ažuriranja</string>
-    <string name="update_not_found">Koristite najnoviju inačicu</string>
-    <string name="update_in_progress">Pričekajte…</string>
     <string name="player_ui_hide_behavior">Automatski sakrij korisničko sučelje</string>
     <string name="option_never">Nikada</string>
     <string name="side_panel_sections">Odabir odjeljaka</string>
@@ -92,9 +87,7 @@
     <string name="color_scheme_red_grey">Crveno siva</string>
     <string name="color_scheme_red">Crvena</string>
     <string name="color_scheme_dark_grey">Tamno siva</string>
-    <string name="disable_update_check">Onemogući provjeru ažuriranja</string>
     <string name="show_again">Prikaži ponovno</string>
-    <string name="check_updates_auto">Obavijesti o novim inačicama</string>
     <string name="select_account_on_boot">Odaberi pri pokretanju</string>
     <string name="player_other">Ostalo</string>
     <string name="player_full_date">Precizan datum u opisu</string>
@@ -228,7 +221,6 @@
     <string name="settings_language_country">Jezik/Država</string>
     <string name="share_embed_link">Dijeli ugrađenu poveznicu</string>
     <string name="card_text_scroll_factor">Brzina pomicanja teksta kartice</string>
-    <string name="preferred_update_source">Odabir izvora ažuriranja</string>
     <string name="hide_shorts">Sakrij Shorts u pretplatama</string>
     <string name="key_remapping">Mapiranje tipki</string>
     <string name="screen_dimming">Zatamnjenje zaslona</string>
@@ -325,7 +317,6 @@
     <string name="player_seek_confirmation_play">S potvrdom (reprodukcija pri premotavanju)</string>
     <string name="hide_shorts_from_home">Sakrij shorts iz Početne</string>
     <string name="finish_on_disconnect">Zatvori aplikaciju nakon prekida povezivanje s telefonom/tabletom</string>
-    <string name="update_error">Greška ažuriranja</string>
     <string name="hide_shorts_from_history">Sakrij shorts iz Povijesti</string>
     <string name="disable_screensaver">Onemogući čuvara zaslona</string>
     <string name="description_not_found">Opis nije pronađen</string>
@@ -547,7 +538,6 @@
     <string name="msg_audio_pin_fallback">Zvučni zapis ne radi — za ovaj video koristi se zadani zvuk</string>
     <string name="hide_upcoming_channel">Sakrij najavljene na kanalu</string>
     <string name="hide_upcoming_home">Sakrij najavljene na Početnoj</string>
-    <string name="update_check_failed">Nije moguće provjeriti ažuriranja. Pokušajte kasnije.</string>
     <string name="hide_shorts_from_search">Sakrij Shorts iz rezultata pretrage</string>
     <string name="hide_shorts_from_trending">Sakrij Shorts iz U trendu</string>
     <string name="live_stream_fix_4k_desc">Upozorenje: ovo podešavanje onemogućuje premotavanje unatrag. Značajno poboljšava performanse prijenosa uživo. Najveća razlučivost je 4K.</string>
@@ -615,7 +605,6 @@
     <string name="old_home_look">Stari izgled odjeljka Početna</string>
     <string name="old_channel_look">Stari izgled stranice kanala</string>
     <string name="hide_shorts_everywhere">Sakrij Shorts svugdje</string>
-    <string name="update_found">Ažuriranje</string>
     <string name="volume_boost_warning">Sve postavke iznad ograničenja mogu oštetiti zvučnike</string>
     <string name="play_video_incognito">Reproduciraj anonimno</string>
     <string name="play_from_start">Reproduciraj od početka</string>
@@ -624,9 +613,6 @@
     <string name="header_trending">U trendu</string>
     <string name="screensaver">Čuvar zaslona</string>
     <string name="player_screen_off_timeout">Vrijeme do gašenja zaslona</string>
-    <string name="old_update_notifications">Stari izgled obavijesti o ažuriranju</string>
-    <string name="sidebar_notification">Prikaži obavijest u bočnoj traci</string>
-    <string name="dialog_notification">Obavijesti putem skočnog dijaloga</string>
     <string name="mark_as_watched">Označi kao gledano</string>
     <string name="player_ui_animations">Omogući animacije sučelja reproduktora</string>
     <string name="player_likes_count">Prikaži broj sviđanja i nesviđanja</string>

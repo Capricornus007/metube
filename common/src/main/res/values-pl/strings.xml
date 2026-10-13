@@ -38,8 +38,6 @@
   <string name="video_buffer_size_low">Mały</string>
   <string name="video_buffer_size_med">Średni</string>
   <string name="video_buffer_size_high">Duży</string>
-  <string name="update_changelog">Lista zmian</string>
-  <string name="install_update">Zainstaluj aktualizację</string>
   <string name="section_is_empty">Niestety, nic tu nie ma.</string>
   <string name="dialog_add_to_playlist">Dodaj/Usuń z listy odtwarzania</string>
   <string name="msg_signed_users_only">Tylko zalogowani użytkownicy</string>
@@ -77,9 +75,6 @@
   <string name="player_only_ui">Tylko interfejs</string>
   <string name="player_ui_and_pause">Interfejs i pauza</string>
   <string name="player_only_pause">Tylko pauza</string>
-  <string name="check_for_updates">Sprawdź aktualizacje</string>
-  <string name="update_not_found">Używasz najnowszej wersji</string>
-  <string name="update_in_progress">Zaczekaj…</string>
   <string name="player_ui_hide_behavior">Automatyczne ukrywanie interfejsu</string>
   <string name="option_never">Nigdy</string>
   <string name="side_panel_sections">Widoczne sekcje</string>
@@ -92,9 +87,7 @@
   <string name="color_scheme_red_grey">Czerwono-szary</string>
   <string name="color_scheme_red">Czerwony</string>
   <string name="color_scheme_dark_grey">Ciemnoszary</string>
-  <string name="disable_update_check">Wyłącz sprawdzanie aktualizacji</string>
   <string name="show_again">Pokaż ponownie</string>
-  <string name="check_updates_auto">Powiadamiaj o nowszej wersji</string>
   <string name="select_account_on_boot">Wybieraj konto przy starcie</string>
   <string name="player_other">Pozostałe</string>
   <string name="player_full_date">Dokładna data w opisie</string>
@@ -240,7 +233,6 @@
   <string name="settings_language_country">Język/Kraj</string>
   <string name="share_embed_link">Udostępnij link do osadzania</string>
   <string name="card_text_scroll_factor">Szybkość przewijania tekstu karty</string>
-  <string name="preferred_update_source">Wybierz źródło aktualizacji</string>
   <string name="hide_shorts">Ukryj Szorty w sekcji Subskrypcje</string>
   <string name="hide_shorts_channel">Ukryj Szorty w sekcji Kanały</string>
   <string name="key_remapping">Zmiana mapowania przycisków</string>
@@ -346,7 +338,6 @@
   <string name="player_seek_confirmation_play">Z potwierdzeniem (odtwarzaj podczas przewijania)</string>
   <string name="hide_shorts_from_home">Ukryj Szorty w sekcji Strona główna</string>
   <string name="finish_on_disconnect">Zamknij aplikację po odłączeniu urządzenia zdalnego sterowania (telefon/tablet)</string>
-  <string name="update_error">Błąd aktualizacji</string>
   <string name="hide_shorts_from_history">Ukryj Szorty w sekcji Historia</string>
   <string name="hide_shorts_from_trending">Ukryj Szorty w sekcji Na czasie</string>
   <string name="disable_screensaver">Wyłącz wygaszacz ekranu</string>
@@ -572,7 +563,6 @@
   <string name="old_home_look">Poprzedni wygląd sekcji Główna</string>
   <string name="old_channel_look">Poprzedni wygląd sekcji Kanały</string>
   <string name="hide_shorts_everywhere">Ukryj Szorty we wszystkich sekcjach</string>
-  <string name="update_found">Aktualizacja jest dostępna</string>
   <string name="volume_boost_warning">Wszelkie ustawienia powyżej limitu mogą uszkodzić głośniki</string>
   <string name="play_video_incognito">Odtwarzaj w trybie incognito</string>
   <string name="header_kids_home">Dla dzieci</string>
@@ -580,8 +570,6 @@
   <string name="header_trending">Na Czasie</string>
   <string name="screensaver">Wygaszacz ekranu</string>
   <string name="player_screen_off_timeout">Automatyczne wyłączanie ekranu</string>
-  <string name="old_update_notifications">Poprzedni wygląd powiadomienia o aktualizacji</string>
-  <string name="dialog_notification">Powiadom mnie o aktualizacjach w wyskakującym oknie</string>
   <string name="mark_as_watched">Oznacz jako obejrzane</string>
   <string name="player_ui_animations">Uruchom animacje panelu sterowania</string>
   <string name="player_likes_count">Pokaż licznik polubień</string>
@@ -737,7 +725,6 @@
   <string name="local_backup_not_supported">Automatyczne tworzenie kopii zapasowych na telewizorach z systemem Android TV 11 i nowszym nie jest obsługiwane ze względu na ograniczenia systemowe. Zamiast tego użyj GDrive.</string>
   <string name="rounded_card_corners">Zaokrąglone rogi kart</string>
   <string name="install_bridge">Zainstaluj most ATV/Amazon</string>
-  <string name="sidebar_notification">Pokaż powiadomienie na pasku bocznym</string>
   <string name="player_unexpected_error">Nieoczekiwany błąd odtwarzania</string>
   <string name="color_scheme_dark_blue_oled">Ciemnoniebieski (OLED)</string>
   <string name="remove_from_search_history">Usuń z historii wyszukiwania</string>
@@ -770,7 +757,6 @@
   <string name="msg_player_no_connection_tap">Brak połączenia — dotknij odtwarzania, aby spróbować</string>
   <string name="msg_quality_pin_fallback">%1$s nie działa — jakość tego wideo ustawiona na Auto</string>
   <string name="msg_audio_pin_fallback">Ścieżka audio nie działa — użyto domyślnego dźwięku dla tego wideo</string>
-  <string name="update_check_failed">Nie udało się sprawdzić aktualizacji. Spróbuj później.</string>
   <string name="playlist_name_hint">Nazwa listy odtwarzania</string>
   <string name="player_return_youtube_dislike">Liczba łapek w dół (Return YouTube Dislike)</string>
   <string name="header_live">Na żywo</string>

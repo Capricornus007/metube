@@ -74,7 +74,6 @@ dependencies {
 
     implementation 'com.jakewharton:process-phoenix:' + phoenixVersion
 
-    implementation dependencies.project(':appupdatechecker2')
 
     implementation dependencies.project(':slidableactivity') // https://github.com/r0adkll/Slidr
 }

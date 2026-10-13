@@ -40,8 +40,6 @@
     <string name="video_buffer_size_med">Средний</string>
     <string name="video_buffer_size_high">Высокий</string>
     <string name="video_buffer_size_highest">Самый высокий</string>
-    <string name="update_changelog">Изменения</string>
-    <string name="install_update">Установить обновление</string>
     <string name="section_is_empty">Здесь ничего нет</string>
     <string name="dialog_add_to_playlist">Добавить/Удалить из плейлиста</string>
     <string name="msg_signed_users_only">Необходимо войти в вккаунт</string>
@@ -82,9 +80,6 @@
     <string name="player_ui_and_pause">Интерфейс и пауза</string>
     <string name="player_only_pause">Только пауза</string>
     <string name="player_toggle_speed">Включение/выключение скорости</string>
-    <string name="check_for_updates">Проверить обновление</string>
-    <string name="update_not_found">Ваша версия не требует обновления</string>
-    <string name="update_in_progress">Подождите…</string>
     <string name="player_ui_hide_behavior">Скрывать интерфейс</string>
     <string name="option_never">Никогда</string>
     <string name="side_panel_sections">Настроить разделы</string>
@@ -97,9 +92,7 @@
     <string name="color_scheme_red_grey">Красно-серая</string>
     <string name="color_scheme_red">Красная</string>
     <string name="color_scheme_dark_grey">Тёмно-серая</string>
-    <string name="disable_update_check">Не проверять обновления</string>
     <string name="show_again">Напоминать постоянно</string>
-    <string name="check_updates_auto">Сообщать о наличии обновлений</string>
     <string name="select_account_on_boot">Показывать диалог выбора аккаунта на старте приложения</string>
     <string name="player_other">Разное</string>
     <string name="player_full_date">Точная дата в описании</string>
@@ -248,7 +241,6 @@
     <string name="settings_language_country">Язык/Страна</string>
     <string name="share_embed_link">Поделиться встраиваемой ссылкой</string>
     <string name="card_text_scroll_factor">Скорость прокрутки текста карточки</string>
-    <string name="preferred_update_source">Выбрать источник обновлений</string>
     <string name="hide_shorts">Скрывать shorts из Подписок</string>
     <string name="hide_shorts_channel">Скрывать shorts на канале</string>
     <string name="key_remapping">Переопределение клавиш</string>
@@ -351,7 +343,6 @@
     <string name="player_seek_confirmation_play">С подтверждением (играть во время перемотки)</string>
     <string name="hide_shorts_from_home">Скрывать shorts с Главной</string>
     <string name="finish_on_disconnect">Завершать приложение после отключения телефона/планшета</string>
-    <string name="update_error">Ошибка обновления</string>
     <string name="hide_shorts_from_search">Скрывать shorts из Поиска</string>
     <string name="hide_shorts_from_history">Скрывать shorts из Истории</string>
     <string name="hide_shorts_from_trending">Скрывать shorts из Трендов</string>
@@ -583,7 +574,6 @@
     <string name="old_home_look">Старый вид Главного раздела</string>
     <string name="old_channel_look">Старый вид страницы Канала</string>
     <string name="hide_shorts_everywhere">Скрывать shorts повсюду</string>
-    <string name="update_found">Обновление</string>
     <string name="volume_boost_warning">Настройки привышающие лимит могу повредить динамики</string>
     <string name="play_video_incognito">Воспроизвести анонимно</string>
     <string name="play_from_start">Воспроизвести сначала</string>
@@ -592,9 +582,6 @@
     <string name="header_trending">В тренде</string>
     <string name="screensaver">Заставка</string>
     <string name="player_screen_off_timeout">Тайм-аут выключения экрана</string>
-    <string name="old_update_notifications">Старый вид уведомлений о доступном обновлении</string>
-    <string name="sidebar_notification">Показать уведомление на боковой панели</string>
-    <string name="dialog_notification">Уведомлять про обновление всплывающим диалогом</string>
     <string name="mark_as_watched">Отметить как просмотренное</string>
     <string name="player_ui_animations">Включить анимацию интерфейса плеера</string>
     <string name="player_likes_count">Отображать количество лайков/дислайков</string>
@@ -773,7 +760,6 @@
     <string name="screen_dimming_timeout_min">%s мин</string>
     <string name="msg_quality_pin_fallback">%1$s не работает — для этого видео качество переключено на Авто</string>
     <string name="msg_audio_pin_fallback">Аудиодорожка не работает — для этого видео используется звук по умолчанию</string>
-    <string name="update_check_failed">Не удалось проверить обновления. Попробуйте позже.</string>
     <string name="playlist_name_hint">Название плейлиста</string>
     <string name="playback_controls_repeat_pause">Повторять паузу</string>
     <string name="playback_controls_repeat_list">Повторять список</string>
@@ -788,4 +774,5 @@
     <string name="premium_users_only">Только для премиум-пользователей. Исправление неполного списка форматов видео</string>
     <string name="install_bridge">Установить мост ATV/Amazon</string>
     <string name="fix_empty_subs_and_channels">Исправить пустые Подписки и Каналы</string>
+    <string name="cancel">Отменить</string>
 </resources>

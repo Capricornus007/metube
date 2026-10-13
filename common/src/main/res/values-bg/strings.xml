@@ -36,8 +36,6 @@
   <string name="video_buffer_size_low">Ниско</string>
   <string name="video_buffer_size_med">Средно</string>
   <string name="video_buffer_size_high">Високо</string>
-  <string name="update_changelog">Промени в актуализацията</string>
-  <string name="install_update">Инсталирайте актуализация</string>
   <string name="section_is_empty">Ами сега...тук няма нищо.</string>
   <string name="dialog_add_to_playlist">Добави към плейлист</string>
   <string name="msg_signed_users_only">Само вписани потребители</string>
@@ -75,9 +73,6 @@
   <string name="player_only_ui">Само потребителски интерфейс</string>
   <string name="player_ui_and_pause">Потребителски интерфейс и пауза</string>
   <string name="player_only_pause">Само пауза</string>
-  <string name="check_for_updates">Провери за актуализации</string>
-  <string name="update_not_found">Използвате най-новата версия</string>
-  <string name="update_in_progress">Изчакайте...</string>
   <string name="player_ui_hide_behavior">Автоматично скриване на потребителския интерфейс</string>
   <string name="option_never">Никога</string>
   <string name="side_panel_sections">Настрой разделите</string>
@@ -90,9 +85,7 @@
   <string name="color_scheme_red_grey">Червено-сиво</string>
   <string name="color_scheme_red">Червено</string>
   <string name="color_scheme_dark_grey">Тъмно сив</string>
-  <string name="disable_update_check">Деактивирайте проверката за актуализация</string>
   <string name="show_again">Покажи отново</string>
-  <string name="check_updates_auto">Автоматично актуализиране</string>
   <string name="select_account_on_boot">Да се избере при зареждане</string>
   <string name="player_other">Разни</string>
   <string name="player_full_date">Точна дата в описанието</string>
@@ -236,7 +229,6 @@
   <string name="settings_language_country">Език/държава</string>
   <string name="share_embed_link">Споделяне на линк за вграждане</string>
   <string name="card_text_scroll_factor">Скорост на превъртане на текста на картата</string>
-  <string name="preferred_update_source">Изберете източник на актуализация</string>
   <string name="hide_shorts">Скриване на кратки клипчета от абонаменти</string>
   <string name="key_remapping">Пренареждане на клавишите</string>
   <string name="screen_dimming">Затъмняване на екрана</string>
@@ -337,7 +329,6 @@
   <string name="player_seek_confirmation_play">С потвърждение (възпроизвеждане при търсене)</string>
   <string name="hide_shorts_from_home">Скриване на кратки видеота от началния екран</string>
   <string name="finish_on_disconnect">Затваряне на приложението след изключване на телефона/таблета</string>
-  <string name="update_error">Грешка при актуализиране</string>
   <string name="hide_shorts_from_history">Скриване на кратките видеа от История</string>
   <string name="proxy_test_btn">Тест</string>
   <string name="disable_screensaver">Изключване на скрийнсейвъра</string>
@@ -556,7 +547,6 @@
   <string name="audio_language">Език на аудиото</string>
   <string name="old_home_look">Стар вид на раздел Начало</string>
   <string name="hide_shorts_everywhere">Скрийте кратките видеа навсякъде</string>
-  <string name="update_found">Актуализирай</string>
   <string name="volume_boost_warning">Всякакви настройки над границата могат да повредят високоговорителите.</string>
   <string name="play_video_incognito">Възпроизвеждане инкогнито</string>
   <string name="header_kids_home">Деца</string>
@@ -564,8 +554,6 @@
   <string name="header_trending">Тенденции</string>
   <string name="screensaver">Скрийнсейвър</string>
   <string name="player_screen_off_timeout">Време за изключване на екрана</string>
-  <string name="old_update_notifications">Стар вид на известията за актуализация</string>
-  <string name="dialog_notification">Уведомяване за актуализацията с изскачащ диалогов прозорец</string>
   <string name="mark_as_watched">Маркирайте като гледан</string>
   <string name="player_ui_animations">Активиране на анимациите на контролния панел</string>
   <string name="player_likes_count">Покажете броя на харесванията/нехаресванията</string>
@@ -637,7 +625,6 @@
   <string name="msg_audio_pin_fallback">Проблем с аудиозаписа — използва се стандартното аудио за това видео</string>
   <string name="hide_upcoming_channel">Скриване на предстоящи от канала</string>
   <string name="hide_upcoming_home">Скриване на предстоящи от Начало</string>
-  <string name="update_check_failed">Проверката за актуализации не бе успешна. Опитайте по-късно.</string>
   <string name="hide_shorts_from_search">Скриване на кратките видеа от резултатите от търсенето</string>
   <string name="hide_shorts_from_trending">Скриване на кратките видеа от Тенденции</string>
   <string name="remember_position_of_live_videos">Запомняне на позицията в потоците на живо</string>
@@ -655,7 +642,6 @@
   <string name="player_extra_long_speed_list">Много дълъг списък със скорости</string>
   <string name="old_channel_look">Стар вид на страницата на канала</string>
   <string name="play_from_start">Възпроизвеждане от началото</string>
-  <string name="sidebar_notification">Показване на известие в страничната лента</string>
   <string name="player_return_youtube_dislike">Брой нехаресвания (Return YouTube Dislike)</string>
   <string name="player_chapter_notification2">Преминаване към следващата глава при докосване на известието</string>
   <string name="remember_position_pinned">Запомняне на последната гледана позиция в закрепените плейлисти</string>

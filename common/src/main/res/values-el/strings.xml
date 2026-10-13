@@ -36,8 +36,6 @@
   <string name="video_buffer_size_low">Χαμηλό</string>
   <string name="video_buffer_size_med">Μεσαίο</string>
   <string name="video_buffer_size_high">Υψηλό</string>
-  <string name="update_changelog">Λίστα Αλλαγών</string>
-  <string name="install_update">Εγκατάσταση ενημέρωσης</string>
   <string name="section_is_empty">Ωχ! Δεν υπάρχει τίποτα εδώ.</string>
   <string name="dialog_add_to_playlist">Προσθήκη/Αφαίρεση από λίστα αναπαραγωγής</string>
   <string name="msg_signed_users_only">Μόνο Εγγεγραμμένοι Χρήστες</string>
@@ -75,9 +73,6 @@
   <string name="player_only_ui">Μόνο UI</string>
   <string name="player_ui_and_pause">UI και παύση</string>
   <string name="player_only_pause">Μόνο παύση</string>
-  <string name="check_for_updates">Έλεγχος για ενημερώσεις</string>
-  <string name="update_not_found">Χρησιμοποιείτε τη τελευταία έκδοση.</string>
-  <string name="update_in_progress">Περιμένετε…</string>
   <string name="player_ui_hide_behavior">Αυτόματη απόκρυψη UI</string>
   <string name="option_never">Ποτέ</string>
   <string name="side_panel_sections">Ρύθμιση ενοτήτων</string>
@@ -90,9 +85,7 @@
   <string name="color_scheme_red_grey">Κόκκινο γκρι</string>
   <string name="color_scheme_red">Κόκκινο</string>
   <string name="color_scheme_dark_grey">Μαύρο γκρι</string>
-  <string name="disable_update_check">Απενεργοποίηση ελέγχου ενημερώσεων</string>
   <string name="show_again">Εμφάνιση ξανά</string>
-  <string name="check_updates_auto">Ειδοποίηση για νέα έκδοση</string>
   <string name="select_account_on_boot">Επιλογή κατά την εκκίνηση</string>
   <string name="player_other">Λοιπά</string>
   <string name="player_full_date">Ακριβής ημερομηνία στην εκκίνηση</string>
@@ -222,7 +215,6 @@
   <string name="settings_language_country">Γλώσσα/Χώρα</string>
   <string name="share_embed_link">Κοινοποίηση συνδέσμου ενσωμάτωσης</string>
   <string name="card_text_scroll_factor">Ταχύτητα ροής κειμένου κάρτας</string>
-  <string name="preferred_update_source">Επιλέξτε πηγή ενημέρωσης</string>
   <string name="hide_shorts">Απόκρυψη shorts από τις Εγγραφές</string>
   <string name="key_remapping">Επαναπροσδιορισμός κλειδιού</string>
   <string name="screen_dimming">Συσκότιση οθόνης</string>
@@ -319,7 +311,6 @@
   <string name="player_seek_confirmation_play">Με επιβεβαίωση(αναπαραγωγή κατά την αναζήτηση)</string>
   <string name="hide_shorts_from_home">Απόκρυψη shorts από την Αρχική</string>
   <string name="finish_on_disconnect">Τερματισμός εφαρμογής μετά την αποσύνδεση τηλεφώνου/τάμπλετ</string>
-  <string name="update_error">Σφάλμα ενημέρωσης</string>
   <string name="hide_shorts_from_history">Απόκρυψη shorts από το Ιστορικό</string>
   <string name="disable_screensaver">Απενεργοποίηση screensaver</string>
   <string name="description_not_found">Δε βρέθηκε περιγραφή</string>
@@ -537,7 +528,6 @@
   <string name="audio_language">Γλώσσα ήχου</string>
   <string name="old_home_look">Παλιά εμφάνιση της ενότητας Αρχική</string>
   <string name="hide_shorts_everywhere">Κρύψτε τα shorts από παντού</string>
-  <string name="update_found">Ενημέρωση</string>
   <string name="volume_boost_warning">Τυχόν ρυθμίσεις πάνω από το όριο μπορεί να βλάψουν τα ηχεία</string>
   <string name="play_video_incognito">Αναπαραγωγή σε ανώνυμη περιήγηση</string>
   <string name="header_kids_home">Παιδιά</string>
@@ -545,7 +535,6 @@
   <string name="header_trending">Τάσεις</string>
   <string name="screensaver">Προφύλαξη οθόνης</string>
   <string name="player_screen_off_timeout">Λήξη χρονικού ορίου οθόνης</string>
-  <string name="old_update_notifications">Η παλιά εμφάνιση ειδοποίησης ενημέρωσης</string>
   <string name="mark_as_watched">Επισήμανση ως προβληθέν</string>
   <string name="player_ui_animations">Ενεργοποίηση εφέ κίνησης πίνακα ελέγχου</string>
   <string name="player_likes_count">Εμφάνιση αριθμού μου αρέσει/δεν μου αρέσει</string>
@@ -598,7 +587,6 @@
   <string name="player_quick_shorts_skip">Παράλειψη Shorts με αριστερό/δεξί κουμπί</string>
   <string name="channels_filter">Εμφάνιση του πεδίου \"φιλτράρισμα καναλιών\" μέσα στο τμήμα Κανάλια</string>
   <string name="channel_search_bar">Γραμμή αναζήτησης μέσα στη σελίδα του καναλιού</string>
-  <string name="dialog_notification">Ειδοποίηση για την ενημέρωση με αναδυόμενο παράθυρο διαλόγου</string>
   <string name="disable_history">Απενεργοποίηση ιστορικού</string>
   <string name="enable_history">Ενεργοποίηση ιστορικού</string>
   <string name="open_comments">Ανοίξτε τα σχόλια</string>
@@ -747,10 +735,8 @@
   <string name="player_unexpected_error">Απροσδόκητο σφάλμα αναπαραγωγής</string>
   <string name="msg_quality_pin_fallback">%1$s δεν λειτουργεί — η ποιότητα ορίστηκε σε Αυτόματα για αυτό το βίντεο</string>
   <string name="msg_audio_pin_fallback">Το κομμάτι ήχου δεν λειτουργεί — χρησιμοποιείται ο προεπιλεγμένος ήχος για αυτό το βίντεο</string>
-  <string name="update_check_failed">Δεν ήταν δυνατός ο έλεγχος για ενημερώσεις. Δοκιμάστε ξανά αργότερα.</string>
   <string name="playlist_name_hint">Όνομα λίστας αναπαραγωγής</string>
   <string name="remove_from_search_history">Αφαίρεση από το ιστορικό αναζήτησης</string>
-  <string name="sidebar_notification">Εμφάνιση ειδοποίησης στην πλαϊνή στήλη</string>
   <string name="player_return_youtube_dislike">Αριθμός «δεν μου αρέσει» (Return YouTube Dislike)</string>
   <string name="color_scheme_dark_blue_oled">Σκούρο μπλε (OLED)</string>
   <string name="header_live">Ζωντανά</string>

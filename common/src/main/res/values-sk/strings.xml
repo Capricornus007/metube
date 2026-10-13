@@ -41,8 +41,6 @@
     <string name="video_buffer_size_med">Stredná</string>
     <string name="video_buffer_size_high">Vysoká</string>
     <string name="video_buffer_size_highest">Najvyššia</string>
-    <string name="update_changelog">Zoznam zmien</string>
-    <string name="install_update">Inštalovať aktualizáciu</string>
     <string name="section_is_empty">Hups! Žiadne videá</string>
     <string name="dialog_add_to_playlist">Uložiť do zoznamu</string>
     <string name="msg_signed_users_only">Iba pre prihlásených</string>
@@ -82,9 +80,6 @@
     <string name="player_ui_and_pause">Rozhranie a pozastavenie</string>
     <string name="player_only_pause">Iba pozastavenie</string>
     <string name="player_toggle_speed">Prepnúť rýchlosť zap/vyp</string>
-    <string name="check_for_updates">Skontrolovať aktualizácie</string>
-    <string name="update_not_found">Používate najnovšiu verziu</string>
-    <string name="update_in_progress">Počkajte…</string>
     <string name="player_ui_hide_behavior">Automatické skrytie rozhrania</string>
     <string name="option_never">Nikdy</string>
     <string name="side_panel_sections">Nastavenie sekcií</string>
@@ -97,9 +92,7 @@
     <string name="color_scheme_red_grey">Červeno-šedá</string>
     <string name="color_scheme_red">Červená</string>
     <string name="color_scheme_dark_grey">Tmavo-šedá</string>
-    <string name="disable_update_check">Vypnúť kontrolu aktualizácií</string>
     <string name="show_again">Zobraziť znova</string>
-    <string name="check_updates_auto">Upozorniť na aktualizáciu</string>
     <string name="select_account_on_boot">Zobraziť vyberanie účtu pri spustení</string>
     <string name="player_other">Rôzne</string>
     <string name="player_full_date">Presný dátum v popisku</string>
@@ -247,7 +240,6 @@
     <string name="settings_language_country">Jazyk/Krajina</string>
     <string name="share_embed_link">Zdieľanie</string>
     <string name="card_text_scroll_factor">Rýchlosť posúvania textu v názve videa</string>
-    <string name="preferred_update_source">Preferovaný zdroj aktualizácie</string>
     <string name="hide_shorts">Skryť Shorts z Odberov</string>
     <string name="hide_shorts_channel">Skryť Shorts z kanála</string>
     <string name="key_remapping">Prednastavenie tlačidiel</string>
@@ -354,7 +346,6 @@
     <string name="player_seek_confirmation_play">S potvrdením (prehrávanie pri pratáčaní)</string>
     <string name="hide_shorts_from_home">Skryť Shorts z Domov</string>
     <string name="finish_on_disconnect">Ukončiť aplikáciu po odpojení telefónu/tabletu</string>
-    <string name="update_error">Chyba aktualizácie</string>
     <string name="hide_shorts_from_search">Skryť Shorts z výsledkov vyhľadávania</string>
     <string name="hide_shorts_from_history">Skryť Shorts z Histórie</string>
     <string name="hide_shorts_from_trending">Skryť Shorts z Trendy</string>
@@ -587,7 +578,6 @@
     <string name="old_home_look">Starý vzhľad sekcie Domov</string>
     <string name="old_channel_look">Starý vzhľad sekcie Kanály</string>
     <string name="hide_shorts_everywhere">Skryť Shorts všade</string>
-    <string name="update_found">Aktualizácia</string>
     <string name="volume_boost_warning">Akékoľvek nastavenie nad limit môže poškodiť reproduktory</string>
     <string name="play_video_incognito">Prehrať anonymne</string>
     <string name="play_from_start">Prehrať od začiatku</string>
@@ -596,8 +586,6 @@
     <string name="header_trending">Trendy</string>
     <string name="screensaver">Šetrič obrazovky</string>
     <string name="player_screen_off_timeout">Časový limit vypnutia obrazovky</string>
-    <string name="old_update_notifications">Starý vzhľad notifikácií o aktualizáciách</string>
-    <string name="dialog_notification">Upozorniť na aktualizáciu pomocou vyskakovacieho okna</string>
     <string name="mark_as_watched">Označiť ako videné</string>
     <string name="player_ui_animations">Povoliť animácie rozhrania prehrávača</string>
     <string name="player_likes_count">Zobraziť počet Páči sa/Nepáči sa</string>
@@ -755,10 +743,8 @@
     <string name="player_unexpected_error">Neočakávaná chyba prehrávania</string>
     <string name="msg_quality_pin_fallback">%1$s nefunguje — kvalita tohto videa nastavená na Auto</string>
     <string name="msg_audio_pin_fallback">Audio stopa zlyháva — používa sa predvolený zvuk tohto videa</string>
-    <string name="update_check_failed">Nemožno skontrolovať aktualizácie. Skúste to neskôr.</string>
     <string name="playlist_name_hint">Názov playlistu</string>
     <string name="remove_from_search_history">Zmazať z histórie vyhľadávania</string>
-    <string name="sidebar_notification">Zobraziť notifikáciu na postrannom paneli</string>
     <string name="player_return_youtube_dislike">Počty Nepáči sa mi (Return YouTube Dislike)</string>
     <string name="color_scheme_dark_blue_oled">Tmavo-modrá (OLED)</string>
     <string name="header_live">Naživo</string>

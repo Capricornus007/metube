@@ -38,8 +38,6 @@
   <string name="video_buffer_size_low">낮음</string>
   <string name="video_buffer_size_med">중간</string>
   <string name="video_buffer_size_high">높음</string>
-  <string name="update_changelog">변경 내역</string>
-  <string name="install_update">업데이트 설치</string>
   <string name="section_is_empty">이곳에는 아무것도 없어요.</string>
   <string name="dialog_add_to_playlist">재생 목록에서 추가/제거</string>
   <string name="msg_signed_users_only">로그인된 사용자 전용</string>
@@ -77,9 +75,6 @@
   <string name="player_only_ui">UI 만</string>
   <string name="player_ui_and_pause">UI 및 일시 정지</string>
   <string name="player_only_pause">일시 정지만</string>
-  <string name="check_for_updates">업데이트 확인</string>
-  <string name="update_not_found">최신 버전을 사용하고 있습니다.</string>
-  <string name="update_in_progress">잠시만 기다려주세요...</string>
   <string name="player_ui_hide_behavior">UI 자동 숨김</string>
   <string name="option_never">안 함</string>
   <string name="side_panel_sections">섹션 설정</string>
@@ -92,9 +87,7 @@
   <string name="color_scheme_red_grey">붉은 회색</string>
   <string name="color_scheme_red">빨간색</string>
   <string name="color_scheme_dark_grey">어두운 회색</string>
-  <string name="disable_update_check">업데이트 확인 비활성화</string>
   <string name="show_again">다시 표시</string>
-  <string name="check_updates_auto">새 버전 알림</string>
   <string name="select_account_on_boot">시작 시 선택</string>
   <string name="player_other">기타</string>
   <string name="player_full_date">설명에 정확한 날짜 표시</string>
@@ -240,7 +233,6 @@
   <string name="settings_language_country">언어/국가</string>
   <string name="share_embed_link">임베드 링크 공유</string>
   <string name="card_text_scroll_factor">카드 텍스트 스크롤 속도</string>
-  <string name="preferred_update_source">업데이트 소스 선택</string>
   <string name="hide_shorts">구독한 채널에서 쇼츠 숨기기</string>
   <string name="hide_shorts_channel">채널에서 쇼츠 숨기기</string>
   <string name="key_remapping">키 다시 매핑</string>
@@ -346,7 +338,6 @@
   <string name="player_seek_confirmation_play">확인 있음 (찾으면서 재생)</string>
   <string name="hide_shorts_from_home">홈에서 쇼츠를 숨김</string>
   <string name="finish_on_disconnect">휴대폰/태블릿 연결을 해제한 후 앱 종료</string>
-  <string name="update_error">업데이트 오류</string>
   <string name="hide_shorts_from_history">기록에서 쇼츠 숨기기</string>
   <string name="hide_shorts_from_trending">트렌드에서 쇼츠 숨기기</string>
   <string name="disable_screensaver">화면 보호기 비활성화</string>
@@ -572,7 +563,6 @@
   <string name="old_home_look">홈 섹션의 이전 모습</string>
   <string name="old_channel_look">체널 페이지의 이전 모습</string>
   <string name="hide_shorts_everywhere">모든 곳에서 쇼츠 숨기기</string>
-  <string name="update_found">업데이트</string>
   <string name="volume_boost_warning">한도를 초과하여 설정하면 스피커가 손상될 수 있음</string>
   <string name="play_video_incognito">시크릿 모드로 플레이</string>
   <string name="header_kids_home">아동</string>
@@ -580,8 +570,6 @@
   <string name="header_trending">트렌드</string>
   <string name="screensaver">화면 보호기</string>
   <string name="player_screen_off_timeout">화면 자동 꺼짐 시간</string>
-  <string name="old_update_notifications">업데이트 알림의 이전 모습</string>
-  <string name="dialog_notification">팝업을 통해 업데이트 알림 받기</string>
   <string name="mark_as_watched">시청한 것으로 표시</string>
   <string name="player_ui_animations">제어판 애니메이션 활성화</string>
   <string name="player_likes_count">좋아요/싫어요 수 표시</string>
@@ -741,12 +729,10 @@
   <string name="player_unexpected_error">예기치 않은 재생 오류</string>
   <string name="msg_quality_pin_fallback">%1$s 오류, 이 동영상의 화질을 자동으로 설정했습니다</string>
   <string name="msg_audio_pin_fallback">오디오 트랙 오류, 이 동영상은 기본 오디오를 사용합니다</string>
-  <string name="update_check_failed">업데이트를 확인할 수 없습니다. 나중에 다시 시도하세요.</string>
   <string name="create_playlist_note">참고: YouTube 앱에서는 표시되지 않습니다</string>
   <string name="playlist_name_hint">재생목록 이름</string>
   <string name="remove_from_search_history">검색 기록에서 제거</string>
   <string name="play_from_start">처음부터 재생</string>
-  <string name="sidebar_notification">사이드바에 알림 표시</string>
   <string name="player_return_youtube_dislike">싫어요 수 (Return YouTube Dislike)</string>
   <string name="player_chapter_notification2">알림을 눌러 다음 챕터로 이동</string>
   <string name="color_scheme_dark_blue_oled">진한 파란색 (OLED)</string>

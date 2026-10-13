@@ -41,8 +41,6 @@
     <string name="video_buffer_size_med">Orta</string>
     <string name="video_buffer_size_high">Yüksek</string>
     <string name="video_buffer_size_highest">En yüksek</string>
-    <string name="update_changelog">Değişim günlüğü</string>
-    <string name="install_update">Güncellemeyi yükle</string>
     <string name="section_is_empty">Hata! Burada hiçbir şey yok.</string>
     <string name="dialog_add_to_playlist">Oynatma listesine Ekle/Kaldır</string>
     <string name="msg_signed_users_only">Sadece oturum açmış kullanıcılar</string>
@@ -82,9 +80,6 @@
     <string name="player_ui_and_pause">Arayüz ve duraklat</string>
     <string name="player_only_pause">Sadece duraklat</string>
     <string name="player_toggle_speed">Hızı açma/kapama</string>
-    <string name="check_for_updates">Güncellemeyi kontrol et</string>
-    <string name="update_not_found">En son sürümü kullanıyorsunuz</string>
-    <string name="update_in_progress">Bekleyin…</string>
     <string name="player_ui_hide_behavior">Kullanıcı arayüzünü otomatik gizle</string>
     <string name="option_never">Asla</string>
     <string name="side_panel_sections">Bölümleri ayarla</string>
@@ -97,9 +92,7 @@
     <string name="color_scheme_red_grey">Kırmızı-Gri</string>
     <string name="color_scheme_red">Kırmızı</string>
     <string name="color_scheme_dark_grey">Koyu Gri</string>
-    <string name="disable_update_check">Güncelleme kontrolünü devre dışı bırak</string>
     <string name="show_again">Tekrar göster</string>
-    <string name="check_updates_auto">Güncelleme hakkında bilgi ver</string>
     <string name="select_account_on_boot">Açılışta hesap seçimini göster</string>
     <string name="player_other">Çeşitli</string>
     <string name="player_full_date">Açıklamada tam tarih</string>
@@ -248,7 +241,6 @@
     <string name="settings_language_country">Dil/Ülke</string>
     <string name="share_embed_link">Yerleştirme video bağlantısını paylaş</string>
     <string name="card_text_scroll_factor">Kart metin kaydırma hızı</string>
-    <string name="preferred_update_source">Güncelleme kaynağını seç</string>
     <string name="hide_shorts">Shortsları Abonelikler\'de gizle</string>
     <string name="hide_shorts_channel">Shortsları Kanalda gizle</string>
     <string name="key_remapping">Tuş yeniden atama</string>
@@ -355,7 +347,6 @@
     <string name="player_seek_confirmation_play">Onay ile (ararken oynat)</string>
     <string name="hide_shorts_from_home">Shortsları Ana Sayfa\'da gizle</string>
     <string name="finish_on_disconnect">Telefon bağlantısı kesildiğinde uygulamayı sonlandır</string>
-    <string name="update_error">Güncelleme hatası</string>
     <string name="hide_shorts_from_search">Shortsları Arama\'te gizle</string>
     <string name="hide_shorts_from_history">Shortsları Geçmiş\'te gizle</string>
     <string name="hide_shorts_from_trending">Shortsları Trendler\'de gizle</string>
@@ -589,7 +580,6 @@
     <string name="old_home_look">Ana Sayfa bölümünün eski görünümü</string>
     <string name="old_channel_look">Kanal sayfasının eski görünümü</string>
     <string name="hide_shorts_everywhere">Shortsları her yerde gizle</string>
-    <string name="update_found">Güncelleme</string>
     <string name="volume_boost_warning">Sınırın üzerindeki herhangi bir ayar hoparlörlere zarar verebilir</string>
     <string name="play_video_incognito">Gizli oynat</string>
     <string name="play_from_start">Baştan oyna</string>
@@ -598,9 +588,6 @@
     <string name="header_trending">Trendler</string>
     <string name="screensaver">Ekran koruyucu</string>
     <string name="player_screen_off_timeout">Ekran kapatma zaman aşımı</string>
-    <string name="old_update_notifications">Güncelleme bildirimlerinin eski görünümü</string>
-    <string name="sidebar_notification">Bildirimi kenar çubuğunda göster</string>
-    <string name="dialog_notification">Açılır iletişim kutusuyla güncelleme hakkında bilgi ver</string>
     <string name="mark_as_watched">İzlendi olarak işaretle</string>
     <string name="player_ui_animations">Kontrol paneli animasyonlarını etkinleştir</string>
     <string name="player_likes_count">Beğenme/Beğenmeme sayısını göster</string>
@@ -776,7 +763,6 @@
     <string name="msg_player_no_connection_tap">Bağlantı yok — yeniden denemek için oynatmaya dokunun</string>
     <string name="msg_quality_pin_fallback">%1$s başarısız — bu video için kalite Oto olarak ayarlandı</string>
     <string name="msg_audio_pin_fallback">Ses parçası başarısız — bu video için varsayılan ses kullanılıyor</string>
-    <string name="update_check_failed">Güncellemeler denetlenemedi. Daha sonra yeniden deneyin.</string>
     <string name="playlist_name_hint">Oynatma listesi adı</string>
     <string name="player_return_youtube_dislike">Dislike sayıları (Return YouTube Dislike)</string>
     <string name="header_live">Canlı</string>

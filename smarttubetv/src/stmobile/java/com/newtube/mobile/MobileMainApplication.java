@@ -696,26 +696,6 @@ public class MobileMainApplication extends MainApplication {
         // in the You panel, Set-up sections or Boot to section (SidebarService). Prefs untouched.
         com.liskovsoft.smartyoutubetv2.common.app.presenters.service.SidebarService.setNotificationsSectionHidden(true);
 
-        // UPDATES (mobile-only): the launch check and Settings > About > Check for updates go to the
-        // phone's update sheet - notes first, download on Update with progress, then the installer -
-        // instead of the TV flow that downloaded the APK in silence and pinned an "Update" section.
-        // TV never calls this (AppUpdatePresenter). A -Pfdroid build has no updater at all.
-        com.liskovsoft.smartyoutubetv2.common.app.presenters.dialogs.AppUpdatePresenter.setInAppUpdatesDisabled(
-                !com.liskovsoft.smartyoutubetv2.tv.BuildConfig.IN_APP_UPDATES);
-        com.liskovsoft.smartyoutubetv2.common.app.presenters.dialogs.AppUpdatePresenter.setPhoneUpdates(
-                new com.liskovsoft.smartyoutubetv2.common.app.presenters.dialogs.AppUpdatePresenter.PhoneUpdates() {
-                    @Override
-                    public void checkOnLaunch(Context context) {
-                        com.newtube.mobile.update.AppUpdates.instance(MobileMainApplication.this).checkOnLaunch();
-                    }
-
-                    @Override
-                    public void showUpdateScreen(Context context) {
-                        com.newtube.mobile.ui.update.MobileUpdateActivity.startCheck(
-                                context != null ? context : MobileMainApplication.this);
-                    }
-                });
-
         // FEED FIRST-PAINT (mobile-only, round 2): Home's eager row-pad continuations exist to
         // fill short TV shelf rows to MIN_ROW_GROUP_SIZE=5; the phone flattens every row into one
         // grid, so they were ~6 invisible serial /browse continuations (~350KB) racing the first

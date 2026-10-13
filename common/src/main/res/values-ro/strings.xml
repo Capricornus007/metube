@@ -36,8 +36,6 @@
   <string name="video_buffer_size_low">Mic</string>
   <string name="video_buffer_size_med">Mediu</string>
   <string name="video_buffer_size_high">Mare</string>
-  <string name="update_changelog">Ce este nou</string>
-  <string name="install_update">Instalează Actualizare</string>
   <string name="section_is_empty">Hopa! Nu-i nimic aici.</string>
   <string name="dialog_add_to_playlist">Adaugă în lista de redare</string>
   <string name="msg_signed_users_only">Trebuie să fi conectat</string>
@@ -75,9 +73,6 @@
   <string name="player_only_ui">Doar interfață</string>
   <string name="player_ui_and_pause">Interfață și pauză</string>
   <string name="player_only_pause">Doar pauză</string>
-  <string name="check_for_updates">Verifică dacă sunt actualizări</string>
-  <string name="update_not_found">Folosești ultima versiune</string>
-  <string name="update_in_progress">Așteaptă…</string>
   <string name="player_ui_hide_behavior">Ascundere Interfață automată</string>
   <string name="option_never">Niciodată</string>
   <string name="side_panel_sections">Setează secțiunile</string>
@@ -92,9 +87,7 @@
   <string name="color_scheme_red_grey">Roșu-gri</string>
   <string name="color_scheme_red">Roșu</string>
   <string name="color_scheme_dark_grey">Gri închis</string>
-  <string name="disable_update_check">Dezactivați verificarea actualizărilor</string>
   <string name="show_again">Arată din nou</string>
-  <string name="check_updates_auto">Notificați despre actualizări</string>
   <string name="select_account_on_boot">Afișați selecția contului la pornire</string>
   <string name="player_other">Diverse</string>
   <string name="player_full_date">Data exactă din descriere</string>
@@ -240,9 +233,8 @@
   <string name="settings_language_country">Limba/Țara</string>
   <string name="share_embed_link">Partajați linkul de încorporare</string>
   <string name="card_text_scroll_factor">Viteza de derulare a textului cardului</string>
-  <string name="preferred_update_source">Selectați sursa de actualizare</string>
-  <string name="hide_shorts">Ascundeți shorts din abonamente</string>
-  <string name="hide_shorts_channel">Ascundeți shorts de pe canal</string>
+  <string name="hide_shorts">Ascundeți Shorts din abonamente</string>
+  <string name="hide_shorts_channel">Ascundeți Shorts de pe canal</string>
   <string name="key_remapping">Remaparea cheilor</string>
   <string name="screen_dimming">Întunecarea ecranului</string>
   <string name="removed_from_playback_queue">Eliminat din coada de redare</string>
@@ -346,7 +338,6 @@
   <string name="player_seek_confirmation_play">Cu confirmare (redare în timp ce căutați)</string>
   <string name="hide_shorts_from_home">Ascundeți shorts din Acasă</string>
   <string name="finish_on_disconnect">Închideți aplicația după deconectarea telefonului/tabletei</string>
-  <string name="update_error">Eroare de actualizare</string>
   <string name="hide_shorts_from_history">Ascundeți shorts din Istoric</string>
   <string name="hide_shorts_from_trending">Ascundeți shorts din Tendințe</string>
   <string name="disable_screensaver">Dezactivați economizatorul de ecran</string>
@@ -573,7 +564,6 @@
   <string name="old_home_look">Aspectul vechi al secțiunii Acasă</string>
   <string name="old_channel_look">Aspectul vechi a paginii Canal</string>
   <string name="hide_shorts_everywhere">Ascundeți shorts peste tot</string>
-  <string name="update_found">Actualizați</string>
   <string name="volume_boost_warning">Orice setări care depășesc limita pot deteriora difuzoarele</string>
   <string name="play_video_incognito">Redare în incognito</string>
   <string name="header_kids_home">Copii</string>
@@ -581,8 +571,6 @@
   <string name="screensaver">Economizor de ecran</string>
   <string name="player_section_playlist">Utilizați conținutul secțiunii curente ca listă de redare</string>
   <string name="player_screen_off_timeout">Expirare oprire ecran</string>
-  <string name="old_update_notifications">Aspectul vechi al notificărilor de actualizare</string>
-  <string name="dialog_notification">Notificați despre actualizări printr-un dialog pop-up</string>
   <string name="mark_as_watched">Marcați ca vizionat</string>
   <string name="player_ui_animations">Activați animațiile în panoului de control</string>
   <string name="player_likes_count">Afișați numărul de aprecieri/neaprecieri</string>
@@ -699,7 +687,6 @@
   <string name="context_menu_sorting">Sortarea meniului contextual</string>
   <string name="msg_quality_pin_fallback">%1$s în eroare — calitatea a fost setată pe Auto pentru acest videoclip</string>
   <string name="msg_audio_pin_fallback">Pista audio în eroare — se folosește audio implicit pentru acest videoclip</string>
-  <string name="update_check_failed">Verificarea actualizărilor a eșuat. Încercați mai târziu.</string>
   <string name="hide_shorts_from_search">Ascundeți Shorts din rezultatele căutării</string>
   <string name="remove_playlist_fmt">Eliminați definitiv %s\?</string>
   <string name="create_playlist_note">NOTĂ: Nu va fi vizibilă în aplicația YouTube</string>
@@ -709,7 +696,6 @@
   <string name="video_flip">Întoarce în oglindă</string>
   <string name="remove_from_search_history">Eliminați din istoricul căutărilor</string>
   <string name="play_from_start">Redați de la început</string>
-  <string name="sidebar_notification">Afișați notificarea în bara laterală</string>
   <string name="player_return_youtube_dislike">Număr de neaprecieri (Return YouTube Dislike)</string>
   <string name="player_chapter_notification2">Comutați la capitolul următor apăsând notificarea</string>
   <string name="color_scheme_dark_blue_oled">Albastru închis (OLED)</string>

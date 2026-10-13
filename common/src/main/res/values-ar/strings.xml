@@ -35,8 +35,6 @@
   <string name="video_buffer_size_low">منخفض</string>
   <string name="video_buffer_size_med">متوسط</string>
   <string name="video_buffer_size_high">مرتفع</string>
-  <string name="update_changelog">سجل التغييرات</string>
-  <string name="install_update">تثبيت التحديث</string>
   <string name="section_is_empty">عفوًا! لا يوجد شي هنا</string>
   <string name="dialog_add_to_playlist">إضافة/إزالة من قائمة التشغيل</string>
   <string name="msg_signed_users_only">المستخدمون المسجلون فقط</string>
@@ -75,9 +73,6 @@
   <string name="player_only_ui">واجهة المستخدم فقط</string>
   <string name="player_ui_and_pause">واجهة المستخدم وإيقاف الفيديو</string>
   <string name="player_only_pause">إيقاف الفيديو فقط</string>
-  <string name="check_for_updates">التحقق من التحديثات</string>
-  <string name="update_not_found">أنت تستخدم الإصدار الأحدث</string>
-  <string name="update_in_progress">انتظر…</string>
   <string name="player_ui_hide_behavior">إخفاء واجهة المستخدم تلقائيًا</string>
   <string name="option_never">مطلقًا</string>
   <string name="side_panel_sections">رتِّب الأقسام</string>
@@ -90,9 +85,7 @@
   <string name="color_scheme_red_grey">أحمر رمادي</string>
   <string name="color_scheme_red">أحمر</string>
   <string name="color_scheme_dark_grey">رمادي داكن</string>
-  <string name="disable_update_check">تعطيل التحقق من التحديثات</string>
   <string name="show_again">عرض مرة أخرى</string>
-  <string name="check_updates_auto">إشعار بتوفر تحديث جديد</string>
   <string name="select_account_on_boot">عرض اختيار الحساب عند بدء التشغيل</string>
   <string name="player_other">خيارات متفرقة</string>
   <string name="player_full_date">تاريخ دقيق في الوصف</string>
@@ -221,7 +214,6 @@
   <string name="settings_language_country">اللغة/الدولة</string>
   <string name="share_embed_link">مشاركة رابط التضمين</string>
   <string name="card_text_scroll_factor">سرعة تمرير نص البطاقة</string>
-  <string name="preferred_update_source">اختر مصدر التحديثات</string>
   <string name="hide_shorts">إخفاء فيديوهات Shorts من الاشتراكات</string>
   <string name="key_remapping">إعادة ترتيب الأزرار</string>
   <string name="screen_dimming">تعتيم الشاشة</string>
@@ -315,7 +307,6 @@
   <string name="player_seek_confirmation_play">مع التأكيد (تشغيل أثناء التسريع)</string>
   <string name="hide_shorts_from_home">إخفاء فيديوهات Shorts من القائمة الرئيسية</string>
   <string name="finish_on_disconnect">أغلق التطبيق بعد فصل الجوّال/الجهاز اللوحي</string>
-  <string name="update_error">خطأ في التحديث</string>
   <string name="hide_shorts_from_history">إخفاء فيديوهات Shorts من السجلّ</string>
   <string name="disable_screensaver">تعطيل شاشة التوقف</string>
   <string name="player_ok_button_behavior">وظيفة زر OK</string>
@@ -543,7 +534,6 @@
   <string name="audio_language">لغة الصوت</string>
   <string name="old_home_look">المظهر القديم لقسم الصفحة الرئيسية</string>
   <string name="hide_shorts_everywhere">إخفاء فيديوهات Shorts في كل مكان</string>
-  <string name="update_found">تحديث</string>
   <string name="volume_boost_warning">قد يؤدي تجاوز الحد المسموح به إلى إتلاف مكبرات الصوت</string>
   <string name="play_video_incognito">التشغيل بوضع التصفّح المتخفي</string>
   <string name="header_kids_home">أطفال</string>
@@ -551,7 +541,6 @@
   <string name="header_trending">المحتوى الرائج</string>
   <string name="screensaver">شاشة التوقف</string>
   <string name="player_screen_off_timeout">مهلة إيقاف تشغيل الشاشة</string>
-  <string name="old_update_notifications">المظهر القديم لإشعارات التحديث</string>
   <string name="mark_as_watched">وضع علامة كمشاهد</string>
   <string name="player_likes_count">عرض عدد الإعجابات/عدم الإعجاب</string>
   <string name="sorting_alphabetically2">أبجديًا (معاينات سريعة ومتحركة)</string>
@@ -575,7 +564,6 @@
   <string name="disable_history">تعطيل السجلّ</string>
   <string name="enable_history">تمكين السجلّ</string>
   <string name="player_network_stack">محرك الشبكة</string>
-  <string name="dialog_notification">عرض إشعار بالتحديثات من خلال نافذة منبثقة</string>
   <string name="default_stack_desc">محرك الشبكة المدمج. قد يكون لهذا المحرك استقرار أفضل في بعض الحالات.</string>
   <string name="item_postion">موضع</string>
   <string name="screensaver_timout">مهلة شاشة التوقف</string>
@@ -717,7 +705,6 @@
   <string name="once_a_day">مرة واحدة يوميًا</string>
   <string name="once_a_week">مرة واحدة أسبوعيًا</string>
   <string name="once_a_month">مرة واحدة شهريًا</string>
-  <string name="sidebar_notification">عرض الإشعارات في الشريط الجانبي</string>
   <string name="player_quick_shorts_skip_alt">تخطي Shorts باستخدام الأزرار الأعلى/الأسفل</string>
   <string name="player_quick_skip_videos_alt">تخطي الفيديوهات العادية باستخدام الأزرار الأعلى/الأسفل</string>
   <string name="prefer_google_dns">تفضيل Google DNS</string>
@@ -777,7 +764,6 @@
   <string name="msg_player_no_connection_tap">لا يوجد اتصال — انقر على التشغيل لإعادة المحاولة</string>
   <string name="msg_quality_pin_fallback">فشل %1$s — تم ضبط الجودة على تلقائي لهذا الفيديو</string>
   <string name="msg_audio_pin_fallback">فشل مسار الصوت — يتم استخدام الصوت الافتراضي لهذا الفيديو</string>
-  <string name="update_check_failed">تعذّر التحقق من التحديثات. حاول لاحقًا.</string>
   <string name="playlist_name_hint">اسم قائمة التشغيل</string>
   <string name="player_return_youtube_dislike">عدد عدم الإعجاب (Return YouTube Dislike)</string>
   <string name="header_live">مباشر</string>

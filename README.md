@@ -22,14 +22,14 @@ Get the APK for your phone from [Releases](https://github.com/yashoncode/metube/
 | Older phones (32-bit) | `MeTube_<version>_armeabi-v7a.apk` |
 | Not sure | `MeTube_<version>_universal.apk` |
 
-Android 7.0 or later. MeTube has its own app id (`io.github.yashoncode.metube`), so it installs alongside NewTube or SmartTube.
+Android 7.0 or later. MeTube has its own app id (`io.github.capricornus007.metube`), so it installs alongside NewTube or SmartTube.
 
 ## What MeTube changes
 
 - **Floating glass.** The bottom navigation is a frosted glass capsule floating over the page. It shows a live, saturated blur of the content behind it with fine grain and a bright top rim. On Android 13 and later the edge also bends the content like a lens, with slight colour fringing. On Android 7 to 11, which can't sample what's behind a view, it shows a solid tint instead. The code is in `smarttubetv/src/stmobile/java/com/newtube/mobile/ui/common/GlassView.java`.
 - **New look.** A dark page (`#0B0B0E`), a red accent (`#FF453A`), large tab titles, a brand row with the actions in a glass pill, 20dp-rounded thumbnails, and glass action pills and cards on the watch page.
 - **Dark theme by default.** Light theme is still available in Settings.
-- **Branding.** MeTube name, app id and APK names. The in-app updater checks this repository's releases.
+- **Branding.** MeTube name, app id and APK names. Updates are installed by hand (download a new APK); the app no longer updates itself.
 
 ## Build
 

@@ -41,8 +41,6 @@
   <string name="video_buffer_size_med">Médio</string>
   <string name="video_buffer_size_high">Alto</string>
   <string name="video_buffer_size_highest">Mais alto</string>
-  <string name="update_changelog">Registro de alterações</string>
-  <string name="install_update">Instalar atualização</string>
   <string name="section_is_empty">Ops! Não há nada aqui</string>
   <string name="dialog_add_to_playlist">Adicionar/Remover da lista de reprodução (playlist)</string>
   <string name="msg_signed_users_only">Apenas usuários logados</string>
@@ -82,9 +80,6 @@
   <string name="player_ui_and_pause">Interface e pausar</string>
   <string name="player_only_pause">Somente pausar</string>
   <string name="player_toggle_speed">Toggle speed on/off</string>
-  <string name="check_for_updates">Verificar se há atualizações</string>
-  <string name="update_not_found">Você já está utilizando a versão mais recente</string>
-  <string name="update_in_progress">Aguarde…</string>
   <string name="player_ui_hide_behavior">Ocultar automaticamente a interface</string>
   <string name="option_never">Nunca</string>
   <string name="side_panel_sections">Adicionar ou excluir seções</string>
@@ -97,9 +92,7 @@
   <string name="color_scheme_red_grey">Vermelho e cinza</string>
   <string name="color_scheme_red">Vermelho</string>
   <string name="color_scheme_dark_grey">Cinza escuro</string>
-  <string name="disable_update_check">Desativar a verificação de atualizações</string>
   <string name="show_again">Mostrar novamente</string>
-  <string name="check_updates_auto">Notificar sobre novas versões</string>
   <string name="select_account_on_boot">Selecionar na inicialização</string>
   <string name="player_other">Outras configurações</string>
   <string name="player_full_date">Data precisa na descrição</string>
@@ -247,7 +240,6 @@
   <string name="settings_language_country">Idioma/País</string>
   <string name="share_embed_link">Compartilhar link de incorporação</string>
   <string name="card_text_scroll_factor">Velocidade de rolagem do texto da miniatura</string>
-  <string name="preferred_update_source">Selecionar a fonte de atualização</string>
   <string name="hide_shorts">Ocultar os shorts (vídeos curtos) nas suas inscrições</string>
   <string name="hide_shorts_channel">Ocultar os shorts (vídeos curtos) nos canais</string>
   <string name="key_remapping">Remapeamento de botões</string>
@@ -354,7 +346,6 @@
   <string name="player_seek_confirmation_play">Com confirmação (reproduz enquanto avança/retrocede)</string>
   <string name="hide_shorts_from_home">Ocultar os shorts (vídeos curtos) na seção \"Início\"</string>
   <string name="finish_on_disconnect">Fechar o aplicativo após desconectar o telefone/tablet</string>
-  <string name="update_error">Erro de atualização</string>
   <string name="hide_shorts_from_search">Ocultar os shorts (vídeos curtos) nos resultados da pesquisa</string>
   <string name="hide_shorts_from_history">Ocultar os shorts (vídeos curtos) na seção \"Histórico\"</string>
   <string name="hide_shorts_from_trending">Ocultar os shorts (vídeos curtos) na seção \"Em alta\"</string>
@@ -587,7 +578,6 @@
   <string name="old_home_look">Voltar para a aparência antiga da seção \"Início\"</string>
   <string name="old_channel_look">Voltar para a aparência antiga da seção \"Canal\"</string>
   <string name="hide_shorts_everywhere">Ocultar os shorts (vídeos curtos) em todos os lugares</string>
-  <string name="update_found">Atualização</string>
   <string name="volume_boost_warning">Qualquer configuração acima do limite pode potencialmente danificar os alto-falantes</string>
   <string name="play_video_incognito">Reproduzir de forma anônima</string>
   <string name="play_from_start">Play from start</string>
@@ -596,8 +586,6 @@
   <string name="header_trending">Em alta</string>
   <string name="screensaver">Protetor de tela</string>
   <string name="player_screen_off_timeout">Tempo de desligamento/desativação da tela</string>
-  <string name="old_update_notifications">Voltar para a aparência antiga das notificações de atualização</string>
-  <string name="dialog_notification">Notificar sobre uma atualização com um diálogo pop-up</string>
   <string name="mark_as_watched">Marcar como assistido</string>
   <string name="player_ui_animations">Habilitar animações no painel de controle</string>
   <string name="player_likes_count">Exibir a quantidade de Gostei/Não Gostei</string>
@@ -746,7 +734,6 @@
   <string name="action_debug_info">Informações de depuração</string>
   <string name="player_unexpected_error">Erro inesperado durante a reprodução</string>
   <string name="remove_from_search_history">Remover do histórico de pesquisa</string>
-  <string name="sidebar_notification">Mostrar notificação na barra lateral</string>
   <string name="color_scheme_dark_blue_oled">Azul Escuro (OLED)</string>
   <string name="header_downloads">Downloads</string>
   <string name="dialog_download">Baixar</string>
@@ -770,7 +757,6 @@
   <string name="msg_player_no_connection_tap">Sem conexão — toque em reproduzir para tentar</string>
   <string name="msg_quality_pin_fallback">Falha em %1$s — qualidade ajustada para Automática neste vídeo</string>
   <string name="msg_audio_pin_fallback">Falha na faixa de áudio — usando o áudio padrão neste vídeo</string>
-  <string name="update_check_failed">Não foi possível verificar atualizações. Tente mais tarde.</string>
   <string name="playlist_name_hint">Nome da lista de reprodução</string>
   <string name="player_return_youtube_dislike">Contagem de \'Não gostei\' (Return YouTube Dislike)</string>
   <string name="header_live">Ao vivo</string>

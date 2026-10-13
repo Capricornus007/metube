@@ -35,8 +35,6 @@
     <string name="video_buffer_size_low">Lite</string>
     <string name="video_buffer_size_med">Medium</string>
     <string name="video_buffer_size_high">Stort</string>
-    <string name="update_changelog">Endringslogg</string>
-    <string name="install_update">Installer oppdatering</string>
     <string name="section_is_empty">Beklager! Det er ingenting her inne.</string>
     <string name="dialog_add_to_playlist">Legg til i spilleliste</string>
     <string name="msg_signed_users_only">Bare for innloggede brukere</string>
@@ -74,9 +72,6 @@
     <string name="player_only_ui">Bare brukergrensesnitt</string>
     <string name="player_ui_and_pause">Brukergrensesnitt og pause</string>
     <string name="player_only_pause">Bare pause</string>
-    <string name="check_for_updates">Se etter oppdateringer</string>
-    <string name="update_not_found">Du bruker den nyeste versjonen</string>
-    <string name="update_in_progress">Vent…</string>
     <string name="player_ui_hide_behavior">Skjul brukergrensesnittet automatisk</string>
     <string name="option_never">Aldri</string>
     <string name="side_panel_sections">Sidepanel seksjoner</string>
@@ -89,9 +84,7 @@
     <string name="color_scheme_red_grey">Rød-grå</string>
     <string name="color_scheme_red">Rød</string>
     <string name="color_scheme_dark_grey">Mørk</string>
-    <string name="disable_update_check">Deaktiver oppdaterings sjekk</string>
     <string name="show_again">Vis igjen</string>
-    <string name="check_updates_auto">Automatisk oppdatering</string>
     <string name="select_account_on_boot">Velg ved oppstart</string>
     <string name="player_other">Diverse</string>
     <string name="player_full_date">Nøyaktig dato i beskrivelse</string>
@@ -274,7 +267,6 @@
     <string name="dialog_select_country">Land</string>
     <string name="settings_language_country">Språk/Land</string>
     <string name="card_text_scroll_factor">Rullehastighet for korttekst</string>
-    <string name="preferred_update_source">Velg oppdateringskilde</string>
     <string name="hide_shorts">Skjul Shorts fra Abonnementer</string>
     <string name="hide_shorts_channel">Skjul Shorts fra en kanal</string>
     <string name="removed_from_playback_queue">Fjernet fra avspillingskø</string>
@@ -367,7 +359,6 @@
     <string name="player_seek_confirmation_play">Med bekreftelse (spill av under spoling)</string>
     <string name="hide_shorts_from_home">Skjul Shorts fra Hjem</string>
     <string name="finish_on_disconnect">Lukk appen etter å ha koblet fra telefonen/nettbrettet</string>
-    <string name="update_error">Oppdateringsfeil</string>
     <string name="hide_shorts_from_search">Skjul Shorts fra søkeresultatet</string>
     <string name="hide_shorts_from_history">Skjul Shorts fra Historikk</string>
     <string name="hide_shorts_from_trending">Skjul Shorts fra Populært</string>
@@ -585,7 +576,6 @@
     <string name="old_home_look">Gammelt utseende for Hjem-seksjonen</string>
     <string name="old_channel_look">Gammelt utseende for Kanalsiden</string>
     <string name="hide_shorts_everywhere">Skjul Shorts overalt</string>
-    <string name="update_found">Oppdatering</string>
     <string name="volume_boost_warning">Alle innstillinger over grensen kan potensielt skade høyttalerne</string>
     <string name="play_video_incognito">Spill av inkognito</string>
     <string name="header_kids_home">Barn</string>
@@ -593,8 +583,6 @@
     <string name="header_trending">Populært</string>
     <string name="screensaver">Skjermsparer</string>
     <string name="player_screen_off_timeout">Tidsavbrudd for skjerm av</string>
-    <string name="old_update_notifications">Gammelt utseende for oppdateringsvarsler</string>
-    <string name="dialog_notification">Varsle om oppdateringer med en popup-dialog</string>
     <string name="mark_as_watched">Merk som sett</string>
     <string name="player_ui_animations">Aktiver animasjoner i avspillerens brukergrensesnitt</string>
     <string name="player_likes_count">Vis antall «liker»/«liker ikke»</string>
@@ -734,12 +722,10 @@
     <string name="player_unexpected_error">Uventet avspillingsfeil</string>
     <string name="msg_quality_pin_fallback">%1$s feiler – kvaliteten er satt til Auto for denne videoen</string>
     <string name="msg_audio_pin_fallback">Lydsporet feiler – bruker standard lyd for denne videoen</string>
-    <string name="update_check_failed">Kunne ikke søke etter oppdateringer. Prøv igjen senere.</string>
     <string name="create_playlist_note">MERK: Den vises ikke i YouTube-appen</string>
     <string name="playlist_name_hint">Spillelistens navn</string>
     <string name="remove_from_search_history">Fjern fra søkehistorikken</string>
     <string name="play_from_start">Spill av fra starten</string>
-    <string name="sidebar_notification">Vis varsel i sidefeltet</string>
     <string name="player_return_youtube_dislike">Nedstemminger (Return YouTube Dislike)</string>
     <string name="player_chapter_notification2">Bytt til neste kapittel ved å trykke på varslingen</string>
     <string name="color_scheme_dark_blue_oled">Mørkeblå (OLED)</string>

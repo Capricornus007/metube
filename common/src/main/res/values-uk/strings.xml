@@ -41,8 +41,6 @@
     <string name="video_buffer_size_med">Середній</string>
     <string name="video_buffer_size_high">Високий</string>
     <string name="video_buffer_size_highest">Найвищий</string>
-    <string name="update_changelog">Зміни</string>
-    <string name="install_update">Встановити оновлення</string>
     <string name="section_is_empty">Тут нічого немає</string>
     <string name="dialog_add_to_playlist">Додати/Видалити із плейлиста</string>
     <string name="msg_signed_users_only">Необхідно увійти в обліковий запис</string>
@@ -82,9 +80,6 @@
     <string name="player_ui_and_pause">Інтерфейс та пауза</string>
     <string name="player_only_pause">Тільки пауза</string>
     <string name="player_toggle_speed">Увімкнення/вимкнення швидкості</string>
-    <string name="check_for_updates">Перевірити оновлення</string>
-    <string name="update_not_found">Ваша версія не потребує оновлення</string>
-    <string name="update_in_progress">Хвилинку…</string>
     <string name="player_ui_hide_behavior">Приховувати інтерфейс</string>
     <string name="option_never">Ніколи</string>
     <string name="side_panel_sections">Налаштувати розділи</string>
@@ -97,9 +92,7 @@
     <string name="color_scheme_red_grey">Червоно-сіра</string>
     <string name="color_scheme_red">Червона</string>
     <string name="color_scheme_dark_grey">Темно-сіра</string>
-    <string name="disable_update_check">Не перевіряти оновлення</string>
     <string name="show_again">Нагадувати постійно</string>
-    <string name="check_updates_auto">Повідомляти про оновлення</string>
     <string name="select_account_on_boot">Показувати діалог вибору облікового запису на старті застосунку</string>
     <string name="player_other">Різне</string>
     <string name="player_full_date">Точна дата в описі</string>
@@ -248,7 +241,6 @@
     <string name="settings_language_country">Мова/Країна</string>
     <string name="share_embed_link">Поділитися вбудованим посиланням</string>
     <string name="card_text_scroll_factor">Швидкість прокрутки тексту картки</string>
-    <string name="preferred_update_source">Вибрати джерело оновлень</string>
     <string name="hide_shorts">Приховувати короткі відео з Підписок</string>
     <string name="hide_shorts_channel">Приховувати короткі відео на каналі</string>
     <string name="key_remapping">Перевизначення клавіш</string>
@@ -351,7 +343,6 @@
     <string name="player_seek_confirmation_play">З підтвердженням (грати під час перемотування)</string>
     <string name="hide_shorts_from_home">Приховувати короткі відео з Головної</string>
     <string name="finish_on_disconnect">Завершувати застосунок після відключення телефону/планшету</string>
-    <string name="update_error">Помилка оновлення</string>
     <string name="hide_shorts_from_search">Приховувати короткі відео з Пошуку</string>
     <string name="hide_shorts_from_history">Приховувати короткі відео з Історії</string>
     <string name="hide_shorts_from_trending">Приховувати короткі відео з Трендів</string>
@@ -583,7 +574,6 @@
     <string name="old_home_look">Старий вигляд розділу Головна</string>
     <string name="old_channel_look">Старий вигляд сторінки Каналу</string>
     <string name="hide_shorts_everywhere">Приховувати короткі відео з усіх розділів</string>
-    <string name="update_found">Оновлення</string>
     <string name="volume_boost_warning">Налаштування, які перевищують ліміт можуть пошкодити динаміки</string>
     <string name="play_video_incognito">Відтворити анонімно</string>
     <string name="play_from_start">Відтворити спочатку</string>
@@ -592,9 +582,6 @@
     <string name="header_trending">Популярне</string>
     <string name="screensaver">Заставка</string>
     <string name="player_screen_off_timeout">Тайм-аут вимкнення екрана</string>
-    <string name="old_update_notifications">Старий вигляд сповіщень про оновлення</string>
-    <string name="sidebar_notification">Показувати сповіщення на бічній панелі</string>
-    <string name="dialog_notification">Повідомляти про оновлення вспливаючим діалогом</string>
     <string name="mark_as_watched">Відмітити як переглянуте</string>
     <string name="player_ui_animations">Увімкнути анімацію інтерфейсу плеєра</string>
     <string name="player_likes_count">Відображати кількість лайків/діслайків</string>
@@ -774,7 +761,6 @@
     <string name="screen_dimming_timeout_min">%s хв</string>
     <string name="msg_quality_pin_fallback">%1$s не працює — якість цього відео змінено на Авто</string>
     <string name="msg_audio_pin_fallback">Аудіодоріжка не працює — для цього відео використовується звук за замовчуванням</string>
-    <string name="update_check_failed">Не вдалося перевірити оновлення. Спробуйте пізніше.</string>
     <string name="playlist_name_hint">Назва плейлиста</string>
     <string name="playback_controls_repeat_pause">Повторювати паузу</string>
     <string name="playback_controls_repeat_list">Повторювати список</string>

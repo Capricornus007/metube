@@ -38,8 +38,6 @@
   <string name="video_buffer_size_low">Basse</string>
   <string name="video_buffer_size_med">Moyenne</string>
   <string name="video_buffer_size_high">Élevée</string>
-  <string name="update_changelog">Journal des modifications</string>
-  <string name="install_update">Installer la mise à jour</string>
   <string name="section_is_empty">Oups ! Il n\'y a rien ici.</string>
   <string name="dialog_add_to_playlist">Ajouter/Retirer d\'une playlist</string>
   <string name="msg_signed_users_only">Utilisateurs connectés uniquement</string>
@@ -77,9 +75,6 @@
   <string name="player_only_ui">Affiche l\'interface</string>
   <string name="player_ui_and_pause">Met en pause et affiche l\'interface</string>
   <string name="player_only_pause">Met en pause</string>
-  <string name="check_for_updates">Rechercher des mises à jour</string>
-  <string name="update_not_found">Vous utilisez déjà la dernière version</string>
-  <string name="update_in_progress">Chargement…</string>
   <string name="player_ui_hide_behavior">Masquage automatique de l\'interface</string>
   <string name="option_never">Jamais</string>
   <string name="side_panel_sections">Gestion des sections</string>
@@ -92,9 +87,7 @@
   <string name="color_scheme_red_grey">Rouge et gris</string>
   <string name="color_scheme_red">Rouge</string>
   <string name="color_scheme_dark_grey">Gris foncé</string>
-  <string name="disable_update_check">Désactiver la vérification des mises à jour</string>
   <string name="show_again">Afficher à nouveau</string>
-  <string name="check_updates_auto">Mise à jour automatique</string>
   <string name="select_account_on_boot">Sélection du compte au démarrage</string>
   <string name="player_other">Divers</string>
   <string name="player_full_date">Date complète dans la description</string>
@@ -233,7 +226,6 @@
   <string name="settings_language_country">Langue/Pays</string>
   <string name="share_embed_link">Partager le lien d\'intégration</string>
   <string name="card_text_scroll_factor">Vitesse de défilement du texte des tuiles</string>
-  <string name="preferred_update_source">Source de mise à jour</string>
   <string name="hide_shorts">Masquer les shorts des abonnements</string>
   <string name="key_remapping">Réaffectation des touches</string>
   <string name="screen_dimming">Réduction de la luminosité de l\'écran</string>
@@ -334,7 +326,6 @@
   <string name="player_seek_confirmation_play">Avec confirmation (continuer la lecture pendant la navigation)</string>
   <string name="hide_shorts_from_home">Masquer les shorts de l\'accueil</string>
   <string name="finish_on_disconnect">Fermer l\'application lorsque le téléphone est déconnecté</string>
-  <string name="update_error">Erreur de mise à jour</string>
   <string name="hide_shorts_from_history">Masquer les shorts de l\'historique</string>
   <string name="disable_screensaver">Désactiver l\'économiseur d\'écran</string>
   <string name="description_not_found">Description introuvable</string>
@@ -553,7 +544,6 @@
   <string name="audio_language">Langue de la piste audio</string>
   <string name="old_home_look">Utiliser l\'ancienne apparence pour la section Accueil</string>
   <string name="hide_shorts_everywhere">Masquer les shorts partout</string>
-  <string name="update_found">Mise à jour</string>
   <string name="volume_boost_warning">Les réglages dépassant la limite peuvent potentiellement endommager les haut-parleurs</string>
   <string name="play_video_incognito">Lire en mode navigation privée</string>
   <string name="header_kids_home">Enfants</string>
@@ -561,8 +551,6 @@
   <string name="header_trending">Tendances</string>
   <string name="screensaver">Économiseur d\'écran</string>
   <string name="player_screen_off_timeout">Délai avant extinction de l\'écran</string>
-  <string name="old_update_notifications">Utiliser l\'ancienne apparence pour les notifications de mise à jour</string>
-  <string name="dialog_notification">Avertir des nouvelles mises à jour à l\'aide d\'une boîte de dialogue contextuelle</string>
   <string name="mark_as_watched">Marquer comme vue</string>
   <string name="player_ui_animations">Activer l\'animation de la barre de contrôles</string>
   <string name="player_likes_count">Afficher le nombre de \"J\'aime\" et \"Je n\'aime pas\"</string>
@@ -732,7 +720,6 @@
   <string name="player_time_stretching">Étirement temporel audio</string>
   <string name="player_time_stretching_desc">Conserve une voix naturelle lors du changement de vitesse. Peut réduire significativement les performances sur certains appareils.</string>
   <string name="queue_respects_playback_mode">La file d\'attente respecte le mode de lecture</string>
-  <string name="sidebar_notification">Afficher la notification dans la barre latérale</string>
   <string name="ignore_short_segments">Ignorer les segments courts</string>
   <string name="install_bridge">Installer le pont ATV/Amazon</string>
   <string name="fix_empty_subs_and_channels">Corriger les abonnements et chaînes vides</string>
@@ -770,7 +757,6 @@
   <string name="msg_player_no_connection_tap">Pas de connexion — appuyez sur Lecture</string>
   <string name="msg_quality_pin_fallback">Échec de %1$s — qualité réglée sur Auto pour cette vidéo</string>
   <string name="msg_audio_pin_fallback">Échec de la piste audio — audio par défaut utilisé pour cette vidéo</string>
-  <string name="update_check_failed">Impossible de vérifier les mises à jour. Réessayez plus tard.</string>
   <string name="playlist_name_hint">Nom de la playlist</string>
   <string name="player_return_youtube_dislike">Nombre de Je n\'aime pas (Return YouTube Dislike)</string>
   <string name="header_live">En direct</string>
@@ -782,4 +768,5 @@
     <item quantity="one">%s seconde</item>
     <item quantity="other">%s secondes</item>
   </plurals>
+    <string name="cancel">Annuler</string>
 </resources>

@@ -40,8 +40,6 @@
   <string name="video_buffer_size_med">Gemiddeld</string>
   <string name="video_buffer_size_high">Hoog</string>
   <string name="video_buffer_size_highest">Hoogste</string>
-  <string name="update_changelog">Wijzigingslog</string>
-  <string name="install_update">Update installeren</string>
   <string name="section_is_empty">Deze rubriek is leeg.</string>
   <string name="dialog_add_to_playlist">Voeg toe/Verwijder uit afspeellijst</string>
   <string name="msg_signed_users_only">Enkel voor ingelogde gebruikers</string>
@@ -79,9 +77,6 @@
   <string name="player_only_ui">Speler weergeven</string>
   <string name="player_ui_and_pause">Speler weergeven en pauzeren</string>
   <string name="player_only_pause">Speler pauzeren</string>
-  <string name="check_for_updates">Controleren op update</string>
-  <string name="update_not_found">Geen update beschikbaar.</string>
-  <string name="update_in_progress">Even geduld…</string>
   <string name="player_ui_hide_behavior">Speler verbergen</string>
   <string name="option_never">Nooit</string>
   <string name="side_panel_sections">Rubrieken</string>
@@ -94,9 +89,7 @@
   <string name="color_scheme_red_grey">Rood-grijs</string>
   <string name="color_scheme_red">Rood</string>
   <string name="color_scheme_dark_grey">Donkergrijs</string>
-  <string name="disable_update_check">Niet automatisch updaten</string>
   <string name="show_again">Altijd weergeven</string>
-  <string name="check_updates_auto">Melding over nieuwe update</string>
   <string name="select_account_on_boot">Accountkeuze weergeven na opstarten</string>
   <string name="player_other">Overige instellingen</string>
   <string name="player_full_date">Publicatiedatum weergeven</string>
@@ -243,7 +236,6 @@
   <string name="settings_language_country">Taal/Land</string>
   <string name="share_embed_link">Insluitlink delen</string>
   <string name="card_text_scroll_factor">Scrollsnelheid van tekst</string>
-  <string name="preferred_update_source">Updatebron kiezen</string>
   <string name="hide_shorts">Shorts verbergen op abonnementenlijst</string>
   <string name="hide_shorts_channel">Shorts verbergen op kanaal</string>
   <string name="key_remapping">Toetstoewijzingen</string>
@@ -349,7 +341,6 @@
   <string name="player_seek_confirmation_play">Met bevestiging (spelen tijdens het zoeken)</string>
   <string name="hide_shorts_from_home">Shorts verbergen op Home</string>
   <string name="finish_on_disconnect">Voltooi de app nadat de telefoon/tablet is losgekoppeld</string>
-  <string name="update_error">Update fout</string>
   <string name="hide_shorts_from_history">Shorts verbergen bij geschiedenis</string>
   <string name="hide_shorts_from_trending">Shorts verbergen bij Trending</string>
   <string name="disable_screensaver">Schermbeveiliging uitschakelen</string>
@@ -577,7 +568,6 @@
   <string name="old_home_look">Oude look van de Home-sectie</string>
   <string name="old_channel_look">Oude look van de Kanaalpagina</string>
   <string name="hide_shorts_everywhere">Shorts overal verbergen</string>
-  <string name="update_found">Update</string>
   <string name="volume_boost_warning">Elke instelling boven de limiet kan potentieel schade aan de luidsprekers veroorzaken</string>
   <string name="play_video_incognito">Incognito afspelen</string>
   <string name="header_kids_home">Kinderen</string>
@@ -585,8 +575,6 @@
   <string name="header_trending">Trending</string>
   <string name="screensaver">Schermbeveiliging</string>
   <string name="player_screen_off_timeout">Scherm uit time-out</string>
-  <string name="old_update_notifications">Oude look van de updatemeldingen</string>
-  <string name="dialog_notification">Meld updates met een pop-updialoog</string>
   <string name="mark_as_watched">Markeren als bekeken</string>
   <string name="player_ui_animations">Animaties van het bedieningspaneel inschakelen</string>
   <string name="player_likes_count">Aantal likes/dislikes weergeven</string>
@@ -752,7 +740,6 @@
   <string name="context_menu_sorting">Sortering contextmenu</string>
   <string name="msg_quality_pin_fallback">%1$s werkt niet — kwaliteit voor deze video op Automatisch gezet</string>
   <string name="msg_audio_pin_fallback">Audiospoor werkt niet — standaardaudio voor deze video gebruikt</string>
-  <string name="update_check_failed">Kan niet controleren op updates. Probeer het later opnieuw.</string>
   <string name="remove_playlist_fmt">%s permanent verwijderen\?</string>
   <string name="create_playlist_note">Opmerking: niet zichtbaar in de YouTube-app</string>
   <string name="playlist_name_hint">Naam afspeellijst</string>
@@ -761,7 +748,6 @@
   <string name="network_stack">Voorkeur %s-netwerkstack</string>
   <string name="player_network_stack">Netwerkengine</string>
   <string name="play_from_start">Afspelen vanaf begin</string>
-  <string name="sidebar_notification">Melding weergeven in zijbalk</string>
   <string name="player_return_youtube_dislike">Aantal dislikes (Return YouTube Dislike)</string>
   <string name="player_chapter_notification2">Volgend hoofdstuk door op de melding te klikken</string>
   <string name="color_scheme_dark_blue_oled">Donkerblauw (OLED)</string>
@@ -785,4 +771,5 @@
     <item quantity="one">%s seconde</item>
     <item quantity="other">%s seconden</item>
   </plurals>
+    <string name="cancel">Annuleren</string>
 </resources>

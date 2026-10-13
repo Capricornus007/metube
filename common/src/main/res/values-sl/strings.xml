@@ -36,8 +36,6 @@
   <string name="video_buffer_size_low">Nizek</string>
   <string name="video_buffer_size_med">Srednji</string>
   <string name="video_buffer_size_high">Visok</string>
-  <string name="update_changelog">Seznam sprememb</string>
-  <string name="install_update">Namesti posodobitve</string>
   <string name="section_is_empty">Ups! Nič ni tukaj.</string>
   <string name="dialog_add_to_playlist">Dodaj na seznam predvajanja</string>
   <string name="msg_signed_users_only">Samo za prijavljene uporabnike</string>
@@ -75,9 +73,6 @@
   <string name="player_only_ui">Samo UI</string>
   <string name="player_ui_and_pause">UI in pavza</string>
   <string name="player_only_pause">Samo pavza</string>
-  <string name="check_for_updates">Preveri posodobitve</string>
-  <string name="update_not_found">Uporabljaš zadnjo verzijo</string>
-  <string name="update_in_progress">Počakaj…</string>
   <string name="player_ui_hide_behavior">Samodejno skrij UI</string>
   <string name="option_never">Nikoli</string>
   <string name="side_panel_sections">Nastavi kategorije</string>
@@ -90,9 +85,7 @@
   <string name="color_scheme_red_grey">Rdeče siva</string>
   <string name="color_scheme_red">Rdeča</string>
   <string name="color_scheme_dark_grey">Temno siva</string>
-  <string name="disable_update_check">Onemogoči preverjanje nove verzije</string>
   <string name="show_again">Pokaži ponovno</string>
-  <string name="check_updates_auto">Samodejno posodobi</string>
   <string name="select_account_on_boot">Izberi ob zagonu</string>
   <string name="player_other">Mešano</string>
   <string name="player_full_date">Točen datum v opisu</string>
@@ -352,7 +345,6 @@
   <string name="pin_channel">Dodaj kanal v stransko vrstico</string>
   <string name="unpin_group_from_sidebar">Odstrani skupino naročnin</string>
   <string name="share_embed_link">Deli povezavo za vdelavo</string>
-  <string name="preferred_update_source">Izberi vir posodobitev</string>
   <string name="hide_shorts">Skrij Shorts v naročninah</string>
   <string name="hide_shorts_channel">Skrij Shorts na kanalu</string>
   <string name="key_remapping">Prevezava tipk</string>
@@ -391,8 +383,6 @@
   <string name="player_seek_confirmation_pause">S potrditvijo (premor med previjanjem)</string>
   <string name="player_seek_confirmation_play">S potrditvijo (predvajanje med previjanjem)</string>
   <string name="hide_shorts_from_home">Skrij Shorts na začetnem zaslonu</string>
-  <string name="update_error">Napaka pri posodabljanju</string>
-  <string name="update_check_failed">Preverjanje posodobitev ni uspelo. Poskusi pozneje.</string>
   <string name="hide_shorts_from_search">Skrij Shorts v rezultatih iskanja</string>
   <string name="hide_shorts_from_history">Skrij Shorts v zgodovini</string>
   <string name="hide_shorts_from_trending">Skrij Shorts v razdelku V trendu</string>
@@ -612,7 +602,6 @@
   <string name="old_home_look">Star videz razdelka Domov</string>
   <string name="old_channel_look">Star videz strani kanala</string>
   <string name="hide_shorts_everywhere">Skrij Shorts povsod</string>
-  <string name="update_found">Posodobitev</string>
   <string name="volume_boost_warning">Nastavitve nad omejitvijo lahko poškodujejo zvočnike</string>
   <string name="play_video_incognito">Predvajaj anonimno</string>
   <string name="play_from_start">Predvajaj od začetka</string>
@@ -621,9 +610,6 @@
   <string name="header_trending">V trendu</string>
   <string name="screensaver">Varovanje zaslona</string>
   <string name="player_screen_off_timeout">Čakalni čas do izklopa zaslona</string>
-  <string name="old_update_notifications">Star videz obvestil o posodobitvah</string>
-  <string name="sidebar_notification">Prikaži obvestilo v stranski vrstici</string>
-  <string name="dialog_notification">Obvesti s pojavnim oknom</string>
   <string name="mark_as_watched">Označi kot ogledano</string>
   <string name="player_ui_animations">Omogoči animacije vmesnika predvajalnika</string>
   <string name="player_likes_count">Prikaži število všečkov/nevšečkov</string>

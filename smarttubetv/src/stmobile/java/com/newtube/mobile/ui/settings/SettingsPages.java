@@ -4,11 +4,9 @@ import android.content.Context;
 
 import androidx.annotation.NonNull;
 
-import com.liskovsoft.appupdatechecker2.AppUpdateChecker;
 import com.liskovsoft.mediaserviceinterfaces.oauth.Account;
 import com.liskovsoft.sharedutils.helpers.AppInfoHelpers;
 import com.liskovsoft.smartyoutubetv2.common.app.models.playback.ui.OptionItem;
-import com.liskovsoft.smartyoutubetv2.common.app.presenters.dialogs.AppUpdatePresenter;
 import com.liskovsoft.smartyoutubetv2.common.misc.DiagnosticLog;
 import com.liskovsoft.smartyoutubetv2.common.misc.MediaServiceManager;
 import com.liskovsoft.smartyoutubetv2.common.utils.Utils;
@@ -163,17 +161,7 @@ public final class SettingsPages {
     private static Page about(Context context) {
         List<SettingsRow> rows = new ArrayList<>();
 
-        if (AppUpdatePresenter.isInAppUpdatesDisabled()) {
-            // Store build (-Pfdroid): the version stays, the update row and switch go.
-            rows.add(SettingsRow.action(context.getString(R.string.mobile_settings_version), versionLine(context), page -> { }));
-        } else {
-            rows.add(SettingsRow.action(context.getString(R.string.check_for_updates), versionLine(context),
-                    page -> AppUpdatePresenter.instance(page.requireContext()).start(true)));
-            AppUpdateChecker checker = new AppUpdateChecker(context, null);
-            rows.add(SettingsRow.toggle(context.getString(R.string.check_updates_auto),
-                    context.getString(R.string.mobile_settings_update_notify_summary),
-                    checker::isUpdateCheckEnabled, checker::setUpdateCheckEnabled));
-        }
+        rows.add(SettingsRow.action(context.getString(R.string.mobile_settings_version), versionLine(context), page -> { }));
 
         rows.add(SettingsRow.divider());
         rows.add(SettingsRow.action(context.getString(R.string.diagnostic_log_send),

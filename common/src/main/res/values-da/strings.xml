@@ -35,8 +35,6 @@
   <string name="video_buffer_size_low">Lav</string>
   <string name="video_buffer_size_med">Mellem</string>
   <string name="video_buffer_size_high">Høj</string>
-  <string name="update_changelog">Ændringslog</string>
-  <string name="install_update">Installer opdatering</string>
   <string name="section_is_empty">Ups! Der er intet her.</string>
   <string name="dialog_add_to_playlist">Tilføj/fjern fra playliste</string>
   <string name="msg_signed_users_only">Kun registrerede brugere</string>
@@ -74,9 +72,6 @@
   <string name="player_only_ui">Kun UI</string>
   <string name="player_ui_and_pause">UI og pause</string>
   <string name="player_only_pause">Kun pause</string>
-  <string name="check_for_updates">Søg efter opdateringer</string>
-  <string name="update_not_found">Du bruger den nyeste version</string>
-  <string name="update_in_progress">Vent…</string>
   <string name="player_ui_hide_behavior">Skjul automatisk UI</string>
   <string name="option_never">Aldrig</string>
   <string name="side_panel_sections">Opsæt sektioner</string>
@@ -89,9 +84,7 @@
   <string name="color_scheme_red_grey">Rødgrå</string>
   <string name="color_scheme_red">Rød</string>
   <string name="color_scheme_dark_grey">Mørkegrå</string>
-  <string name="disable_update_check">Deaktiver opdateringstjek</string>
   <string name="show_again">Vis igen</string>
-  <string name="check_updates_auto">Underret om opdateringer</string>
   <string name="select_account_on_boot">Vælg konto ved opstart</string>
   <string name="player_other">Diverse</string>
   <string name="player_full_date">Nøjagtig dato i beskrivelsen</string>
@@ -199,7 +192,6 @@
   <string name="screen_dimming">Skærmdæmpning</string>
   <string name="key_remapping">Omlægning af taster</string>
   <string name="hide_shorts">Skjul shorts fra Abonnementer</string>
-  <string name="preferred_update_source">Vælg opdateringskilde</string>
   <string name="card_text_scroll_factor">Rullehastighed for korttekst</string>
   <string name="share_embed_link">Del indlejringslink</string>
   <string name="settings_language_country">Sprog/land</string>
@@ -320,7 +312,6 @@
   <string name="player_seek_confirmation_play">Med bekræftelse (afspil, mens du spoler)</string>
   <string name="hide_shorts_from_home">Skjul shorts fra Hjem</string>
   <string name="finish_on_disconnect">Luk SmartTube efter at have afbrudt telefonen/tabletten</string>
-  <string name="update_error">Opdateringsfejl</string>
   <string name="hide_shorts_from_history">Skjul shorts fra Historik</string>
   <string name="disable_screensaver">Deaktiver pauseskærm</string>
   <string name="color_scheme_blue">Blå</string>
@@ -352,8 +343,6 @@
   <string name="player_likes_count">Vis antal likes/dislikes</string>
   <string name="player_ui_animations">Aktiver animationer i afspillerens UI</string>
   <string name="mark_as_watched">Markér som set</string>
-  <string name="dialog_notification">Underret om opdateringer med en pop op-dialog</string>
-  <string name="old_update_notifications">Det gamle udseende af opdateringsnotifikationer</string>
   <string name="player_screen_off_timeout">Timeout for skærmdæmpning</string>
   <string name="screensaver">Pauseskærm</string>
   <string name="header_trending">Populært lige nu</string>
@@ -361,7 +350,6 @@
   <string name="header_kids_home">Børn</string>
   <string name="play_video_incognito">Afspil inkognito</string>
   <string name="volume_boost_warning">Indstillinger over 100% kan skade dine højtalere</string>
-  <string name="update_found">Opdater</string>
   <string name="hide_shorts_everywhere">Skjul shorts overalt</string>
   <string name="old_home_look">Det gamle udseende af Hjem-sektionen</string>
   <string name="audio_language">Lydsprog</string>
@@ -733,12 +721,10 @@
   <string name="player_unexpected_error">Uventet afspilningsfejl</string>
   <string name="msg_quality_pin_fallback">%1$s fejler, kvalitet sat til Auto for denne video</string>
   <string name="msg_audio_pin_fallback">Lydspor fejler, bruger standardlyd for denne video</string>
-  <string name="update_check_failed">Kunne ikke søge efter opdateringer. Prøv igen senere.</string>
   <string name="create_playlist_note">Bemærk: Den vises ikke i YouTube-appen</string>
   <string name="playlist_name_hint">Playlistenavn</string>
   <string name="remove_from_search_history">Fjern fra søgehistorik</string>
   <string name="play_from_start">Afspil fra starten</string>
-  <string name="sidebar_notification">Vis notifikation i sidepanelet</string>
   <string name="player_return_youtube_dislike">Antal dislikes (Return YouTube Dislike)</string>
   <string name="color_scheme_dark_blue_oled">Mørkeblå (OLED)</string>
   <string name="player_quick_shorts_skip_alt">Spring shorts over med op/ned-knapper</string>

@@ -45,8 +45,6 @@ So, make a copy of values-he and name it values-iw. Keep both in your structure.
     <string name="video_buffer_size_med">בינוני</string>
     <string name="video_buffer_size_high">גבוה</string>
     <string name="video_buffer_size_highest">הכי גבוה</string>
-    <string name="update_changelog">יומן שינויים</string>
-    <string name="install_update">התקנת עדכון</string>
     <string name="section_is_empty">אופס! אין כאן כלום</string>
     <string name="dialog_add_to_playlist">הוספה/הסרה מפלייליסט</string>
     <string name="msg_signed_users_only">משתמשים מחוברים בלבד</string>
@@ -86,9 +84,6 @@ So, make a copy of values-he and name it values-iw. Keep both in your structure.
     <string name="player_ui_and_pause">ממשק משתמש והפסקה</string>
     <string name="player_only_pause">הפסקה בלבד</string>
     <string name="player_toggle_speed">הפעלת/כיבוי מתג מהירות</string>
-    <string name="check_for_updates">בדיקת עדכונים</string>
-    <string name="update_not_found">ברשותך הגרסה העדכנית ביותר</string>
-    <string name="update_in_progress">נא להמתין…</string>
     <string name="player_ui_hide_behavior">הסתרה אוטומטית של ממשק המשתמש</string>
     <string name="option_never">לעולם לא</string>
     <string name="side_panel_sections">הגדרת מדורים</string>
@@ -101,9 +96,7 @@ So, make a copy of values-he and name it values-iw. Keep both in your structure.
     <string name="color_scheme_red_grey">אדום-אפור</string>
     <string name="color_scheme_red">אדום</string>
     <string name="color_scheme_dark_grey">אפור כהה</string>
-    <string name="disable_update_check">השבתת בדיקת עדכונים</string>
     <string name="show_again">הצגה שוב</string>
-    <string name="check_updates_auto">הודעה על עדכונים</string>
     <string name="select_account_on_boot">הצגת בחירת חשבון באתחול</string>
     <string name="player_other">שונות</string>
     <string name="player_full_date">תאריך מדויק בתיאור</string>
@@ -251,7 +244,6 @@ So, make a copy of values-he and name it values-iw. Keep both in your structure.
     <string name="settings_language_country">שפה/מדינה</string>
     <string name="share_embed_link">שיתוף קישור להטמעה</string>
     <string name="card_text_scroll_factor">מהירות גלילת טקסט של כרטיס</string>
-    <string name="preferred_update_source">בחירת מקור עדכון</string>
     <string name="hide_shorts">הסתרת Shorts מהמינויים</string>
     <string name="hide_shorts_channel">הסתרת Shorts מערוץ</string>
     <string name="key_remapping">מיפוי מקשים מחדש</string>
@@ -358,7 +350,6 @@ So, make a copy of values-he and name it values-iw. Keep both in your structure.
     <string name="player_seek_confirmation_play">עם אישור (ניגון בזמן דילוג)</string>
     <string name="hide_shorts_from_home">הסתרת Shorts מהבית</string>
     <string name="finish_on_disconnect">סגירת היישום לאחר ניתוק הטלפון/טאבלט</string>
-    <string name="update_error">שגיאת עדכון</string>
     <string name="hide_shorts_from_search">הסתרת Shorts מתוצאת החיפוש</string>
     <string name="hide_shorts_from_history">הסתרת Shorts מההיסטוריה</string>
     <string name="hide_shorts_from_trending">הסתרת Shorts מהמגמות</string>
@@ -591,7 +582,6 @@ So, make a copy of values-he and name it values-iw. Keep both in your structure.
     <string name="old_home_look">מראה ישן של מדור הבית</string>
     <string name="old_channel_look">מראה ישן של דף הערוץ</string>
     <string name="hide_shorts_everywhere">הסתרת Shorts בכל מקום</string>
-    <string name="update_found">עדכון</string>
     <string name="volume_boost_warning">כל הגדרה מעבר למגבלה עלולה באופן פוטנציאלי לגרום נזק לרמקולים</string>
     <string name="play_video_incognito">הפעלה בסתר</string>
     <string name="play_from_start">הפעלה מהתחלה</string>
@@ -600,9 +590,6 @@ So, make a copy of values-he and name it values-iw. Keep both in your structure.
     <string name="header_trending">מגמות</string>
     <string name="screensaver">שומר מסך</string>
     <string name="player_screen_off_timeout">פסק זמן לכיבוי מסך</string>
-    <string name="old_update_notifications">מראה ישן של הודעות העדכון</string>
-    <string name="sidebar_notification">הצגת התראה בסרגל צד</string>
-    <string name="dialog_notification">הודעה באמצעות דו-שיח קופץ</string>
     <string name="mark_as_watched">סימון כנצפה</string>
     <string name="player_ui_animations">הפעלת הנפשות בממשק המשתמש של הנגן</string>
     <string name="player_likes_count">הצגת ספירת \'אהבתי\'/\'לא אהבתי\'</string>
@@ -773,7 +760,6 @@ So, make a copy of values-he and name it values-iw. Keep both in your structure.
     <string name="player_unexpected_error">שגיאת נגן בלתי צפויה</string>
     <string name="msg_quality_pin_fallback">האיכות %1$s נכשלת — איכות הסרטון הוגדרה לאוטומטית</string>
     <string name="msg_audio_pin_fallback">רצף השמע נכשל — משתמשים בשמע ברירת המחדל לסרטון הזה</string>
-    <string name="update_check_failed">לא ניתן לבדוק עדכונים. נסו שוב מאוחר יותר.</string>
     <string name="playlist_name_hint">שם רשימת ההשמעה</string>
     <string name="remove_from_search_history">הסר מהיסטוריית החיפוש</string>
     <string name="player_return_youtube_dislike">ספירת \'לא אהבתי\' (Return YouTube Dislike)</string>

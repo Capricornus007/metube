@@ -38,8 +38,6 @@
   <string name="video_buffer_size_low">baix</string>
   <string name="video_buffer_size_med">Mitjana</string>
   <string name="video_buffer_size_high">Alt</string>
-  <string name="update_changelog">Registre de canvis</string>
-  <string name="install_update">Instal·leu l\'actualització</string>
   <string name="section_is_empty">Vaja! Aquí no hi ha res.</string>
   <string name="dialog_add_to_playlist">Afegeix/elimina de la llista de reproducció</string>
   <string name="msg_signed_users_only">Només usuaris signats</string>
@@ -77,9 +75,6 @@
   <string name="player_only_ui">Només IU</string>
   <string name="player_ui_and_pause">Interfície d\'usuari i pausa</string>
   <string name="player_only_pause">Només una pausa</string>
-  <string name="check_for_updates">Buscar actualitzacions</string>
-  <string name="update_not_found">Estàs utilitzant la darrera versió</string>
-  <string name="update_in_progress">Espera…</string>
   <string name="player_ui_hide_behavior">Oculta automàticament la IU</string>
   <string name="option_never">Mai</string>
   <string name="side_panel_sections">Seccions de muntatge</string>
@@ -92,9 +87,7 @@
   <string name="color_scheme_red_grey">Vermell-gris</string>
   <string name="color_scheme_red">Vermell</string>
   <string name="color_scheme_dark_grey">Gris fosc</string>
-  <string name="disable_update_check">Desactiva la comprovació d\'actualitzacions</string>
   <string name="show_again">Mostra de nou</string>
-  <string name="check_updates_auto">Notificar sobre la nova versió</string>
   <string name="select_account_on_boot">Seleccioneu a l\'arrencada</string>
   <string name="player_other">Misc</string>
   <string name="player_full_date">Data precisa a la descripció</string>
@@ -228,7 +221,6 @@
   <string name="settings_language_country">Idioma/País</string>
   <string name="share_embed_link">Comparteix l\'enllaç incrustat</string>
   <string name="card_text_scroll_factor">Velocitat de desplaçament del text de la targeta</string>
-  <string name="preferred_update_source">Seleccioneu la font d\'actualització</string>
   <string name="hide_shorts">Amaga els Shorts de les subscripcions</string>
   <string name="key_remapping">Reassignació de claus</string>
   <string name="screen_dimming">Atenuació de la pantalla</string>
@@ -325,8 +317,6 @@
   <string name="player_seek_confirmation_play">Amb confirmació (juga mentre busques)</string>
   <string name="hide_shorts_from_home">Amaga els Shorts de casa</string>
   <string name="finish_on_disconnect">Finalitzeu l\'aplicació després de desconnectar el telèfon/tauleta</string>
-  <string name="update_error">Error d\'actualització</string>
-  <string name="update_check_failed">No s\'han pogut cercar actualitzacions. Torna-ho a provar més tard.</string>
   <string name="hide_shorts_from_history">Amaga els Shorts de la història</string>
   <string name="disable_screensaver">Desactiva l\'estalvi de pantalla</string>
   <string name="description_not_found">No s\'ha trobat la descripció</string>
@@ -618,7 +608,6 @@
   <string name="old_home_look">Aspecte antic de la secció Inici</string>
   <string name="old_channel_look">Aspecte antic de la pàgina del canal</string>
   <string name="hide_shorts_everywhere">Amaga els Shorts a tot arreu</string>
-  <string name="update_found">Actualització</string>
   <string name="volume_boost_warning">Qualsevol configuració per sobre del límit pot fer malbé els altaveus</string>
   <string name="play_video_incognito">Reprodueix en mode privat</string>
   <string name="play_from_start">Reprodueix des de l\'inici</string>
@@ -626,9 +615,6 @@
   <string name="player_section_playlist">Fes servir el contingut de la secció actual com a llista de reproducció</string>
   <string name="screensaver">Estalvi de pantalla</string>
   <string name="player_screen_off_timeout">Temps d\'espera abans d\'apagar la pantalla</string>
-  <string name="old_update_notifications">Aspecte antic de les notificacions d\'actualització</string>
-  <string name="sidebar_notification">Mostra la notificació a la barra lateral</string>
-  <string name="dialog_notification">Notifica amb un diàleg emergent</string>
   <string name="mark_as_watched">Marca com a vist</string>
   <string name="player_ui_animations">Activa les animacions de la IU del reproductor</string>
   <string name="player_likes_count">Mostra el nombre de m\'agrada i no m\'agrada</string>

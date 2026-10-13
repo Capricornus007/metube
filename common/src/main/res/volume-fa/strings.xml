@@ -35,8 +35,6 @@
   <string name="video_buffer_size_low">پایین</string>
   <string name="video_buffer_size_med">متوسط</string>
   <string name="video_buffer_size_high">بالا</string>
-  <string name="update_changelog">تغییرات نسخه</string>
-  <string name="install_update">نصب بروزرسانی</string>
   <string name="section_is_empty">چیزی اینجا نیست.</string>
   <string name="dialog_add_to_playlist">افزودن/حذف از لیست پخش</string>
   <string name="msg_signed_users_only">فقط کاربران وارد شده</string>
@@ -75,9 +73,6 @@
   <string name="player_only_ui">فقط رابط کاربری</string>
   <string name="player_ui_and_pause">رابط کاربری و توقف ویدیو</string>
   <string name="player_only_pause">فقط توقف ویدیو</string>
-  <string name="check_for_updates">بررسی بروزرسانی‌ها</string>
-  <string name="update_not_found">شما از آخرین نسخه استفاده می‌کنید</string>
-  <string name="update_in_progress">لطفا صبر کنید…</string>
   <string name="player_ui_hide_behavior">پنهان کردن خودکار رابط کاربری</string>
   <string name="option_never">هرگز</string>
   <string name="side_panel_sections">مرتب‌سازی بخش‌ها</string>
@@ -90,9 +85,7 @@
   <string name="color_scheme_red_grey">قرمز خاکستری</string>
   <string name="color_scheme_red">قرمز</string>
   <string name="color_scheme_dark_grey">خاکستری تیره</string>
-  <string name="disable_update_check">غیرفعال کردن بررسی بروزرسانی</string>
   <string name="show_again">نمایش مجدد</string>
-  <string name="check_updates_auto">اعلان هنگام وجود بروزرسانی جدید</string>
   <string name="select_account_on_boot">نمایش انتخاب حساب هنگام راه‌اندازی</string>
   <string name="player_other">گزینه‌های متفرقه</string>
   <string name="player_full_date">تاریخ دقیق در توضیحات</string>
@@ -221,7 +214,6 @@
   <string name="settings_language_country">زبان/کشور</string>
   <string name="share_embed_link">اشتراک‌گذاری لینک جاسازی</string>
   <string name="card_text_scroll_factor">سرعت اسکرول متن کارت</string>
-  <string name="preferred_update_source">انتخاب منبع بروزرسانی</string>
   <string name="hide_shorts">پنهان کردن کوته ویدیوها از اشتراک‌ها</string>
   <string name="key_remapping">تنظیم مجدد دکمه‌ها</string>
   <string name="screen_dimming">تاریک کردن صفحه</string>
@@ -315,7 +307,6 @@
   <string name="player_seek_confirmation_play">با تأیید (پخش هنگام جستجو)</string>
   <string name="hide_shorts_from_home">پنهان کردن کوته ویدیوها از صفحه اصلی</string>
   <string name="finish_on_disconnect">بستن برنامه پس از قطع اتصال موبایل/تبلت</string>
-  <string name="update_error">خطا در بروزرسانی</string>
   <string name="hide_shorts_from_history">پنهان کردن کوته ویدیوها از تاریخچه</string>
   <string name="disable_screensaver">غیرفعال کردن محافظ صفحه</string>
   <string name="player_ok_button_behavior">رفتار دکمه OK</string>
@@ -542,7 +533,6 @@
   <string name="audio_language">زبان صدا</string>
   <string name="old_home_look">ظاهر قدیمی بخش صفحه اصلی</string>
   <string name="hide_shorts_everywhere">پنهان کردن کوته ویدیوها در همه جا</string>
-  <string name="update_found">بروزرسانی</string>
   <string name="volume_boost_warning">تجاوز از حد مجاز ممکن است به بلندگوها آسیب برساند</string>
   <string name="play_video_incognito">پخش در حالت ناشناس</string>
   <string name="header_kids_home">کودکان</string>
@@ -550,7 +540,6 @@
   <string name="header_trending">محتواهای محبوب</string>
   <string name="screensaver">محافظ صفحه</string>
   <string name="player_screen_off_timeout">زمان خاموش شدن صفحه</string>
-  <string name="old_update_notifications">ظاهر قدیمی اعلان‌های بروزرسانی</string>
   <string name="mark_as_watched">علامت‌گذاری به عنوان تماشا شده</string>
   <string name="player_likes_count">نمایش تعداد پسندیدن/نپسندیدن</string>
   <string name="sorting_alphabetically2">الفبایی (پیش‌نمایش‌های سریع و متحرک)</string>
@@ -574,7 +563,6 @@
   <string name="disable_history">غیرفعال کردن تاریخچه</string>
   <string name="enable_history">فعال‌سازی تاریخچه</string>
   <string name="player_network_stack">موتور شبکه</string>
-  <string name="dialog_notification">اعلان بروزرسانی‌ها از طریق کادر بازشو</string>
   <string name="default_stack_desc">موتور شبکه داخلی. این موتور ممکن است در برخی شرایط ثبات بهتری داشته باشد.</string>
   <string name="item_postion">موقعیت</string>
   <string name="screensaver_timout">زمان محافظ صفحه</string>

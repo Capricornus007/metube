@@ -42,8 +42,6 @@
     <string name="video_buffer_size_med">Medium</string>
     <string name="video_buffer_size_high">High</string>
     <string name="video_buffer_size_highest">Highest</string>
-    <string name="update_changelog">Changelog</string>
-    <string name="install_update">Install update</string>
     <string name="section_is_empty">Oops! There is nothing in here</string>
     <!-- NEWTUBE(mobile): YouTube's wording. Doubles as the Save sheet title and the card-menu row. -->
     <string name="dialog_add_to_playlist">Save to playlist</string>
@@ -101,9 +99,6 @@
     <string name="player_ui_and_pause">UI and pause</string>
     <string name="player_only_pause">Only pause</string>
     <string name="player_toggle_speed">Toggle speed on/off</string>
-    <string name="check_for_updates">Check for updates</string>
-    <string name="update_not_found">You\'re using the latest version</string>
-    <string name="update_in_progress">Wait…</string>
     <string name="player_ui_hide_behavior">Auto-hide UI</string>
     <string name="option_never">Never</string>
     <string name="side_panel_sections">Set-up sections</string>
@@ -116,9 +111,7 @@
     <string name="color_scheme_red_grey">Red-grey</string>
     <string name="color_scheme_red">Red</string>
     <string name="color_scheme_dark_grey">Dark Grey</string>
-    <string name="disable_update_check">Disable update check</string>
     <string name="show_again">Show again</string>
-    <string name="check_updates_auto">Notify about updates</string>
     <string name="select_account_on_boot">Show account selection on boot</string>
     <string name="player_other">Misc</string>
     <string name="player_full_date">Precise date in description</string>
@@ -283,7 +276,6 @@
     <string name="settings_language_country">Language/Country</string>
     <string name="share_embed_link">Share embed link</string>
     <string name="card_text_scroll_factor">Card text scroll speed</string>
-    <string name="preferred_update_source">Select update source</string>
     <string name="hide_shorts">Hide shorts from Subscriptions</string>
     <string name="hide_shorts_channel">Hide shorts from a channel</string>
     <string name="key_remapping">Key remapping</string>
@@ -392,8 +384,6 @@
     <string name="player_seek_confirmation_play">With confirmation (play while seeking)</string>
     <string name="hide_shorts_from_home">Hide shorts from Home</string>
     <string name="finish_on_disconnect">Close the app after disconnecting the phone/tablet</string>
-    <string name="update_error">Update error</string>
-    <string name="update_check_failed">Couldn\'t check for updates. Try again later.</string>
     <string name="hide_shorts_from_search">Hide shorts from the search result</string>
     <string name="hide_shorts_from_history">Hide shorts from History</string>
     <string name="hide_shorts_from_trending">Hide shorts from Trending</string>
@@ -631,7 +621,6 @@
     <string name="old_home_look">Old look of the Home section</string>
     <string name="old_channel_look">Old look of the Channel page</string>
     <string name="hide_shorts_everywhere">Hide shorts everywhere</string>
-    <string name="update_found">Update</string>
     <string name="volume_boost_warning">Any settings over the limit can potentially damage speakers</string>
     <string name="play_video_incognito">Play incognito</string>
     <string name="play_from_start">Play from start</string>
@@ -640,9 +629,6 @@
     <string name="header_trending">Trending</string>
     <string name="screensaver">Screensaver</string>
     <string name="player_screen_off_timeout">Screen off timeout</string>
-    <string name="old_update_notifications">Old look of the update notifications</string>
-    <string name="sidebar_notification">Show notification in sidebar</string>
-    <string name="dialog_notification">Notify via pop-up dialog</string>
     <string name="mark_as_watched">Mark as watched</string>
     <string name="player_ui_animations">Enable player UI animations</string>
     <string name="player_likes_count">Show likes/dislikes count</string>
@@ -803,4 +789,5 @@
         <item quantity="one">%s second</item>
         <item quantity="other">%s seconds</item>
     </plurals>
+    <string name="cancel">Cancel</string>
 </resources>

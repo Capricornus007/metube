@@ -36,8 +36,6 @@
   <string name="video_buffer_size_low">Thấp</string>
   <string name="video_buffer_size_med">Trung bình</string>
   <string name="video_buffer_size_high">Cao</string>
-  <string name="update_changelog">Nhật ký thay đổi</string>
-  <string name="install_update">Cài đặt bản cập nhật</string>
   <string name="section_is_empty">Xin lỗi! Không có gì ở đây cả.</string>
   <string name="dialog_add_to_playlist">Thêm vào/Xóa khỏi danh sách phát</string>
   <string name="msg_signed_users_only">Chỉ người dùng đã đăng nhập</string>
@@ -75,9 +73,6 @@
   <string name="player_only_ui">Chỉ mở giao diện</string>
   <string name="player_ui_and_pause">Mở giao diện và tạm dừng</string>
   <string name="player_only_pause">Chỉ tạm dừng</string>
-  <string name="check_for_updates">Kiểm tra bản cập nhật</string>
-  <string name="update_not_found">Bạn đang sử dụng phiên bản mới nhất</string>
-  <string name="update_in_progress">Vui lòng đợi...</string>
   <string name="player_ui_hide_behavior">Tự động ẩn giao diện</string>
   <string name="option_never">Không bao giờ</string>
   <string name="side_panel_sections">Cài đặt bảng điều khiển cạnh</string>
@@ -90,9 +85,7 @@
   <string name="color_scheme_red_grey">Đỏ xám</string>
   <string name="color_scheme_red">Đỏ</string>
   <string name="color_scheme_dark_grey">Đen tối</string>
-  <string name="disable_update_check">Vô hiệu hóa kiểm tra cập nhật</string>
   <string name="show_again">Hiển thị lại</string>
-  <string name="check_updates_auto">Thông báo về phiên bản mới</string>
   <string name="select_account_on_boot">Chọn tài khoản khi khởi động</string>
   <string name="player_other">Cài đặt khác</string>
   <string name="player_full_date">Ngày chính xác trong mô tả</string>
@@ -220,7 +213,6 @@
   <string name="settings_language_country">Ngôn ngữ/Quốc gia</string>
   <string name="share_embed_link">Chia sẻ liên kết nhúng</string>
   <string name="card_text_scroll_factor">Tốc độ cuộn thẻ</string>
-  <string name="preferred_update_source">Chọn nguồn cập nhật</string>
   <string name="hide_shorts">Ẩn Shorts khỏi Kênh đăng ký</string>
   <string name="key_remapping">Thay đổi nút</string>
   <string name="screen_dimming">Làm mờ màn hình</string>
@@ -314,7 +306,6 @@
   <string name="trending_row_name">Thịnh hành</string>
   <string name="player_seek_regular">Bình thường</string>
   <string name="hide_shorts_from_home">Ẩn Shorts từ Trang chủ</string>
-  <string name="update_error">Lỗi cập nhật</string>
   <string name="hide_shorts_from_history">Ẩn Shorts từ Lịch sử</string>
   <string name="disable_screensaver">Tắt màn hình chờ</string>
   <string name="description_not_found">Không tìm thấy mô tả</string>
@@ -521,7 +512,6 @@
   <string name="clear_search_history">Xóa lịch sử tìm kiếm</string>
   <string name="remove_from_subscriptions">Ẩn</string>
   <string name="unlock_all_formats">Mở khoá tất cả định dạng video</string>
-  <string name="update_found">Cập nhật</string>
   <string name="header_kids_home">Trẻ em</string>
   <string name="header_trending">Thịnh hành</string>
   <string name="player_likes_count">Hiển thị lượt thích/không thích</string>
@@ -542,7 +532,6 @@
   <string name="hide_shorts_everywhere">Ẩn Shorts ở mọi nơi</string>
   <string name="volume_boost_warning">Cài đặt quá mức có thể sẽ dẫn đến hư hỏng loa</string>
   <string name="play_video_incognito">Phát ở chế độ ẩn danh</string>
-  <string name="dialog_notification">Thông báo về bản cập nhật với hộp thoại</string>
   <string name="audio_language">Ngôn ngữ âm thanh</string>
   <string name="player_ui_animations">Bật hoạt ảnh của bảng điều khiển</string>
   <string name="trending_searches">Tìm kiếm nổi bật</string>
@@ -597,7 +586,6 @@
   <string name="player_section_playlist">Sử dụng nội dung phần hiện tại làm danh sách phát</string>
   <string name="screensaver">Màn hình chờ</string>
   <string name="player_screen_off_timeout">Thời gian chờ đến khi tắt màn hình</string>
-  <string name="old_update_notifications">Giao diện cũ của thông báo cập nhật</string>
   <string name="sorting_alphabetically2">Theo thứ tự bảng chữ cái (nhanh, có hoạt ảnh xem trước)</string>
   <string name="sorting_default">Mặc định (nhanh, có hoạt ảnh xem trước)</string>
   <string name="subtitle_remember">Nhớ bật phụ đề cho từng kênh</string>
@@ -724,7 +712,6 @@
   <string name="color_scheme_dark_blue_oled">Xanh biển tối (OLED)</string>
   <string name="add_video_to_watch_later">Thêm vào Xem sau</string>
   <string name="remove_from_search_history">Xóa khỏi lịch sử tìm kiếm</string>
-  <string name="sidebar_notification">Hiển thi thông báo ở thanh bên</string>
   <string name="video_flip">Đảo ngược (phản chiếu)</string>
   <string name="player_time_stretching">Kéo dài thời gian âm thanh</string>
   <string name="enable_conscrypt">Bật Conscrypt</string>
@@ -759,7 +746,6 @@
   <string name="player_unexpected_error">Lỗi phát không rõ nguyên nhân</string>
   <string name="msg_quality_pin_fallback">%1$s lỗi — chuyển chất lượng video này về Tự động</string>
   <string name="msg_audio_pin_fallback">Track âm thanh lỗi — dùng âm thanh mặc định cho video này</string>
-  <string name="update_check_failed">Không kiểm tra được cập nhật. Thử lại sau.</string>
   <string name="create_playlist_note">LƯU Ý: Sẽ không hiển thị trong ứng dụng YouTube</string>
   <string name="playlist_name_hint">Tên danh sách phát</string>
   <string name="player_chapter_notification2">Nhấp vào thông báo để chuyển sang chương tiếp theo</string>

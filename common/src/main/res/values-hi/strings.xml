@@ -36,8 +36,6 @@
   <string name="video_buffer_size_low">निम्न</string>
   <string name="video_buffer_size_med">मध्यम</string>
   <string name="video_buffer_size_high">उच्च</string>
-  <string name="update_changelog">नये बदलाव</string>
-  <string name="install_update">अद्यतन स्थापित करें</string>
   <string name="section_is_empty">ओह! यहां कुछ नहीं है।</string>
   <string name="dialog_add_to_playlist">प्लेलिस्ट में जोड़ें</string>
   <string name="msg_signed_users_only">केवल पंजीकृत उपयोगकर्ता</string>
@@ -75,9 +73,6 @@
   <string name="player_only_ui">केवल यूआई</string>
   <string name="player_ui_and_pause">यूआई और रोके</string>
   <string name="player_only_pause">केवल रोके</string>
-  <string name="check_for_updates">अद्यतन के लिए जांचे</string>
-  <string name="update_not_found">आप नवीनतम संस्करण का उपयोग कर रहे हैं</string>
-  <string name="update_in_progress">कृपया इंतज़ार करे…</string>
   <string name="player_ui_hide_behavior">यूआई स्वतः छुपाये</string>
   <string name="option_never">कभी नहीँ</string>
   <string name="side_panel_sections">सेट-अप सेक्शन</string>
@@ -90,9 +85,7 @@
   <string name="color_scheme_red_grey">लाल-स्लेटी रंग</string>
   <string name="color_scheme_red">लाल</string>
   <string name="color_scheme_dark_grey">गहरा स्लेटी</string>
-  <string name="disable_update_check">अपडेट जांच बंद करें</string>
   <string name="show_again">फिर से दिखाएं</string>
-  <string name="check_updates_auto">स्वत: अपडेट</string>
   <string name="select_account_on_boot">बूट पर चयन करें</string>
   <string name="player_other">विविध</string>
   <string name="player_full_date">विवरण में दिनांक दिखाएं</string>
@@ -216,7 +209,6 @@
   <string name="settings_language_country">भाषा/देश</string>
   <string name="share_embed_link">एम्बेड लिंक साझा करें</string>
   <string name="card_text_scroll_factor">कार्ड पाठ स्क्रॉल गति</string>
-  <string name="preferred_update_source">अद्यतन स्रोत का चयन करें</string>
   <string name="hide_shorts">शॉर्ट्स को छुपाएं</string>
   <string name="key_remapping">कुंजी बदले</string>
   <string name="screen_dimming">स्क्रीन मंद करे</string>
@@ -312,7 +304,6 @@
   <string name="search_background_playback">खोजते समय PIP चालू करे</string>
   <string name="disable_screensaver">स्क्रीन सेवर बंद</string>
   <string name="hide_shorts_from_history">इतिहास से शॉर्ट्स छुपाए</string>
-  <string name="update_error">अद्यतन त्रुटि</string>
   <string name="finish_on_disconnect">फोन डिस्कनेक्ट होने पर एप बंद करे</string>
   <string name="hide_shorts_from_home">होम से शॉर्ट्स छुपाए</string>
   <string name="player_seek_regular">निरंतर</string>
@@ -556,12 +547,10 @@
   <string name="sorting_alphabetically2">वर्णानुक्रमानुसार(तेज़)</string>
   <string name="player_likes_count">पसंद/नापसंद की संख्या दिखाएं</string>
   <string name="mark_as_watched">देखे गए के रूप में चिह्नित करें</string>
-  <string name="old_update_notifications">अद्यतन सूचनाओं का पुराना स्वरूप</string>
   <string name="player_screen_off_timeout">स्क्रीन बंद का समय</string>
   <string name="header_trending">ट्रेंडिंग</string>
   <string name="player_section_playlist">प्लेलिस्ट के रूप में वर्तमान अनुभाग का उपयोग करें</string>
   <string name="volume_boost_warning">सीमा से अधिक की कोई भी सेटिंग संभावित रूप से स्पीकर को नुकसान पहुंचा सकती है</string>
-  <string name="update_found">अद्यतन</string>
   <string name="hide_shorts_everywhere">शॉर्ट्स को हर जगह छुपाएं</string>
   <string name="old_home_look">होम अनुभाग का पुराना स्वरुप</string>
   <string name="audio_language">ऑडियो भाषा</string>
@@ -617,7 +606,6 @@
   <string name="msg_audio_pin_fallback">ऑडियो ट्रैक में समस्या — इस वीडियो के लिए डिफ़ॉल्ट ऑडियो चल रहा है</string>
   <string name="hide_upcoming_channel">चैनल से आगामी वीडियो छुपाएं</string>
   <string name="hide_upcoming_home">होम से आगामी वीडियो छुपाएं</string>
-  <string name="update_check_failed">अपडेट की जांच नहीं हो सकी। बाद में फिर कोशिश करें।</string>
   <string name="hide_shorts_from_search">खोज परिणामों से शॉर्ट्स छुपाएं</string>
   <string name="hide_shorts_from_trending">ट्रेंडिंग से शॉर्ट्स छुपाएं</string>
   <string name="live_stream_fix_4k_desc">चेतावनी, यह ट्वीक स्ट्रीम को पीछे घुमाना बंद कर देता है। लाइव स्ट्रीम का प्रदर्शन काफ़ी बेहतर होता है। अधिकतम रिज़ॉल्यूशन 4K है।</string>
@@ -642,8 +630,6 @@
   <string name="play_from_start">शुरू से चलाएं</string>
   <string name="header_kids_home">बच्चों</string>
   <string name="screensaver">स्क्रीन सेवर</string>
-  <string name="sidebar_notification">साइडबार में सूचना दिखाएं</string>
-  <string name="dialog_notification">पॉप-अप डायलॉग से सूचना दें</string>
   <string name="player_ui_animations">प्लेयर यूआई एनिमेशन चालू करें</string>
   <string name="player_return_youtube_dislike">नापसंद की संख्या (Return YouTube Dislike)</string>
   <string name="player_chapter_notification">पॉप-अप सूचना से अध्यायों में तेज़ी से आगे बढ़ें</string>

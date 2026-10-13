@@ -52,7 +52,6 @@ public class MainUIData extends DataChangeBase implements ProfileChangeListener 
     public static final long MENU_ITEM_PLAYLIST_ORDER = 1 << 20;
     public static final long MENU_ITEM_TOGGLE_HISTORY = 1 << 21;
     public static final long MENU_ITEM_CLEAR_HISTORY = 1 << 22;
-    public static final long MENU_ITEM_UPDATE_CHECK = 1 << 23;
     public static final long MENU_ITEM_OPEN_CHANNEL = 1 << 24;
     public static final long MENU_ITEM_REMOVE_FROM_SUBSCRIPTIONS = 1 << 25;
     public static final long MENU_ITEM_PLAY_VIDEO_INCOGNITO = 1 << 26;
@@ -93,7 +92,7 @@ public class MainUIData extends DataChangeBase implements ProfileChangeListener 
             MENU_ITEM_SHOW_QUEUE, MENU_ITEM_OPEN_CHANNEL, MENU_ITEM_OPEN_PLAYLIST, MENU_ITEM_SUBSCRIBE, MENU_ITEM_EXCLUDE_FROM_CONTENT_BLOCK,
             MENU_ITEM_PIN_TO_SIDEBAR, MENU_ITEM_SAVE_REMOVE_PLAYLIST, MENU_ITEM_OPEN_DESCRIPTION, MENU_ITEM_OPEN_COMMENTS, MENU_ITEM_SHARE_LINK,
             MENU_ITEM_SHARE_EMBED_LINK, MENU_ITEM_SHARE_QR_LINK, MENU_ITEM_SELECT_ACCOUNT, MENU_ITEM_TOGGLE_HISTORY, MENU_ITEM_CLEAR_HISTORY,
-            MENU_ITEM_MOVE_SECTION_UP, MENU_ITEM_MOVE_SECTION_DOWN, MENU_ITEM_RENAME_SECTION, MENU_ITEM_UPDATE_CHECK
+            MENU_ITEM_MOVE_SECTION_UP, MENU_ITEM_MOVE_SECTION_DOWN, MENU_ITEM_RENAME_SECTION
     };
     public static final long UI_TWEAK_DEFAULT = UI_TWEAK_ROUNDED_CORNERS;
     @SuppressLint("StaticFieldLeak")

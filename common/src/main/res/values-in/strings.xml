@@ -41,8 +41,6 @@
   <string name="video_buffer_size_med">Sedang</string>
   <string name="video_buffer_size_high">Tinggi</string>
   <string name="video_buffer_size_highest">Tertinggi</string>
-  <string name="update_changelog">Catatan perubahan</string>
-  <string name="install_update">Instal pembaruan</string>
   <string name="section_is_empty">Ups! Tidak ada apa-apa di sini.</string>
   <string name="dialog_add_to_playlist">Tambah ke playlist</string>
   <string name="msg_signed_users_only">Hanya pengguna yang terdaftar</string>
@@ -80,9 +78,6 @@
   <string name="player_only_ui">Hanya UI</string>
   <string name="player_ui_and_pause">UI dan jeda</string>
   <string name="player_only_pause">Jeda saja</string>
-  <string name="check_for_updates">Periksa pembaruan</string>
-  <string name="update_not_found">Anda menggunakan versi terbaru</string>
-  <string name="update_in_progress">Harap tunggu sebentar…</string>
   <string name="player_ui_hide_behavior">Sembunyikan UI otomatis</string>
   <string name="option_never">Tidak pernah</string>
   <string name="side_panel_sections">Bagian bilah navigasi</string>
@@ -94,9 +89,7 @@
   <string name="color_scheme_red_grey">Merah-abu</string>
   <string name="color_scheme_red">Merah</string>
   <string name="color_scheme_dark_grey">Abu-abu gelap</string>
-  <string name="disable_update_check">Matikan pemeriksaan pembaruan</string>
   <string name="show_again">Tunjukkan lagi</string>
-  <string name="check_updates_auto">Beritahu saya bila ada pembaruan</string>
   <string name="select_account_on_boot">Tampilkan pilihan akun saat dibuka</string>
   <string name="player_other">Lainnya</string>
   <string name="player_full_date">Tanggal yang tepat dalam deskripsi</string>
@@ -242,7 +235,6 @@
   <string name="settings_language_country">Bahasa/Negara</string>
   <string name="share_embed_link">Bagikan embed link</string>
   <string name="card_text_scroll_factor">Kecepatan gulir teks kartu</string>
-  <string name="preferred_update_source">Pilih sumber pembaruan</string>
   <string name="hide_shorts">Sembunyikan Shorts dari Subscription</string>
   <string name="hide_shorts_channel">Sembunyikan Shorts dari Channel</string>
   <string name="key_remapping">Pemetaan ulang tombol</string>
@@ -347,7 +339,6 @@
   <string name="player_seek_confirmation_play">Dengan konfirmasi (bermain sambil mencari)</string>
   <string name="hide_shorts_from_home">Sembunyikan Shorts dari Beranda</string>
   <string name="finish_on_disconnect">Tutup aplikasi saat terputus dengan ponsel/tablet</string>
-  <string name="update_error">Pembaruan error</string>
   <string name="hide_shorts_from_search">Sembunyikan Shorts dari hasil pencarian</string>
   <string name="hide_shorts_from_history">Sembunyikan Shorts dari Riwayat</string>
   <string name="hide_shorts_from_trending">Sembunyikan Shorts dari Sedang tren</string>
@@ -564,15 +555,12 @@
   <string name="old_home_look">Tampilan lama bagian Beranda</string>
   <string name="old_channel_look">tampilan lama halaman Channel</string>
   <string name="hide_shorts_everywhere">Sembunyikan Shorts di mana saja</string>
-  <string name="update_found">Pembaruan</string>
   <string name="volume_boost_warning">Pengaturan apa pun yang melebihi batas dapat berpotensi merusak speaker</string>
   <string name="play_video_incognito">Putar di mode samaran</string>
   <string name="header_kids_home">Anak-anak</string>
   <string name="player_section_playlist">Menggunakan konten ini sebagai playlist</string>
   <string name="header_trending">Sedang tren</string>
   <string name="player_screen_off_timeout">Batas waktu layar mati</string>
-  <string name="old_update_notifications">Tampilan lama dari notifikasi pembaruan</string>
-  <string name="dialog_notification">Beritahu bila ada pembaruan dengan dialog pop-up</string>
   <string name="mark_as_watched">Tandai sebagai sudah ditonton</string>
   <string name="player_ui_animations">Aktifkan animasi UI pemutar</string>
   <string name="player_likes_count">Tampilkan jumlah suka/tidak suka</string>
@@ -710,7 +698,6 @@
   <string name="remove_from_search_history">Hapus dari riwayat pencarian</string>
   <string name="play_from_start">Putar dari awal</string>
   <string name="screensaver">Screensaver</string>
-  <string name="sidebar_notification">Tampilkan notifikasi di bilah sisi</string>
   <string name="player_chapter_notification2">Pindah ke chapter selanjutnya dengan mengeklik notifikasi</string>
   <string name="color_scheme_dark_blue_oled">Biru Tua (OLED)</string>
   <string name="player_quick_shorts_skip_alt">Lewati Shorts dengan tombol atas/bawah</string>
@@ -770,7 +757,6 @@
   <string name="msg_player_no_connection_tap">Tidak ada koneksi — ketuk putar untuk mencoba</string>
   <string name="msg_quality_pin_fallback">%1$s gagal — kualitas disetel ke Auto untuk video ini</string>
   <string name="msg_audio_pin_fallback">Trek audio gagal — memakai audio default untuk video ini</string>
-  <string name="update_check_failed">Gagal memeriksa pembaruan. Coba lagi nanti.</string>
   <string name="playlist_name_hint">Nama playlist</string>
   <string name="player_return_youtube_dislike">Jumlah tidak suka (Return YouTube Dislike)</string>
   <string name="header_live">Live</string>

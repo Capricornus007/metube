@@ -41,8 +41,6 @@
     <string name="video_buffer_size_med">средњи</string>
     <string name="video_buffer_size_high">велики</string>
     <string name="video_buffer_size_highest">највећи</string>
-    <string name="update_changelog">Дневник измена</string>
-    <string name="install_update">Инсталирај ажурирање</string>
     <string name="section_is_empty">Нема ничега овде.</string>
     <string name="dialog_add_to_playlist">Додај/уклони са листе</string>
     <string name="msg_signed_users_only">Само пријављени корисници</string>
@@ -81,9 +79,6 @@
     <string name="player_only_ui">Само сучеље</string>
     <string name="player_ui_and_pause">Сучеље и пауза</string>
     <string name="player_only_pause">Само пауза</string>
-    <string name="check_for_updates">Провери ажурирања</string>
-    <string name="update_not_found">Користите последњу верзију</string>
-    <string name="update_in_progress">Сачекајте…</string>
     <string name="player_ui_hide_behavior">Скривање сучеља</string>
     <string name="option_never">никад</string>
     <string name="side_panel_sections">Избор одељака</string>
@@ -96,9 +91,7 @@
     <string name="color_scheme_red_grey">црвено-сива</string>
     <string name="color_scheme_red">црвена</string>
     <string name="color_scheme_dark_grey">тамно сива</string>
-    <string name="disable_update_check">Искључи проверу ажурирања</string>
     <string name="show_again">Прикажи поново</string>
-    <string name="check_updates_auto">Обавести о новим верзијама</string>
     <string name="select_account_on_boot">Изабери на покретању</string>
     <string name="player_other">Разно</string>
     <string name="player_full_date">Прецизан датум у опису</string>
@@ -301,7 +294,6 @@
     <string name="player_seek_confirmation_play">са потврдом (пушта при премотавању)</string>
     <string name="hide_shorts_from_home">Сакриј кратке са Почетне</string>
     <string name="finish_on_disconnect">Затвори апликацију при искључењу телефона/таблета</string>
-    <string name="update_error">Грешка ажурирања</string>
     <string name="hide_shorts_from_search">Сакриј кратке са резултата претраге</string>
     <string name="hide_shorts_from_history">Сакриј кратке са Историје</string>
     <string name="hide_shorts_from_trending">Сакриј кратке са Трендинга</string>
@@ -399,7 +391,6 @@
     <string name="subtitle_position">Померај титла од дна</string>
     <string name="share_embed_link">Дели уграђену везу</string>
     <string name="card_text_scroll_factor">Брзина клизања текста картице</string>
-    <string name="preferred_update_source">Избор извора ажурирања</string>
     <string name="hide_shorts">Сакриј кратке у Претплатама</string>
     <string name="hide_shorts_channel">Сакриј кратке са канала</string>
     <string name="key_remapping">Мапирање тастера</string>
@@ -585,7 +576,6 @@
     <string name="old_home_look">Стари излед одељка Почетна</string>
     <string name="old_channel_look">Стари изглед странице Канал</string>
     <string name="hide_shorts_everywhere">Сакриј кратке свугде</string>
-    <string name="update_found">Ажурирање</string>
     <string name="volume_boost_warning">Свака поставка изнад границе може наштетити звучнике</string>
     <string name="play_video_incognito">Пусти тајно</string>
     <string name="play_from_start">Пусти од почетка</string>
@@ -594,8 +584,6 @@
     <string name="header_trending">У тренду</string>
     <string name="screensaver">Чувар екрана</string>
     <string name="player_screen_off_timeout">Време до искључења екрана</string>
-    <string name="old_update_notifications">Стари изглед обавештења ажурирања</string>
-    <string name="dialog_notification">Обавести о ажурирањима помоћу искачућег дијалога</string>
     <string name="mark_as_watched">Означи као одгледано</string>
     <string name="player_ui_animations">Укључи анимације сучеља плејера</string>
     <string name="player_likes_count">Прикажи број свиђања/несвиђања</string>
@@ -735,11 +723,9 @@
     <string name="player_unexpected_error">Неочекивана грешка при пуштању</string>
     <string name="msg_quality_pin_fallback">%1$s не ради — квалитет за овај видео постављен на Ауто</string>
     <string name="msg_audio_pin_fallback">Аудио запис не ради — за овај видео користим подразумевани звук</string>
-    <string name="update_check_failed">Провера ажурирања није успела. Пробајте касније.</string>
     <string name="create_playlist_note">НАПОМЕНА: Неће се појавити у YouTube апликацији</string>
     <string name="playlist_name_hint">Назив листе</string>
     <string name="remove_from_search_history">Уклони из историјата претраге</string>
-    <string name="sidebar_notification">Прикажи обавештење у бочној траци</string>
     <string name="player_return_youtube_dislike">Број несвиђања (Return YouTube Dislike)</string>
     <string name="color_scheme_dark_blue_oled">тамно плава (ОЛЕД)</string>
     <string name="player_quick_shorts_skip_alt">Прескочи Кратке горњим/доњим дугметима</string>

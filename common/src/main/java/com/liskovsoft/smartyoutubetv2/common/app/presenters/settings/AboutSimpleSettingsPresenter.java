@@ -1,7 +1,6 @@
 package com.liskovsoft.smartyoutubetv2.common.app.presenters.settings;
 
 import android.content.Context;
-import com.liskovsoft.appupdatechecker2.AppUpdateChecker;
 import com.liskovsoft.sharedutils.helpers.AppInfoHelpers;
 import com.liskovsoft.sharedutils.helpers.MessageHelpers;
 import com.liskovsoft.smartyoutubetv2.common.R;
@@ -11,7 +10,6 @@ import com.liskovsoft.smartyoutubetv2.common.app.presenters.AppDialogPresenter;
 import com.liskovsoft.smartyoutubetv2.common.app.presenters.base.BasePresenter;
 import com.liskovsoft.smartyoutubetv2.common.app.presenters.dialogs.ATVBridgePresenter;
 import com.liskovsoft.smartyoutubetv2.common.app.presenters.dialogs.AmazonBridgePresenter;
-import com.liskovsoft.smartyoutubetv2.common.app.presenters.dialogs.AppUpdatePresenter;
 import com.liskovsoft.smartyoutubetv2.common.misc.DiagnosticLog;
 import com.liskovsoft.smartyoutubetv2.common.misc.PhoneUi;
 import com.liskovsoft.smartyoutubetv2.common.utils.Utils;
@@ -34,12 +32,8 @@ public class AboutSimpleSettingsPresenter extends BasePresenter<Void> {
         sPhoneExtraRows = extraRows;
     }
 
-    private final AppUpdateChecker mUpdateChecker;
-
     public AboutSimpleSettingsPresenter(Context context) {
         super(context);
-
-        mUpdateChecker = new AppUpdateChecker(getContext(), null);
     }
 
     public static AboutSimpleSettingsPresenter instance(Context context) {
@@ -58,10 +52,6 @@ public class AboutSimpleSettingsPresenter extends BasePresenter<Void> {
 
         AppDialogPresenter settingsPresenter = AppDialogPresenter.instance(getContext());
 
-        appendAutoUpdateSwitch(settingsPresenter);
-
-        appendUpdateCheckButton(settingsPresenter);
-
         appendInstallBridge(settingsPresenter);
 
         settingsPresenter.showDialog(mainTitle);
@@ -71,7 +61,7 @@ public class AboutSimpleSettingsPresenter extends BasePresenter<Void> {
      * NEWTUBE(settings): the phone's About. The TV one is titled "NewTube MOD 1.9.0" (the "MOD"
      * hard-coded for upstream's unofficial builds) and offers "Enable global search (firmware
      * support needed)" - an installer for the Android TV / Fire TV voice-search bridge apps. Here:
-     * the version on the update row, the update switch, and where the source and licence live.
+     * the version line, and where the source and licence live.
      */
     private void showPhone() {
         String mainTitle = getContext().getString(R.string.about_app, getContext().getString(R.string.app_name));
@@ -81,17 +71,7 @@ public class AboutSimpleSettingsPresenter extends BasePresenter<Void> {
         String versionLine = String.format("%s %s", getContext().getString(R.string.app_name),
                 AppInfoHelpers.getAppVersionName(getContext()));
 
-        if (AppUpdatePresenter.isInAppUpdatesDisabled()) {
-            // Store build (-Pfdroid): the version stays, the update row and switch go.
-            settingsPresenter.appendSingleButton(UiOptionItem.from(versionLine, option -> {}));
-        } else {
-            settingsPresenter.appendSingleButton(UiOptionItem.from(
-                    getContext().getString(R.string.check_for_updates),
-                    versionLine,
-                    option -> AppUpdatePresenter.instance(getContext()).start(true)));
-
-            appendAutoUpdateSwitch(settingsPresenter);
-        }
+        settingsPresenter.appendSingleButton(UiOptionItem.from(versionLine, option -> {}));
 
         settingsPresenter.appendSingleButton(UiOptionItem.from(
                 getContext().getString(R.string.about_source_code),
@@ -114,20 +94,6 @@ public class AboutSimpleSettingsPresenter extends BasePresenter<Void> {
         }
 
         settingsPresenter.showDialog(mainTitle);
-    }
-
-    private void appendAutoUpdateSwitch(AppDialogPresenter settingsPresenter) {
-        settingsPresenter.appendSingleSwitch(UiOptionItem.from(getContext().getString(R.string.check_updates_auto), optionItem -> {
-            mUpdateChecker.setUpdateCheckEnabled(optionItem.isSelected());
-        }, mUpdateChecker.isUpdateCheckEnabled()));
-    }
-
-    private void appendUpdateCheckButton(AppDialogPresenter settingsPresenter) {
-        OptionItem updateCheckOption = UiOptionItem.from(
-                getContext().getString(R.string.check_for_updates),
-                option -> AppUpdatePresenter.instance(getContext()).start(true));
-
-        settingsPresenter.appendSingleButton(updateCheckOption);
     }
 
     private void appendInstallBridge(AppDialogPresenter settingsPresenter) {

@@ -31,7 +31,6 @@
     <string name="mobile_settings_search_kw_dns">dns ipv4 ipv6 servidores</string>
     <string name="mobile_settings_search_kw_conscrypt">ssl tls certificados seguridad censura bloqueado byebyedpi</string>
     <string name="mobile_settings_search_kw_multi_profiles">perfiles por cuenta propios diferentes</string>
-    <string name="mobile_settings_search_kw_updates">actualizar versión nueva</string>
     <string name="mobile_settings_search_kw_diagnostic_log">error informe registro logs depurar</string>
     <string name="mobile_settings_search_kw_gesture_levels">gestos brillo volumen</string>
     <string name="mobile_settings_search_kw_gesture_seek">gestos adelantar retroceder saltar</string>

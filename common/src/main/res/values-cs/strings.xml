@@ -41,8 +41,6 @@
     <string name="video_buffer_size_med">Střední</string>
     <string name="video_buffer_size_high">Vysoká</string>
     <string name="video_buffer_size_highest">Nejvyšší</string>
-    <string name="update_changelog">Seznam změn</string>
-    <string name="install_update">Instalovat aktualizace</string>
     <string name="section_is_empty">Tady nic není</string>
     <string name="dialog_add_to_playlist">Přidat do playlistu</string>
     <string name="msg_signed_users_only">Pouze přihlášení uživatelé</string>
@@ -82,9 +80,6 @@
     <string name="player_ui_and_pause">Ovládání a pozastavení</string>
     <string name="player_only_pause">Pouze pozastavení</string>
     <string name="player_toggle_speed">Zapnout/Vypnout rychlost</string>
-    <string name="check_for_updates">Zkontrolovat aktualizace</string>
-    <string name="update_not_found">Používáte poslední verzi</string>
-    <string name="update_in_progress">Čekejte…</string>
     <string name="player_ui_hide_behavior">Automatické skrytí ovládání</string>
     <string name="option_never">Nikdy</string>
     <string name="side_panel_sections">Nastavení sekcí</string>
@@ -97,9 +92,7 @@
     <string name="color_scheme_red_grey">Červeno-šedé</string>
     <string name="color_scheme_red">Červené</string>
     <string name="color_scheme_dark_grey">Tmavé</string>
-    <string name="disable_update_check">Zakázat kontrolu aktualizací</string>
     <string name="show_again">Ukaž znovu</string>
-    <string name="check_updates_auto">Upozorňovat na aktualizace</string>
     <string name="select_account_on_boot">Zobrazit dialog pro výběr účtu při spuštění aplikace</string>
     <string name="player_other">Různé</string>
     <string name="player_full_date">Přesné datum v popisku</string>
@@ -248,7 +241,6 @@
     <string name="settings_language_country">Jazyk/Země</string>
     <string name="share_embed_link">Sdílet vložený odkaz</string>
     <string name="card_text_scroll_factor">Rychlost posouvání textu karty</string>
-    <string name="preferred_update_source">Preferovaný zdroj aktualizace</string>
     <string name="hide_shorts">Skrýt Shorts z Odběrů</string>
     <string name="hide_shorts_channel">Skrýt shorts z kanálu</string>
     <string name="key_remapping">Přenastavení tlačítek</string>
@@ -355,7 +347,6 @@
     <string name="player_seek_confirmation_play">S potvrzením (hraj dál při přetáčení)</string>
     <string name="hide_shorts_from_home">Skrýt Shorts z nabídky Domů</string>
     <string name="finish_on_disconnect">Ukončit aplikaci, když se telefon/tablet odpojí</string>
-    <string name="update_error">Chyba aktualizace</string>
     <string name="hide_shorts_from_search">Skrýt Shorts z výsledků vyhledávání</string>
     <string name="hide_shorts_from_history">Skrýt Shorts z nabídky Historie</string>
     <string name="hide_shorts_from_trending">Skrýt Shorts z nabídky Trendy</string>
@@ -589,7 +580,6 @@
     <string name="old_home_look">Původní vzhled sekce Domů</string>
     <string name="old_channel_look">Původní vzhled stránky Kanálu</string>
     <string name="hide_shorts_everywhere">Skrýt Shorts ze všech sekcí</string>
-    <string name="update_found">Aktualizace</string>
     <string name="volume_boost_warning">Další nastavení nad limit může poškodit reproduktory</string>
     <string name="play_video_incognito">Přehrát anonymně</string>
     <string name="play_from_start">Přehraj od začátku</string>
@@ -598,9 +588,6 @@
     <string name="header_trending">Trendy</string>
     <string name="screensaver">Spořič obrazovky</string>
     <string name="player_screen_off_timeout">Časový limit vypnutí obrazovky</string>
-    <string name="old_update_notifications">Původní vzhled upozornění na aktualizace</string>
-    <string name="sidebar_notification">Zobrazit oznámení v postranním panelu</string>
-    <string name="dialog_notification">Upozornit pomocí vyskakovacího dialogu</string>
     <string name="mark_as_watched">Označit jako zhlédnuté</string>
     <string name="player_ui_animations">Povolit animaci rozhraní přehrávače</string>
     <string name="player_likes_count">Zobrazit počet Líbí/Nelíbí</string>
@@ -776,7 +763,6 @@
     <string name="msg_player_no_connection_tap">Žádné připojení — klepnutím na přehrávání to zkuste</string>
     <string name="msg_quality_pin_fallback">%1$s nefunguje — kvalita tohoto videa nastavena na Auto</string>
     <string name="msg_audio_pin_fallback">Nefunguje zvuková stopa — toto video používá výchozí zvuk</string>
-    <string name="update_check_failed">Nepodařilo se zkontrolovat aktualizace. Zkuste to později.</string>
     <string name="playlist_name_hint">Název playlistu</string>
     <string name="player_return_youtube_dislike">Počet nelajků (Return YouTube Dislike)</string>
     <string name="header_live">Živě</string>
@@ -784,6 +770,7 @@
     <string name="enable_conscrypt_desc">Na některých zařízeních zlepšuje kompatibilitu HTTPS, TLS a VPN, ale občas může způsobit problémy s přehráváním nebo nižší rychlost sítě</string>
     <string name="network_settings">Nastavení sítě</string>
     <string name="comments_disabled">Komentáře jsou pro toto video vypnuty</string>
+    <string name="cancel">Zrušit</string>
 </resources>
 
 

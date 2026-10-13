@@ -41,8 +41,6 @@
   <string name="video_buffer_size_med">Medelhög</string>
   <string name="video_buffer_size_high">Hög</string>
   <string name="video_buffer_size_highest">Högst</string>
-  <string name="update_changelog">Ändringslogg</string>
-  <string name="install_update">Installera uppdatering</string>
   <string name="section_is_empty">Oj! Det finns inget här</string>
   <string name="dialog_add_to_playlist">Lägg till/ta bort från spellista</string>
   <string name="msg_signed_users_only">Endast inloggade användare</string>
@@ -82,9 +80,6 @@
   <string name="player_ui_and_pause">Användargränssnittet och pausa</string>
   <string name="player_only_pause">Endast pausa</string>
   <string name="player_toggle_speed">Växla hastighet mellan på och av</string>
-  <string name="check_for_updates">Sök efter uppdateringar</string>
-  <string name="update_not_found">Du använder den senaste versionen</string>
-  <string name="update_in_progress">Vänta …</string>
   <string name="player_ui_hide_behavior">Dölj användargränssnittet automatiskt</string>
   <string name="option_never">Aldrig</string>
   <string name="side_panel_sections">Visa/dölj avsnitt</string>
@@ -97,9 +92,7 @@
   <string name="color_scheme_red_grey">Rödgrått</string>
   <string name="color_scheme_red">Rött</string>
   <string name="color_scheme_dark_grey">Mörkgrått</string>
-  <string name="disable_update_check">Inaktivera sökning efter uppdateringar</string>
   <string name="show_again">Visa igen</string>
-  <string name="check_updates_auto">Avisera om uppdateringar</string>
   <string name="select_account_on_boot">Välj konto vid start</string>
   <string name="player_other">Övrigt</string>
   <string name="player_full_date">Exakt datum i beskrivningen</string>
@@ -247,7 +240,6 @@
   <string name="settings_language_country">Språk/land</string>
   <string name="share_embed_link">Dela inbäddningslänk</string>
   <string name="card_text_scroll_factor">Rullningshastighet för korttext</string>
-  <string name="preferred_update_source">Välj källa för uppdateringar</string>
   <string name="hide_shorts">Dölj Shorts-videor i Prenumerationer</string>
   <string name="hide_shorts_channel">Dölj Shorts-videor i kanaler</string>
   <string name="key_remapping">Konfigurera knappar</string>
@@ -354,7 +346,6 @@
   <string name="player_seek_confirmation_play">Med bekräftelse (spela medan du söker)</string>
   <string name="hide_shorts_from_home">Dölj Shorts-videor i Hem</string>
   <string name="finish_on_disconnect">Stäng appen efter att telefonen/surfplattan har frånkopplats</string>
-  <string name="update_error">Uppdateringsfel</string>
   <string name="hide_shorts_from_search">Dölj Shorts-videor i sökresultat</string>
   <string name="hide_shorts_from_history">Dölj Shorts-videor i Historik</string>
   <string name="hide_shorts_from_trending">Dölj Shorts-videor i Populärt</string>
@@ -587,7 +578,6 @@
   <string name="old_home_look">Det gamla utseendet för avsnittet Hem</string>
   <string name="old_channel_look">Det gamla utseendet för kanalsidan</string>
   <string name="hide_shorts_everywhere">Dölj Shorts-videor överallt</string>
-  <string name="update_found">Uppdatering</string>
   <string name="volume_boost_warning">Inställningar över gränsen kan eventuellt skada högtalare</string>
   <string name="play_video_incognito">Spela upp i inkognitoläge</string>
   <string name="play_from_start">Spela upp från början</string>
@@ -596,8 +586,6 @@
   <string name="header_trending">Populärt</string>
   <string name="screensaver">Skärmsläckare</string>
   <string name="player_screen_off_timeout">Tidsgräns för att stänga av skärmen</string>
-  <string name="old_update_notifications">Det gamla utseendet för aviseringarna om uppdatering</string>
-  <string name="dialog_notification">Avisera om uppdateringar med en popup-dialogruta</string>
   <string name="mark_as_watched">Markera som sett</string>
   <string name="player_ui_animations">Aktivera animeringar för spelarens användargränssnitt</string>
   <string name="player_likes_count">Visa antalet gilla- och ogilla-markeringar</string>
@@ -747,10 +735,8 @@
   <string name="player_unexpected_error">Oväntat uppspelningsfel</string>
   <string name="msg_quality_pin_fallback">%1$s fungerar inte – kvalitet satt till Auto för den här videon</string>
   <string name="msg_audio_pin_fallback">Ljudspåret fungerar inte – standardljud används för den här videon</string>
-  <string name="update_check_failed">Det gick inte att söka efter uppdateringar. Försök igen senare.</string>
   <string name="playlist_name_hint">Spellistnamn</string>
   <string name="remove_from_search_history">Ta bort från sökhistoriken</string>
-  <string name="sidebar_notification">Visa avisering i sidofältet</string>
   <string name="player_return_youtube_dislike">Antal ogillanden (Return YouTube Dislike)</string>
   <string name="color_scheme_dark_blue_oled">Mörkblå (OLED)</string>
   <string name="header_live">Live</string>

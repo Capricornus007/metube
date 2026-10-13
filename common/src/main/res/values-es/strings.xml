@@ -39,8 +39,6 @@
   <string name="video_buffer_size_low">Bajo</string>
   <string name="video_buffer_size_med">Medio</string>
   <string name="video_buffer_size_high">Alto</string>
-  <string name="update_changelog">Registro de cambios</string>
-  <string name="install_update">Instalar actualización</string>
   <string name="section_is_empty">¡Ups! No hay nada aquí.</string>
   <string name="dialog_add_to_playlist">Guardar en una lista</string>
   <string name="dialog_download">Descargar</string>
@@ -87,9 +85,6 @@
   <string name="player_only_ui">Solo interfaz</string>
   <string name="player_ui_and_pause">Interfaz y pausa</string>
   <string name="player_only_pause">Solo pausa</string>
-  <string name="check_for_updates">Buscar actualizaciones</string>
-  <string name="update_not_found">Estás usando la última versión</string>
-  <string name="update_in_progress">Espera…</string>
   <string name="player_ui_hide_behavior">Auto-ocultar interfaz</string>
   <string name="option_never">Nunca</string>
   <string name="side_panel_sections">Secciones visibles</string>
@@ -102,9 +97,7 @@
   <string name="color_scheme_red_grey">Rojo-gris</string>
   <string name="color_scheme_red">Rojo</string>
   <string name="color_scheme_dark_grey">Gris oscuro</string>
-  <string name="disable_update_check">Desactivar comprobación de actualizaciones</string>
   <string name="show_again">Mostrar de nuevo</string>
-  <string name="check_updates_auto">Notificar sobre la nueva versión</string>
   <string name="select_account_on_boot">Seleccionar en arranque</string>
   <string name="player_other">Miscelánea</string>
   <string name="player_full_date">Fecha exacta en descripción</string>
@@ -246,7 +239,6 @@
   <string name="settings_language_country">Idioma/país</string>
   <string name="share_embed_link">Compartir enlace embebido</string>
   <string name="card_text_scroll_factor">Velocidad desplazamiento texto tarjeta</string>
-  <string name="preferred_update_source">Seleccionar fuente actualizaciones</string>
   <string name="hide_shorts">Ocultar Shorts de Suscripciones</string>
   <string name="key_remapping">Remapeo de teclas</string>
   <string name="screen_dimming">Atenuación de pantalla</string>
@@ -344,8 +336,6 @@
   <string name="player_seek_confirmation_play">Con confirmación (play mientras busca)</string>
   <string name="hide_shorts_from_home">Ocultar Shorts de Inicio</string>
   <string name="finish_on_disconnect">Finalizar la aplicación después de desconectar el teléfono/tableta</string>
-  <string name="update_error">Error de actualización</string>
-  <string name="update_check_failed">No se han podido buscar actualizaciones. Inténtalo más tarde.</string>
   <string name="hide_shorts_from_history">Ocultar Shorts de Historial</string>
   <string name="disable_screensaver">Desactivar salvapantallas</string>
   <string name="description_not_found">Descripción no encontrada</string>
@@ -562,7 +552,6 @@
   <string name="audio_language">Idioma de audio</string>
   <string name="old_home_look">Aspecto antiguo de la sección Inicio</string>
   <string name="hide_shorts_everywhere">Ocultar Shorts en todas partes</string>
-  <string name="update_found">Actualizar</string>
   <string name="volume_boost_warning">Cualquier ajuste por encima del límite puede dañar los altavoces</string>
   <string name="play_video_incognito">Reproducción de incógnito</string>
   <string name="header_kids_home">Niños</string>
@@ -570,7 +559,6 @@
   <string name="screensaver">Salvapantallas</string>
   <string name="header_trending">Tendencias</string>
   <string name="player_section_playlist">Utilizar el contenido de la sección actual como lista de reproducción</string>
-  <string name="old_update_notifications">Antiguo aspecto de las notificaciones de actualización</string>
   <string name="mark_as_watched">Marcar como visto</string>
   <string name="player_ui_animations">Activar animaciones del panel de control</string>
   <string name="player_likes_count">Mostrar contador de me gusta/no me gusta</string>
@@ -602,7 +590,6 @@
   <string name="disable_history">Desactivar historial</string>
   <string name="enable_history">Activar historial</string>
   <string name="player_network_stack">Pila de red</string>
-  <string name="dialog_notification">Notificación de la actualización mediante un cuadro de diálogo emergente</string>
   <string name="auto_history">Auto (usar configuración de cuenta)</string>
   <string name="remember_position_subscriptions">Recordar la última posición vista en Suscripciones</string>
   <string name="msg_player_unknown_error">Error desconocido</string>
@@ -771,7 +758,6 @@
   <string name="ignore_short_segments">Ignorar los segmentos cortos</string>
   <string name="rounded_card_corners">Esquinas redondeadas en las tarjetas</string>
   <string name="color_scheme_dark_blue_oled">Azul oscuro (OLED)</string>
-  <string name="sidebar_notification">Mostrar la notificación en la barra lateral</string>
   <string name="prefer_google_dns">Preferir el DNS de Google</string>
   <string name="enable_conscrypt">Activar Conscrypt</string>
   <string name="enable_conscrypt_desc">Mejora la compatibilidad con HTTPS, TLS y VPN en algunos dispositivos, pero a veces puede causar problemas de reproducción o ralentizar la red</string>
@@ -785,4 +771,5 @@
   <string name="app_restore_desc">NOTA: el zip de la copia de seguridad debe copiarse a esta carpeta manualmente o desde un gestor de archivos con \'Abrir con\'</string>
   <string name="local_backup_not_supported">La copia de seguridad automática no se admite en Android TV 11 o superior por restricciones del sistema. Usa Google Drive en su lugar.</string>
   <string name="stable_restore">Restaurar la versión estable (se perderán todos los datos)</string>
+	    <string name="cancel">Cancelar</string>
 </resources>

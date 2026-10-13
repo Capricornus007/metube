@@ -103,7 +103,6 @@ public class SectionMenuPresenter extends BaseMenuPresenter {
         appendCreatePlaylistButton();
         appendToggleHistoryButton();
         appendClearHistoryButton();
-        appendUpdateCheckButton();
 
         for (Long menuItem : MainUIData.instance(getContext()).getMenuItemsOrdered()) {
             MenuAction menuAction = mMenuMapping.get(menuItem);

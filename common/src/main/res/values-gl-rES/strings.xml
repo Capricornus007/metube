@@ -38,8 +38,6 @@
   <string name="video_buffer_size_low">Baixa</string>
   <string name="video_buffer_size_med">Media</string>
   <string name="video_buffer_size_high">Alta</string>
-  <string name="update_changelog">Rexistro de ´trocos</string>
-  <string name="install_update">Instalar actualización</string>
   <string name="section_is_empty">Vaia! Non hai nada aquí</string>
   <string name="dialog_add_to_playlist">Engadir/Eliminar da lista de reprodución</string>
   <string name="msg_signed_users_only">Só usuarios rexistrados</string>
@@ -77,9 +75,6 @@
   <string name="player_only_ui">Só IU</string>
   <string name="player_ui_and_pause">IU e pausa</string>
   <string name="player_only_pause">Só pausa</string>
-  <string name="check_for_updates">Comproba se hai actualizacións</string>
-  <string name="update_not_found">Estás a empregar a derradeira versión</string>
-  <string name="update_in_progress">Agarda…</string>
   <string name="player_ui_hide_behavior">Ocultar automaticamente a IU</string>
   <string name="option_never">Xamais</string>
   <string name="side_panel_sections">seccións de axuste</string>
@@ -92,9 +87,7 @@
   <string name="color_scheme_red_grey">Vermello-gris</string>
   <string name="color_scheme_red">Vermello</string>
   <string name="color_scheme_dark_grey">Gris escuro</string>
-  <string name="disable_update_check">Desactivar a verificación de actualizacións</string>
   <string name="show_again">Amosar de novo</string>
-  <string name="check_updates_auto">Notificar sobre actualizacións</string>
   <string name="select_account_on_boot">Amosar a selección de conta no arranque</string>
   <string name="player_other">Miscelánea</string>
   <string name="player_full_date">Data precisa na descrición</string>
@@ -240,7 +233,6 @@
   <string name="settings_language_country">Lingua/País</string>
   <string name="share_embed_link">Compartir ligazón para inserir</string>
   <string name="card_text_scroll_factor">velocidade de desprazamento do texto da miniatura</string>
-  <string name="preferred_update_source">escolle a fonte de actualización</string>
   <string name="hide_shorts">Ocultar curtas das subscricións</string>
   <string name="hide_shorts_channel">Ocultar curtas dunha canle</string>
   <string name="key_remapping">Reasignación de claves</string>
@@ -346,7 +338,6 @@
   <string name="player_seek_confirmation_play">Con confirmación (reproducir mentres buscas)</string>
   <string name="hide_shorts_from_home">Ocultar curtos no inicio</string>
   <string name="finish_on_disconnect">Pecha a aplicación despois de desconectar o teléfono/tableta</string>
-  <string name="update_error">Erro de actualización</string>
   <string name="hide_shorts_from_history">Ocultar curtas no Historial</string>
   <string name="hide_shorts_from_trending">Ocultar curtas nas Tendencias</string>
   <string name="disable_screensaver">Desactivar o protector de pantalla</string>
@@ -573,7 +564,6 @@
   <string name="old_home_look">Aspecto antigo da sección Inicio</string>
   <string name="old_channel_look">Aspecto antigo da páxina da Canle</string>
   <string name="hide_shorts_everywhere">Oculta pantalóns curtos en todas partes</string>
-  <string name="update_found">Actualizar</string>
   <string name="volume_boost_warning">Calquera configuración que supere o límite pode danar os altofalantes</string>
   <string name="play_video_incognito">Reprodución de incógnito</string>
   <string name="header_kids_home">Nenos</string>
@@ -581,8 +571,6 @@
   <string name="header_trending">Tendencias</string>
   <string name="screensaver">Salvapantallas</string>
   <string name="player_screen_off_timeout">Tempo de espera de apagado da pantalla</string>
-  <string name="old_update_notifications">Aspecto antigo das notificacións de actualización</string>
-  <string name="dialog_notification">Notificar sobre actualizacións cun diálogo emerxente</string>
   <string name="mark_as_watched">Marcar como visto</string>
   <string name="player_ui_animations">Activar as animacións do panel de control</string>
   <string name="player_likes_count">Mostra o reconto de Gústame/Non me gusta</string>
@@ -715,7 +703,6 @@
   <string name="create_playlist_note">NOTA: Non se verá na app de YouTube</string>
   <string name="remove_from_search_history">Eliminar do historial de busca</string>
   <string name="play_from_start">Reproducir desde o comezo</string>
-  <string name="sidebar_notification">Amosar notificación na barra lateral</string>
   <string name="color_scheme_dark_blue_oled">Azul escuro (OLED)</string>
   <string name="player_quick_shorts_skip_alt">Saltar curtos cos botóns arriba/abaixo</string>
   <string name="player_quick_skip_videos_alt">Saltar vídeos normais cos botóns arriba/abaixo</string>
@@ -769,7 +756,6 @@
   <string name="msg_player_no_connection_tap">Sen conexión — preme reproducir para reintentar</string>
   <string name="msg_quality_pin_fallback">Falla %1$s — a calidade axustouse a Auto neste vídeo</string>
   <string name="msg_audio_pin_fallback">Falla a pista de audio — úsase o audio predeterminado neste vídeo</string>
-  <string name="update_check_failed">Non se puido buscar actualizacións. Téntao máis tarde.</string>
   <string name="playlist_name_hint">Nome da lista de reprodución</string>
   <string name="player_return_youtube_dislike">Conta de \'Non me gusta\' (Return YouTube Dislike)</string>
   <string name="header_live">Ao vivo</string>

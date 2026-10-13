@@ -356,45 +356,6 @@
     <string name="mobile_download_channel_name">下載</string>
     <string name="mobile_download_channel_desc">影片下載進度</string>
 
-    <!-- Update flow -->
-    <string name="mobile_update_checking">正在檢查更新…</string>
-    <string name="mobile_update_up_to_date">MeTube 已是最新版本</string>
-    <string name="mobile_update_version">版本 %1$s</string>
-    <string name="mobile_update_check_failed_title">無法檢查更新</string>
-    <string name="mobile_update_check_failed_body">請檢查網路後再試一次。</string>
-    <string name="mobile_update_available_title">有可用更新</string>
-    <string name="mobile_update_app_version">MeTube %1$s</string>
-    <string name="mobile_update_app_version_size">MeTube %1$s・%2$s</string>
-    <string name="mobile_update_metered">你使用的是行動數據。</string>
-    <string name="mobile_update_whats_new_in">%1$s 的新功能</string>
-    <string name="mobile_update_release_notes">完整更新說明</string>
-    <string name="mobile_update_later">稍後</string>
-    <string name="mobile_update_update">更新</string>
-    <string name="mobile_update_downloading_title">正在下載更新</string>
-    <string name="mobile_update_progress">%1$s／%2$s</string>
-    <string name="mobile_update_cancel">取消</string>
-    <string name="mobile_update_download_failed_title">下載未完成</string>
-    <string name="mobile_update_download_failed_body">請再試一次，或從 GitHub 取得 MeTube %1$s。</string>
-    <string name="mobile_update_install_failed_title">無法開啟安裝程式</string>
-    <string name="mobile_update_github">開啟 GitHub</string>
-    <string name="mobile_update_try_again">再試一次</string>
-    <string name="mobile_update_ready_title">可以安裝了</string>
-    <string name="mobile_update_install">安裝</string>
-    <string name="mobile_update_permission_title">允許 MeTube 安裝更新</string>
-    <string name="mobile_update_permission_body">Android 只會問這一次。在下一個畫面開啟「允許來自這個來源」，然後回到這裡：更新會立刻安裝。</string>
-    <string name="mobile_update_open_settings">開啟設定</string>
-    <string name="mobile_update_not_now">現在不要</string>
-    <string name="mobile_update_done">完成</string>
-    <string name="mobile_update_whats_new">新功能</string>
-    <string name="mobile_update_updated">已更新為 MeTube %1$s</string>
-    <string name="mobile_update_downloaded">更新已下載</string>
-    <string name="mobile_update_row_available">有可用更新</string>
-    <string name="mobile_update_row_downloading">正在下載更新</string>
-    <string name="mobile_update_row_downloading_percent">MeTube %1$s・%2$d%%</string>
-    <string name="mobile_update_row_ready">更新已可供安裝</string>
-    <string name="mobile_update_channel_name">應用程式更新</string>
-    <string name="mobile_update_channel_desc">正在下載 MeTube 更新</string>
-
     <!-- Theme -->
     <string name="mobile_theme">主題</string>
     <string name="mobile_theme_system">跟随系統</string>

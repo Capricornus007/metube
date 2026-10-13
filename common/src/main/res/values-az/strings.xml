@@ -41,8 +41,6 @@
     <string name="video_buffer_size_med">Orta</string>
     <string name="video_buffer_size_high">Yüksək</string>
     <string name="video_buffer_size_highest">Ən yüksək</string>
-    <string name="update_changelog">Dəyişiklik jurnalı</string>
-    <string name="install_update">Yeniləməni quraşdırın</string>
     <string name="section_is_empty">Ups! Burada heç nə yoxdur</string>
     <string name="dialog_add_to_playlist">Pleylistdən Əlavə et/Çıxar</string>
     <string name="msg_signed_users_only">Yalnız daxil olmuş istifadəçilər</string>
@@ -80,9 +78,6 @@
     <string name="player_only_ui">Yalnız interfeys</string>
     <string name="player_ui_and_pause">İnterfeys və fasilə</string>
     <string name="player_only_pause">Yalnız fasilə</string>
-    <string name="check_for_updates">Yeniləməni yoxlayın</string>
-    <string name="update_not_found">Ən son versiyadan istifadə edirsiniz</string>
-    <string name="update_in_progress">Gözləyin…</string>
     <string name="player_ui_hide_behavior">İnterfeysi avto-gizlət</string>
     <string name="option_never">Heç vaxt</string>
     <string name="side_panel_sections">Quraşdırma bölmələri</string>
@@ -95,9 +90,7 @@
     <string name="color_scheme_red_grey">Qırmızı-boz</string>
     <string name="color_scheme_red">Qırmızı</string>
     <string name="color_scheme_dark_grey">Qırmızı Boz</string>
-    <string name="disable_update_check">Yeniləmə yoxlamasını söndürün</string>
     <string name="show_again">Yenidən göstər</string>
-    <string name="check_updates_auto">Yeniləmə haqqında məlumat verin</string>
     <string name="select_account_on_boot">Qoşulanda hesab seçimini göstərin</string>
     <string name="player_other">Müxtəlif</string>
     <string name="player_full_date">Təsvirdə dəqiq tarix</string>
@@ -244,7 +237,6 @@
     <string name="settings_language_country">Dil/Ölkə</string>
     <string name="share_embed_link">Daxil edilə bilən keçidi paylaşın</string>
     <string name="card_text_scroll_factor">Kart mətninin sürüşmə sürəti</string>
-    <string name="preferred_update_source">Yeniləmə mənbəyini seçin</string>
     <string name="hide_shorts">Abunəliklərdən shortları gizlət</string>
     <string name="hide_shorts_channel">Shortları Kanaldan gizlət</string>
     <string name="key_remapping">Düymənin yenidən təyin edilməsi</string>
@@ -350,7 +342,6 @@
     <string name="player_seek_confirmation_play">Təsdiqlə (axtararkən oxudun)</string>
     <string name="hide_shorts_from_home">Shortları Evdən gizlədin</string>
     <string name="finish_on_disconnect">Telefonu/planşeti ayırdıqdan sonra proqramı bitirin</string>
-    <string name="update_error">Yeniləmə xətası</string>
     <string name="hide_shorts_from_search">Shortları axtarış nəticəsindən gizlədin</string>
     <string name="hide_shorts_from_history">Shortları Tarixçədən gizlədin</string>
     <string name="hide_shorts_from_trending">Shortları Trenddən gizlədin</string>
@@ -582,7 +573,6 @@
     <string name="old_home_look">Ev bölməsinin köhnə görünüşü</string>
     <string name="old_channel_look">Kanal səhifəsinin köhnə görünüşü</string>
     <string name="hide_shorts_everywhere">Shortları hər yerdə gizlədin</string>
-    <string name="update_found">Yeniləmə</string>
     <string name="volume_boost_warning">Həddini aşan hər hansı parametrlər dinamikləri zədələyə bilər</string>
     <string name="play_video_incognito">Gizli oxudun</string>
     <string name="header_kids_home">Uşaqlar</string>
@@ -590,8 +580,6 @@
     <string name="header_trending">Trend</string>
     <string name="screensaver">Ekran qoruyucusu</string>
     <string name="player_screen_off_timeout">Ekranın söndürülməsi</string>
-    <string name="old_update_notifications">Yeniləmə bildirişlərinin köhnə görünüşü</string>
-    <string name="dialog_notification">Pop-up dialoqu ilə yeniləmə haqqında məlumat verin</string>
     <string name="mark_as_watched">Baxılmış kimi işarələ</string>
     <string name="player_ui_animations">İdarəetmə paneli animasiyalarını aktivləşdirin</string>
     <string name="player_likes_count">Bəyənmə/bəyənməmə sayını göstər</string>
@@ -748,14 +736,12 @@
     <string name="context_menu_sorting">Kontekst menyusunda sıralama</string>
     <string name="msg_quality_pin_fallback">%1$s işləmir — bu video üçün keyfiyyət Avtomatikə köçürüldü</string>
     <string name="msg_audio_pin_fallback">Səs trayı işləmir — bu video üçün standart səs istifadə olunur</string>
-    <string name="update_check_failed">Yeniləmələri yoxlamaq mümkün olmadı. Bir az sonra yenidən cəhd edin.</string>
     <string name="remove_playlist_fmt">%s həmişəlik silinsin?</string>
     <string name="create_playlist_note">QEYD: YouTube tətbiqində görünməyəcək</string>
     <string name="playlist_name_hint">Pleylist adı</string>
     <string name="video_flip">Çevir (güzgü)</string>
     <string name="remove_from_search_history">Axtarış tarixçəsindən silin</string>
     <string name="play_from_start">Əvvəldən oynadın</string>
-    <string name="sidebar_notification">Bildirişi yan paneldə göstərin</string>
     <string name="player_return_youtube_dislike">Bəyənməmə sayları (Return YouTube Dislike)</string>
     <string name="player_chapter_notification2">Bildirişə klikləyərək növbəti fəslə keçin</string>
     <string name="color_scheme_dark_blue_oled">Tünd Mavi (OLED)</string>

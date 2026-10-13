@@ -35,8 +35,6 @@
     <string name="video_buffer_size_low">Ցածր</string>
     <string name="video_buffer_size_med">Միջին</string>
     <string name="video_buffer_size_high">Բարձր</string>
-    <string name="update_changelog">Փոփոխությունների ցանկ</string>
-    <string name="install_update">Տեղադրեք թարմացումը</string>
     <string name="section_is_empty">Այստեղ ոչինչ չկա:</string>
     <string name="dialog_add_to_playlist">Ավելացնել երգացանկին</string>
     <string name="msg_signed_users_only">Անհրաժեշտ է մուտք գործել</string>
@@ -74,9 +72,6 @@
     <string name="player_only_ui">Միայն ինտերֆեսյ</string>
     <string name="player_ui_and_pause">Ինտերֆեյս և դադար</string>
     <string name="player_only_pause">Միայն դադար</string>
-    <string name="check_for_updates">Ստուգել թարմացումները</string>
-    <string name="update_not_found">Դուք օգտագործում եք վերջին տարբերակը</string>
-    <string name="update_in_progress">Սպասեք</string>
     <string name="player_ui_hide_behavior">Թաքցնել ինտերֆեյսը</string>
     <string name="option_never">Երբեք</string>
     <string name="side_panel_sections">Կարգավորել բաժինները</string>
@@ -89,9 +84,7 @@
     <string name="color_scheme_red_grey">Կարմիր մոխրագույն</string>
     <string name="color_scheme_red">Կարմիր</string>
     <string name="color_scheme_dark_grey">Մուգ մոխրագույն</string>
-    <string name="disable_update_check">Անջատել թարմացումների ստուգումը</string>
     <string name="show_again">Նորից ցուցադրել</string>
-    <string name="check_updates_auto">Ավտոմատ թարմացում</string>
     <string name="select_account_on_boot">Ընտրեք բեռնման ժամանակ</string>
     <string name="player_other">Տարբեր</string>
     <string name="player_full_date">Ճշգրիտ ամսաթիվը նկարագրության մեջ</string>
@@ -267,7 +260,6 @@
     <string name="settings_language_country">Լեզու/Երկիր</string>
     <string name="share_embed_link">Կիսվել ներդրման հղումով</string>
     <string name="card_text_scroll_factor">Վահանակի տեքստի ոլորման արագություն</string>
-    <string name="preferred_update_source">Ընտրել թարմացումների աղբյուրը</string>
     <string name="hide_shorts">Թաքցնել Shorts-ը բաժանորդագրություններից</string>
     <string name="hide_shorts_channel">Թաքցնել այս ալիքի Shorts-ը</string>
     <string name="key_remapping">Կոճակների վերանշանակում</string>
@@ -376,8 +368,6 @@
     <string name="player_seek_confirmation_play">Հաստատմամբ (նվագարկում է դիրք փոխելիս)</string>
     <string name="hide_shorts_from_home">Թաքցնել Shorts-ը Գլխավոր էջում</string>
     <string name="finish_on_disconnect">Փակել ծրագիրը հեռախոսը/պլանշետը անջատելուց հետո</string>
-    <string name="update_error">Թարմացման սխալ</string>
-    <string name="update_check_failed">Չհաջողվեց ստուգել թարմացումները: Կրկին փորձեք ավելի ուշ</string>
     <string name="hide_shorts_from_search">Թաքցնել Shorts-ը որոնման արդյունքներից</string>
     <string name="hide_shorts_from_history">Թաքցնել Shorts-ը Պատմությունից</string>
     <string name="hide_shorts_from_trending">Թաքցնել Shorts-ը Մոդա եկած բաժնից</string>
@@ -612,7 +602,6 @@
     <string name="old_home_look">Գլխավոր բաժնի հին տեսքը</string>
     <string name="old_channel_look">Ալիքի էջի հին տեսքը</string>
     <string name="hide_shorts_everywhere">Ամենուր թաքցնել Shorts-ը</string>
-    <string name="update_found">Թարմացում</string>
     <string name="volume_boost_warning">Սահմանափակումից բարձր ցանկացած կարգավորում կարող է վնասել խոսափողները</string>
     <string name="play_video_incognito">Նվագարկել անանուն ռեժիմով</string>
     <string name="play_from_start">Նվագարկել սկզբից</string>
@@ -621,9 +610,6 @@
     <string name="header_trending">Մոդա եկած</string>
     <string name="screensaver">Էկրանի պահպանող</string>
     <string name="player_screen_off_timeout">Էկրանը մարելու ժամանակահատվածը</string>
-    <string name="old_update_notifications">Թարմացումների ծանուցումների հին տեսքը</string>
-    <string name="sidebar_notification">Ցուցադրել ծանուցումը կողագոտում</string>
-    <string name="dialog_notification">Ծանուցել ելուստ պատուհանով</string>
     <string name="mark_as_watched">Նշել որպես դիտված</string>
     <string name="player_ui_animations">Միացնել նվագարկչի ինտերֆեյսի անիմացիաները</string>
     <string name="player_likes_count">Ցուցադրել հավանումների/չհավանումների թիվը</string>

@@ -35,8 +35,6 @@
     <string name="video_buffer_size_low">Zems</string>
     <string name="video_buffer_size_med">Vidējs</string>
     <string name="video_buffer_size_high">Augsts</string>
-    <string name="update_changelog">Izmaiņu žurnāls</string>
-    <string name="install_update">Instalēt atjauninājumu</string>
     <string name="section_is_empty">Oops! Te nekā nav.</string>
     <string name="dialog_add_to_playlist">Pievienot atskaņošanas sarakstam</string>
     <string name="msg_signed_users_only">Tikai parakstījušies lietotāji</string>
@@ -74,9 +72,6 @@
     <string name="player_only_ui">Tikai UI</string>
     <string name="player_ui_and_pause">UI un pauze</string>
     <string name="player_only_pause">Tikai pauze</string>
-    <string name="check_for_updates">Pārbaudīt atjauninājumus</string>
-    <string name="update_not_found">Tev ir jaunākā lietotnes versija</string>
-    <string name="update_in_progress">Gaidi…</string>
     <string name="player_ui_hide_behavior">Automātiski paslēpt UI</string>
     <string name="option_never">Nekad</string>
     <string name="side_panel_sections">Izvēlēties sekcijas</string>
@@ -89,9 +84,7 @@
     <string name="color_scheme_red_grey">Sarkana-pelēka</string>
     <string name="color_scheme_red">Sarkana</string>
     <string name="color_scheme_dark_grey">Tumša</string>
-    <string name="disable_update_check">Atslēgt atjauninājumu pārbaudi</string>
     <string name="show_again">Parādīt atkal</string>
-    <string name="check_updates_auto">Automātiski atjaunināt</string>
     <string name="select_account_on_boot">Izvēlēties startējot</string>
     <string name="player_other">Misc</string>
     <string name="player_full_date">Precīzs datums aprakstā</string>
@@ -267,7 +260,6 @@
     <string name="settings_language_country">Valoda/Valsts</string>
     <string name="share_embed_link">Koplietot iegulšanas saiti</string>
     <string name="card_text_scroll_factor">Teksta ritināšanas ātrums kartē</string>
-    <string name="preferred_update_source">Izvēlēties atjauninājumu avotu</string>
     <string name="hide_shorts">Slēpt Shorts no abonementiem</string>
     <string name="hide_shorts_channel">Slēpt Shorts no kanāla</string>
     <string name="key_remapping">Taustiņu pārkārtošana</string>
@@ -376,8 +368,6 @@
     <string name="player_seek_confirmation_play">Ar apstiprinājumu (atskaņojot ritinot)</string>
     <string name="hide_shorts_from_home">Slēpt Shorts no Sākumlapas</string>
     <string name="finish_on_disconnect">Aizvērt lietotni pēc telefona vai planšetdatora atvienošanas</string>
-    <string name="update_error">Kļūda atjauninot</string>
-    <string name="update_check_failed">Neizdevās pārbaudīt atjauninājumus. Mēģiniet vēlāk.</string>
     <string name="hide_shorts_from_search">Slēpt Shorts no meklēšanas rezultātiem</string>
     <string name="hide_shorts_from_history">Slēpt Shorts no vēstures</string>
     <string name="hide_shorts_from_trending">Slēpt Shorts no populārajiem</string>
@@ -612,7 +602,6 @@
     <string name="old_home_look">Vecais sākumlapas sadaļas izskats</string>
     <string name="old_channel_look">Vecais kanāla lapas izskats</string>
     <string name="hide_shorts_everywhere">Slēpt Shorts visur</string>
-    <string name="update_found">Atjauninājums</string>
     <string name="volume_boost_warning">Iestatījumi virs ierobežojuma var sabojāt skaļruņus</string>
     <string name="play_video_incognito">Atskaņot inkognito režīmā</string>
     <string name="play_from_start">Sākt no sākuma</string>
@@ -621,9 +610,6 @@
     <string name="header_trending">Populāri</string>
     <string name="screensaver">Ekrānsaudzētājs</string>
     <string name="player_screen_off_timeout">Ekrāna izslēgšanas noildze</string>
-    <string name="old_update_notifications">Vecais atjauninājumu paziņojumu izskats</string>
-    <string name="sidebar_notification">Rādīt paziņojumu sānjoslā</string>
-    <string name="dialog_notification">Rādīt paziņojumu uzlecošā logā</string>
     <string name="mark_as_watched">Atzīmēt kā noskatītu</string>
     <string name="player_ui_animations">Iespējot atskaņotāja saskarnes animācijas</string>
     <string name="player_likes_count">Rādīt patikšanas/nepatikšanas skaitu</string>

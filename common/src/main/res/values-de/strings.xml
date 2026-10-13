@@ -41,8 +41,6 @@
     <string name="video_buffer_size_med">Mittel</string>
     <string name="video_buffer_size_high">Hoch</string>
     <string name="video_buffer_size_highest">Sehr hoch</string>
-    <string name="update_changelog">Änderungsprotokoll</string>
-    <string name="install_update">Update installieren</string>
     <string name="section_is_empty">Hier ist nichts drin</string>
     <string name="dialog_add_to_playlist">Hinzufügen/Entfernen aus Wiedergabeliste</string>
     <string name="msg_signed_users_only">Nur angemeldete Nutzer</string>
@@ -82,9 +80,6 @@
     <string name="player_ui_and_pause">Oberfläche und Pause</string>
     <string name="player_only_pause">Nur Pause</string>
     <string name="player_toggle_speed">Geschwindigkeit umschalten</string>
-    <string name="check_for_updates">Nach Updates suchen</string>
-    <string name="update_not_found">Sie verwenden die neueste Version</string>
-    <string name="update_in_progress">Bitte warten…</string>
     <string name="player_ui_hide_behavior">Oberfläche automatisch ausblenden</string>
     <string name="option_never">Niemals</string>
     <string name="side_panel_sections">Kategorien einrichten</string>
@@ -97,9 +92,7 @@
     <string name="color_scheme_red_grey">Rot-Grau</string>
     <string name="color_scheme_red">Rot</string>
     <string name="color_scheme_dark_grey">Dunkel</string>
-    <string name="disable_update_check">Update-Prüfung deaktivieren</string>
     <string name="show_again">Erneut anzeigen</string>
-    <string name="check_updates_auto">Über Update benachrichtigen</string>
     <string name="select_account_on_boot">Kontoauswahl beim Start anzeigen</string>
     <string name="player_other">Sonstige</string>
     <string name="player_full_date">Genaues Datum in der Beschreibung</string>
@@ -247,7 +240,6 @@
     <string name="settings_language_country">Sprache/Land</string>
     <string name="share_embed_link">Link zum Einbetten teilen</string>
     <string name="card_text_scroll_factor">Scrollgeschwindigkeit des Kartentextes</string>
-    <string name="preferred_update_source">Update-Quelle auswählen</string>
     <string name="hide_shorts">Shorts in Abos ausblenden</string>
     <string name="hide_shorts_channel">Shorts in Kanäle ausblenden</string>
     <string name="key_remapping">Tastenbelegung anpassen</string>
@@ -354,7 +346,6 @@
     <string name="player_seek_confirmation_play">Mit Bestätigung (Wiedergabe beim Spulen)</string>
     <string name="hide_shorts_from_home">Shorts in Start ausblenden</string>
     <string name="finish_on_disconnect">App nach dem Trennen des Telefons/Tablets beenden</string>
-    <string name="update_error">Update-Fehler</string>
     <string name="hide_shorts_from_search">Shorts im Suchergebnis ausblenden</string>
     <string name="hide_shorts_from_history">Shorts im Verlauf ausblenden</string>
     <string name="hide_shorts_from_trending">Shorts in Trends ausblenden</string>
@@ -587,7 +578,6 @@
     <string name="old_home_look">Altes Aussehen der Startseite</string>
     <string name="old_channel_look">Altes Aussehen der Kanalseite</string>
     <string name="hide_shorts_everywhere">Shorts überall ausblenden</string>
-    <string name="update_found">Update</string>
     <string name="volume_boost_warning">Einstellungen über dem Grenzwert können die Lautsprecher möglicherweise beschädigen</string>
     <string name="play_video_incognito">Inkognito abspielen</string>
     <string name="play_from_start">Von Anfang an abspielen</string>
@@ -596,8 +586,6 @@
     <string name="header_trending">Trends</string>
     <string name="screensaver">Bildschirmschoner</string>
     <string name="player_screen_off_timeout">Bildschirm ausschalten nach Inaktivität</string>
-    <string name="old_update_notifications">Altes Aussehen der Update-Benachrichtigungen</string>
-    <string name="dialog_notification">Benachrichtigung über Update mit Pop-up-Dialog</string>
     <string name="mark_as_watched">Als gesehen markieren</string>
     <string name="player_ui_animations">Animationen der Player-Oberfläche aktivieren</string>
     <string name="player_likes_count">Anzahl der Mag ich/Mag ich nicht anzeigen</string>
@@ -752,10 +740,8 @@
     <string name="player_unexpected_error">Unerwarteter Wiedergabefehler</string>
     <string name="msg_quality_pin_fallback">%1$s fehlerhaft — Qualität für dieses Video auf Auto gesetzt</string>
     <string name="msg_audio_pin_fallback">Audiospur fehlerhaft — Standardaudio für dieses Video verwendet</string>
-    <string name="update_check_failed">Suche nach Updates fehlgeschlagen. Später erneut versuchen.</string>
     <string name="playlist_name_hint">Name der Wiedergabeliste</string>
     <string name="remove_from_search_history">Aus dem Suchverlauf entfernen</string>
-    <string name="sidebar_notification">Benachrichtigung in der Seitenleiste anzeigen</string>
     <string name="player_return_youtube_dislike">Dislike-Zählung (Return YouTube Dislike)</string>
     <string name="color_scheme_dark_blue_oled">Dunkelblau (OLED)</string>
     <string name="header_live">Live</string>
@@ -782,4 +768,5 @@
       <item quantity="one">%s Sekunde</item>
       <item quantity="other">%s Sekunden</item>
     </plurals>
+    <string name="cancel">Abbrechen</string>
 </resources>

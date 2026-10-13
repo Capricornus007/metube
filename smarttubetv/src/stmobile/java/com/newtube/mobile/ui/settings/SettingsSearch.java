@@ -98,7 +98,6 @@ final class SettingsSearch {
             {R.string.mobile_settings_dns, R.string.mobile_settings_search_kw_dns},
             {R.string.mobile_settings_conscrypt, R.string.mobile_settings_search_kw_conscrypt},
             {R.string.mobile_settings_multi_profiles, R.string.mobile_settings_search_kw_multi_profiles},
-            {R.string.check_for_updates, R.string.mobile_settings_search_kw_updates},
             {R.string.diagnostic_log_send, R.string.mobile_settings_search_kw_diagnostic_log},
     };
 

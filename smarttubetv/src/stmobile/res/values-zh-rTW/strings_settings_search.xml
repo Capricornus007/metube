@@ -31,7 +31,6 @@
     <string name="mobile_settings_search_kw_dns">dns 域名 網域 解析 伺服器 ip ipv4 ipv6 連線 找不到</string>
     <string name="mobile_settings_search_kw_conscrypt">安全 憑證 證書 加密 ssl tls https 審查 封鎖 被牆 網路堆疊 相容性 conscrypt byebyedpi</string>
     <string name="mobile_settings_search_kw_multi_profiles">每帳號 分帳號 個別設定 獨立設定 分開設定 帳號專屬 各自設定 設定檔 profile</string>
-    <string name="mobile_settings_search_kw_updates">更新 升級 版本 新版 新版本 檢查更新 發行 release</string>
     <string name="mobile_settings_search_kw_diagnostic_log">錯誤 回報 日誌 除錯 當機 閃退 送出 記錄 debug log</string>
     <string name="mobile_settings_search_kw_gesture_levels">手勢 滑動 上下滑 亮度 音量 雙指</string>
     <string name="mobile_settings_search_kw_gesture_seek">手勢 滑動 左右滑 快轉 倒帶 跳轉 進度 進度條 前進 後退</string>
