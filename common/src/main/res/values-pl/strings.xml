@@ -772,4 +772,5 @@
     <item quantity="many">%s sekund</item>
     <item quantity="other">%s sekundy</item>
   </plurals>
+  <string name="cancel">Anuluj</string>
 </resources>

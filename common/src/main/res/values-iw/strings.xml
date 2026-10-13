@@ -772,4 +772,5 @@ So, make a copy of values-he and name it values-iw. Keep both in your structure.
     <string name="enable_conscrypt_desc">משפר תאימות HTTPS, TLS ו־VPN בחלק מהמכשירים, אך לעיתים עלול לגרום לבעיות ניגון או לביצועי רשת איטיים יותר</string>
     <string name="network_settings">הגדרות רשת</string>
     <string name="comments_disabled">תגובות מושבתות לסרטון הזה</string>
+  <string name="cancel">ביטול</string>
 </resources>

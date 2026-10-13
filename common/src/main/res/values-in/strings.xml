@@ -768,4 +768,5 @@
     <item quantity="one">%s detik</item>
     <item quantity="other">%s detik</item>
   </plurals>
+  <string name="cancel">Batalkan</string>
 </resources>

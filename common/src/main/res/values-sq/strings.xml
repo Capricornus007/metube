@@ -771,4 +771,5 @@
     <item quantity="one">%s sekondë</item>
     <item quantity="other">%s sekonda</item>
   </plurals>
+  <string name="cancel">Anulo</string>
 </resources>

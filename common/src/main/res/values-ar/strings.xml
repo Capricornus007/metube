@@ -774,4 +774,5 @@
   <string name="enable_conscrypt_desc">يحسّن توافق HTTPS وTLS وVPN في بعض الأجهزة، لكنه قد يسبب أحيانًا مشاكل تشغيل أو بطئًا في الشبكة</string>
   <string name="network_settings">إعدادات الشبكة</string>
   <string name="comments_disabled">التعليقات معطّلة لهذا الفيديو</string>
+  <string name="cancel">إلغاء</string>
 </resources>

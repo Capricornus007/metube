@@ -767,4 +767,5 @@
         <item quantity="one">%s վայրկյան</item>
         <item quantity="other">%s վայրկյան</item>
     </plurals>
+  <string name="cancel">Չեղարկել</string>
 </resources>

@@ -770,4 +770,5 @@
       <item quantity="one">%s saniyə</item>
       <item quantity="other">%s saniyə</item>
     </plurals>
+  <string name="cancel">Ləğv et</string>
 </resources>

@@ -768,4 +768,5 @@
     <item quantity="one">%s ثانیه</item>
     <item quantity="other">%s ثانیه</item>
   </plurals>
+  <string name="cancel">لغو</string>
 </resources>

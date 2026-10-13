@@ -768,4 +768,5 @@
     <item quantity="one">%s giây</item>
     <item quantity="other">%s giây</item>
   </plurals>
+  <string name="cancel">Hủy</string>
 </resources>

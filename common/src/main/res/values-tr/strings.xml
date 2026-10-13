@@ -768,4 +768,5 @@
     <string name="header_live">Canlı</string>
     <string name="install_bridge">ATV/Amazon köprüsünü kur</string>
     <string name="fix_empty_subs_and_channels">Boş Abonelikler ve Kanalları düzelt</string>
+  <string name="cancel">İptal et</string>
 </resources>

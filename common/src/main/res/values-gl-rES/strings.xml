@@ -768,4 +768,5 @@
     <item quantity="one">%s segundo</item>
     <item quantity="other">%s segundos</item>
   </plurals>
+  <string name="cancel">Cancelar</string>
 </resources>

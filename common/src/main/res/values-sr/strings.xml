@@ -770,4 +770,5 @@
         <item quantity="one">%s секунда</item>
         <item quantity="other">%s секунди</item>
     </plurals>
+  <string name="cancel">Откажи</string>
 </resources>

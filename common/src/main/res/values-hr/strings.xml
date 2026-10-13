@@ -772,4 +772,5 @@
         <item quantity="one">%s sekunda</item>
         <item quantity="other">%s sekundi</item>
     </plurals>
+  <string name="cancel">Odustani</string>
 </resources>

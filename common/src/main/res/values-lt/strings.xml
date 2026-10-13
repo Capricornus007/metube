@@ -769,5 +769,6 @@
         <item quantity="one">%s sekundė</item>
         <item quantity="other">%s sek.</item>
     </plurals>
+  <string name="cancel">Atšaukti</string>
 </resources>
 

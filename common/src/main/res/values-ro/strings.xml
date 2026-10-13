@@ -771,4 +771,5 @@
     <item quantity="one">%s secundă</item>
     <item quantity="other">%s secunde</item>
   </plurals>
+  <string name="cancel">Anulați</string>
 </resources>

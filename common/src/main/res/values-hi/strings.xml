@@ -771,4 +771,5 @@
         <item quantity="one">%s सेकंड</item>
         <item quantity="other">%s सेकंड</item>
     </plurals>
+  <string name="cancel">निरस्त</string>
 </resources>

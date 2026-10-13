@@ -771,4 +771,5 @@
     <item quantity="one">%s 초</item>
     <item quantity="other">%s 초</item>
   </plurals>
+  <string name="cancel">취소</string>
 </resources>

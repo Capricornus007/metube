@@ -771,4 +771,5 @@
     <item quantity="one">%s segon</item>
     <item quantity="other">%s segons</item>
   </plurals>
+  <string name="cancel">Cancel·la</string>
 </resources>

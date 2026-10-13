@@ -771,4 +771,5 @@
     <item quantity="one">%s δευτερόλεπτο</item>
     <item quantity="other">%s δευτερόλεπτα</item>
   </plurals>
+  <string name="cancel">Ακύρωση</string>
 </resources>

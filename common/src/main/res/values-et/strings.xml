@@ -771,4 +771,5 @@
     <item quantity="one">%s sekund</item>
     <item quantity="other">%s sekundit</item>
   </plurals>
+  <string name="cancel">Tühista</string>
 </resources>

@@ -768,4 +768,5 @@
     <string name="playlist_name_hint">Nome playlist</string>
     <string name="player_return_youtube_dislike">Conteggio Non mi piace (Return YouTube Dislike)</string>
     <string name="header_live">Live</string>
+  <string name="cancel">Annulla</string>
 </resources>
