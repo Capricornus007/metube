@@ -26,6 +26,7 @@ import android.widget.TextView;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
+import androidx.constraintlayout.widget.ConstraintLayout;
 import androidx.recyclerview.widget.GridLayoutManager;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
@@ -72,6 +73,7 @@ import com.newtube.mobile.ui.common.ShortsFilter;
 import com.newtube.mobile.ui.common.SkeletonReveal;
 import com.newtube.mobile.ui.playback.MiniPlayerBridge;
 import com.newtube.mobile.ui.playback.PlayerGesturePrefs;
+import com.newtube.mobile.ui.playback.ShortsCommentsSheet;
 import com.newtube.mobile.ui.playback.SystemPipBridge;
 
 import java.util.ArrayList;
@@ -622,6 +624,29 @@ public class MobileBrowseActivity extends MobileActivity
         if (mShortsHost != null) {
             mShortsHost.onInfoChanged(info);
         }
+    }
+
+    @Override
+    public void onShortsActionsChanged(
+            @androidx.annotation.Nullable MiniPlayerBridge.ShortsActions actions) {
+        if (mShortsHost != null) {
+            mShortsHost.onShortsActionsChanged(actions);
+        }
+    }
+
+    @Override
+    public void onShortsCommentsRequested(
+            @androidx.annotation.Nullable MiniPlayerBridge.ShortsActions actions) {
+        Video video = MiniPlayerBridge.getVideo();
+        if (actions == null || actions.commentsKey == null) {
+            return; // comments off for this short, or its metadata has not arrived
+        }
+        if (video == null || video.videoId == null) {
+            return;
+        }
+        ShortsCommentsSheet.show(this, findViewById(R.id.mobile_browse_root), video.videoId,
+                actions.commentsKey, actions.newestCommentsKey,
+                actions.commentCount != null ? actions.commentCount.toString() : null);
     }
 
     @Override

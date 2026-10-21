@@ -334,7 +334,15 @@ public class MobilePlaybackActivity extends MobileActivity
     @Nullable private BottomSheetDialog mChaptersSheet;
     private View mWatchChatEntry;
     private String mCommentsKey;
+    private String mNewestCommentsKey;
     private String mLiveChatKey;
+    /** Non-null while the in-place Shorts host owns the player menu: its sheets use this Activity. */
+    @Nullable
+    private android.app.Activity mSheetHost;
+
+    private android.app.Activity sheetActivity() {
+        return mSheetHost != null ? mSheetHost : this;
+    }
 
     // Live chat stream: the reused ChatController pushes a ChatReceiver here; incoming messages
     // accumulate into a bounded buffer that the LiveChatSheet seeds from and observes live.
@@ -898,6 +906,26 @@ public class MobilePlaybackActivity extends MobileActivity
             }
         }, shortsWatchViews());
         mWatchCommentsCount = findViewById(R.id.mobile_watch_comments_count);
+        android.text.TextWatcher shortsActionsWatcher = new android.text.TextWatcher() {
+            @Override
+            public void beforeTextChanged(CharSequence s, int start, int count, int after) {
+            }
+
+            @Override
+            public void onTextChanged(CharSequence s, int start, int before, int count) {
+            }
+
+            @Override
+            public void afterTextChanged(android.text.Editable s) {
+                pushShortsActions();
+            }
+        };
+        if (mWatchLikeCount != null) {
+            mWatchLikeCount.addTextChangedListener(shortsActionsWatcher);
+        }
+        if (mWatchCommentsCount != null) {
+            mWatchCommentsCount.addTextChangedListener(shortsActionsWatcher);
+        }
         mWatchChatEntry = findViewById(R.id.mobile_watch_chat_entry);
         mScrubChapterView = findViewById(R.id.mobile_player_scrub_chapter);
         mChapterButton = findViewById(R.id.mobile_player_chapter);
@@ -1602,6 +1630,7 @@ public class MobilePlaybackActivity extends MobileActivity
         // hand-off pending (the texture does not exist yet), and clearing it here would cancel it.
         if (mShortsHosted) {
             mShortsHosted = false;
+            mSheetHost = null;
             mContainer.removeCallbacks(mShortsHandoffTimeout);
             MiniPlayerBridge.clearFullscreenRequest();
             if (mVideoArea != null) {
@@ -4086,7 +4115,7 @@ public class MobilePlaybackActivity extends MobileActivity
 
         cancelAutoHide();
 
-        BottomSheetDialog sheet = Haptics.watch(new BottomSheetDialog(this));
+        BottomSheetDialog sheet = Haptics.watch(new BottomSheetDialog(sheetActivity()));
         LinearLayout content = createSheetContent();
 
         // Mirrors the official app's gear sheet: no title, a handful of everyday rows, icon +
@@ -4158,7 +4187,7 @@ public class MobilePlaybackActivity extends MobileActivity
 
         cancelAutoHide();
 
-        BottomSheetDialog sheet = Haptics.watch(new BottomSheetDialog(this));
+        BottomSheetDialog sheet = Haptics.watch(new BottomSheetDialog(sheetActivity()));
         LinearLayout content = createSheetContent();
 
         // Effective, not stored: a Shuffle started from the playlist page is scoped to that queue
@@ -4201,7 +4230,7 @@ public class MobilePlaybackActivity extends MobileActivity
 
     /** Shared scaffold for the gear sheets: rounded background + drag handle, no title. */
     private LinearLayout createSheetContent() {
-        LinearLayout content = new LinearLayout(this);
+        LinearLayout content = new LinearLayout(sheetActivity());
         content.setOrientation(LinearLayout.VERTICAL);
         content.setBackgroundResource(R.drawable.bg_mobile_sheet);
         content.setPadding(0, dp(8), 0, dp(16));
@@ -4255,6 +4284,12 @@ public class MobilePlaybackActivity extends MobileActivity
     private final List<java.lang.ref.WeakReference<BottomSheetDialog>> mShownSheets = new ArrayList<>();
 
     private void showPlayerSheet(BottomSheetDialog dialog) {
+        if (mSheetHost != null) {
+            // A host sheet lives in the browse window; this page's immersive/inset handling and
+            // its "dismiss on fullscreen" registry do not apply to it.
+            dialog.show();
+            return;
+        }
         for (int i = mShownSheets.size() - 1; i >= 0; i--) {
             BottomSheetDialog shown = mShownSheets.get(i).get();
             if (shown == null || !shown.isShowing()) {
@@ -6590,6 +6625,7 @@ public class MobilePlaybackActivity extends MobileActivity
         mSuppressAutoPip = true;
         updatePipActions();
         MiniPlayerBridge.setShortsInfo(buildShortsInfo());
+        pushShortsActions();
 
         Runnable showHost = () -> {
             if (isFinishing() || isDestroyed()) {
@@ -6641,6 +6677,54 @@ public class MobilePlaybackActivity extends MobileActivity
         if (mPresenter != null) {
             mPresenter.onNextClicked();
         }
+    }
+
+    // ---- the in-place Shorts host's action rail (MiniPlayerBridge.ShortsActions) ----
+
+    void hostShortsLike() {
+        if (mWatchLike != null) {
+            mWatchLike.performClick();
+        }
+    }
+
+    void hostShortsDislike() {
+        if (mWatchDislike != null) {
+            mWatchDislike.performClick();
+        }
+    }
+
+    void hostShortsShare() {
+        if (mWatchShare != null) {
+            mWatchShare.performClick();
+        }
+    }
+
+    /**
+     * The host's ⋮: the same full player menu the gear button opens, but its sheets have to be
+     * built on the host Activity's window - this Activity is behind the in-place player, so a
+     * BottomSheetDialog created with it would never be seen.
+     */
+    void hostShortsMore(android.app.Activity host) {
+        mSheetHost = host;
+        openPlayerMenu();
+    }
+
+    /** A comment's timestamp/video link while the host is up: act on the same session. */
+    void hostOpenVideo(String videoId) {
+        onRelatedClicked(Video.from(videoId));
+    }
+
+    /** Mirror the watch page's rail state into the in-place host (same buttons, same state). */
+    private void pushShortsActions() {
+        boolean liked = getButtonState(R.id.action_thumbs_up) == BUTTON_ON;
+        boolean disliked = getButtonState(R.id.action_thumbs_down) == BUTTON_ON;
+        CharSequence likeCount = mWatchLikeCount != null ? mWatchLikeCount.getText() : null;
+        CharSequence commentCount = mWatchCommentsCount != null ? mWatchCommentsCount.getText() : null;
+        android.graphics.drawable.Drawable avatar =
+                mWatchAvatar != null ? mWatchAvatar.getDrawable() : null;
+        MiniPlayerBridge.setShortsActions(new MiniPlayerBridge.ShortsActions(
+                liked, disliked, likeCount, commentCount, avatar,
+                mCommentsKey, mNewestCommentsKey));
     }
 
     void hostPlayPreviousShort() {
@@ -7602,8 +7686,9 @@ public class MobilePlaybackActivity extends MobileActivity
         }
 
         com.google.android.material.bottomsheet.BottomSheetDialog dialog =
-                new com.google.android.material.bottomsheet.BottomSheetDialog(this);
-        View content = getLayoutInflater().inflate(R.layout.sheet_mobile_quality, null);
+                new com.google.android.material.bottomsheet.BottomSheetDialog(sheetActivity());
+        View content = android.view.LayoutInflater.from(sheetActivity())
+                .inflate(R.layout.sheet_mobile_quality, null);
         dialog.setContentView(content);
 
         LinearLayout qualityList = content.findViewById(R.id.quality_sheet_quality_list);
@@ -7690,8 +7775,9 @@ public class MobilePlaybackActivity extends MobileActivity
 
         cancelAutoHide();
 
-        BottomSheetDialog dialog = Haptics.watch(new BottomSheetDialog(this));
-        View content = getLayoutInflater().inflate(R.layout.sheet_mobile_quality, null);
+        BottomSheetDialog dialog = Haptics.watch(new BottomSheetDialog(sheetActivity()));
+        View content = android.view.LayoutInflater.from(sheetActivity())
+                .inflate(R.layout.sheet_mobile_quality, null);
         dialog.setContentView(content);
         ((TextView) content.findViewById(R.id.quality_sheet_quality_title))
                 .setText(R.string.mobile_player_audio_track);
@@ -7889,8 +7975,9 @@ public class MobilePlaybackActivity extends MobileActivity
         moveLastUsedCaptionsFirst(autoTracks);
 
         com.google.android.material.bottomsheet.BottomSheetDialog dialog =
-                new com.google.android.material.bottomsheet.BottomSheetDialog(this);
-        View content = getLayoutInflater().inflate(R.layout.sheet_mobile_captions, null);
+                new com.google.android.material.bottomsheet.BottomSheetDialog(sheetActivity());
+        View content = android.view.LayoutInflater.from(sheetActivity())
+                .inflate(R.layout.sheet_mobile_captions, null);
         dialog.setContentView(content);
 
         // One flat list, official-app style: Off, then the video's tracks, then the
@@ -7964,8 +8051,9 @@ public class MobilePlaybackActivity extends MobileActivity
         }
 
         com.google.android.material.bottomsheet.BottomSheetDialog dialog =
-                new com.google.android.material.bottomsheet.BottomSheetDialog(this);
-        View content = getLayoutInflater().inflate(R.layout.sheet_mobile_speed, null);
+                new com.google.android.material.bottomsheet.BottomSheetDialog(sheetActivity());
+        View content = android.view.LayoutInflater.from(sheetActivity())
+                .inflate(R.layout.sheet_mobile_speed, null);
         dialog.setContentView(content);
 
         LinearLayout list = content.findViewById(R.id.speed_sheet_list);
@@ -8144,7 +8232,16 @@ public class MobilePlaybackActivity extends MobileActivity
             return;
         }
         if (mShorts != null) {
-            mShorts.bind(item);
+            // The old full-screen Shorts page is gone. Only the hand-off the Shorts tab asked for
+            // may put this player into shorts mode; a short opened from anywhere else is an
+            // ordinary watch-page video (the in-place host is the only Shorts surface).
+            boolean hostSession = MiniPlayerBridge.hasFullscreenRequest()
+                    || mShortsHosted || mShortsHandoffPending;
+            if (item != null && item.belongsToShorts() && !hostSession) {
+                mShorts.bind(null);
+            } else {
+                mShorts.bind(item);
+            }
         }
 
         mWatchVideo = item;
@@ -8220,6 +8317,7 @@ public class MobilePlaybackActivity extends MobileActivity
         // what this page rendered, every time this page renders it.
         if (mShortsHosted || mShortsHandoffPending) {
             MiniPlayerBridge.setShortsInfo(buildShortsInfo());
+        pushShortsActions();
         }
     }
 
@@ -8245,6 +8343,7 @@ public class MobilePlaybackActivity extends MobileActivity
 
         // New video: clear comments/chat availability and any buffered chat until metadata returns.
         mCommentsKey = null;
+        mNewestCommentsKey = null;
         mLiveChatKey = null;
         if (mWatchCommentsEntry != null) {
             mWatchCommentsEntry.setVisibility(View.VISIBLE); // reserved; see above
@@ -8385,6 +8484,7 @@ public class MobilePlaybackActivity extends MobileActivity
             // Comments / live-chat availability. A non-null comments key = comments enabled; a
             // non-null live-chat key = live stream. Reuse the same keys the TV controllers use.
             mCommentsKey = metadata.getCommentsKey();
+            mNewestCommentsKey = metadata.getNewestCommentsKey();
             mLiveChatKey = metadata.getLiveChatKey();
             if (mWatchCommentsEntry != null) {
                 mWatchCommentsEntry.setVisibility(mCommentsKey != null ? View.VISIBLE : View.GONE);
@@ -8410,6 +8510,7 @@ public class MobilePlaybackActivity extends MobileActivity
             // in-place host's info block has to see them too (see bindWatchVideo).
             if (mShortsHosted || mShortsHandoffPending) {
                 MiniPlayerBridge.setShortsInfo(buildShortsInfo());
+        pushShortsActions();
             }
         }
     }
@@ -8583,11 +8684,13 @@ public class MobilePlaybackActivity extends MobileActivity
                     mShorts.setLiked(on);
                 }
             }
+            pushShortsActions();
         } else if (buttonId == R.id.action_thumbs_down && mWatchDislikeIcon != null) {
             mWatchDislikeIcon.setImageResource(on ? R.drawable.ic_watch_thumb_down : R.drawable.ic_watch_thumb_down_outline);
             if (mWatchDislike != null) {
                 mWatchDislike.setSelected(on);
             }
+            pushShortsActions();
         } else if (buttonId == R.id.lb_control_closed_captioning && mSubtitlesButton != null) {
             // YouTube-style: filled CC glyph while captions are on, outlined while off.
             mSubtitlesButton.setImageResource(on ? R.drawable.ic_player_cc : R.drawable.ic_player_cc_off);
@@ -8654,10 +8757,11 @@ public class MobilePlaybackActivity extends MobileActivity
 
     private void onDownloadTapped() {
         DownloadItem item = currentDownload();
+        android.app.Activity host = sheetActivity();
         if (item != null) {
-            DownloadMenu.show(this, item);
+            DownloadMenu.show(host, item);
         } else {
-            VideoDownloads.request(this, getVideo());
+            VideoDownloads.request(host, getVideo());
         }
     }
 

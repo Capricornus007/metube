@@ -31,10 +31,12 @@
         android:layout_width="match_parent"
         android:layout_height="match_parent">
 
-        <!-- The player's session texture is added into this frame in code. AspectRatioFrameLayout
-             in ZOOM mode center-crops the 9:16 short to the screen instead of stretching it
-             (MobileShortsHost sets both the mode and the video's ratio). -->
-        <androidx.media3.ui.AspectRatioFrameLayout
+        <!-- The player's session texture is added into this frame in code. The frame is the video
+             viewport: MobileShortsHost#applyTextureBox pins it between the floating top bar and
+             the floating nav capsule, so a fill-mode picture is clipped there instead of running
+             under the bottom bar. A plain FrameLayout, because AspectRatioFrameLayout re-measures
+             itself from its own aspect and fights that box. -->
+        <FrameLayout
             android:id="@+id/mobile_shorts_host_frame"
             android:layout_width="match_parent"
             android:layout_height="match_parent"
@@ -123,6 +125,86 @@
                 android:textColor="#CCFFFFFF"
                 android:textSize="13sp"
                 tools:text="The description, folded to two lines until tapped." />
+
+        </LinearLayout>
+
+        <!-- The watch page's action rail, ported from mobile_shorts_overlay.xml: the in-place host
+             originally shipped without it, so a short opened from the Shorts tab had no way to
+             like, dislike, comment, share or open the player menu. The clicks forward through
+             MiniPlayerBridge to the same watch-page views the full-screen overlay uses. -->
+        <LinearLayout
+            android:id="@+id/mobile_shorts_host_actions"
+            android:layout_width="64dp"
+            android:layout_height="wrap_content"
+            android:layout_gravity="bottom|end"
+            android:layout_marginEnd="6dp"
+            android:layout_marginBottom="14dp"
+            android:gravity="center_horizontal"
+            android:orientation="vertical">
+
+            <ImageButton
+                android:id="@+id/mobile_shorts_host_like"
+                style="@style/MeTubeShortsAction"
+                android:contentDescription="@string/mobile_watch_like"
+                android:src="@drawable/ic_watch_thumb_up_outline" />
+
+            <TextView
+                android:id="@+id/mobile_shorts_host_like_count"
+                style="@style/MeTubeShortsActionLabel"
+                android:text="@string/mobile_watch_like" />
+
+            <ImageButton
+                android:id="@+id/mobile_shorts_host_dislike"
+                style="@style/MeTubeShortsAction"
+                android:layout_marginTop="14dp"
+                android:contentDescription="@string/mobile_watch_dislike"
+                android:src="@drawable/ic_watch_thumb_down_outline" />
+
+            <TextView
+                style="@style/MeTubeShortsActionLabel"
+                android:text="@string/mobile_watch_dislike" />
+
+            <ImageButton
+                android:id="@+id/mobile_shorts_host_comments"
+                style="@style/MeTubeShortsAction"
+                android:layout_marginTop="14dp"
+                android:contentDescription="@string/mobile_comments_title"
+                android:src="@drawable/ic_watch_comment" />
+
+            <TextView
+                android:id="@+id/mobile_shorts_host_comments_count"
+                style="@style/MeTubeShortsActionLabel"
+                android:text="@string/mobile_comments_title" />
+
+            <ImageButton
+                android:id="@+id/mobile_shorts_host_share"
+                style="@style/MeTubeShortsAction"
+                android:layout_marginTop="14dp"
+                android:contentDescription="@string/mobile_watch_share"
+                android:src="@drawable/ic_watch_share" />
+
+            <TextView
+                android:id="@+id/mobile_shorts_host_share_label"
+                style="@style/MeTubeShortsActionLabel"
+                android:text="@string/mobile_watch_share" />
+
+            <ImageButton
+                android:id="@+id/mobile_shorts_host_more"
+                style="@style/MeTubeShortsAction"
+                android:layout_marginTop="14dp"
+                android:contentDescription="@string/mobile_menu_more"
+                android:src="@drawable/ic_mobile_more_vert" />
+
+            <!-- YouTube's spinning disc: the channel's picture, turning while the short plays. -->
+            <ImageView
+                android:id="@+id/mobile_shorts_host_disc"
+                android:layout_width="36dp"
+                android:layout_height="36dp"
+                android:layout_marginTop="18dp"
+                android:background="@drawable/bg_shorts_disc"
+                android:importantForAccessibility="no"
+                android:padding="2dp"
+                android:scaleType="centerCrop" />
 
         </LinearLayout>
 

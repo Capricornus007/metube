@@ -3,6 +3,8 @@ package com.newtube.mobile.ui.playback;
 import android.app.Activity;
 import android.graphics.Bitmap;
 import android.graphics.SurfaceTexture;
+import android.util.Log;
+import android.view.Gravity;
 import android.view.MotionEvent;
 import android.view.TextureView;
 import android.view.VelocityTracker;
@@ -19,8 +21,8 @@ import android.widget.TextView;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.media3.common.Player;
+import androidx.media3.common.VideoSize;
 import androidx.media3.exoplayer.ExoPlayer;
-import androidx.media3.ui.AspectRatioFrameLayout;
 
 import com.liskovsoft.smartyoutubetv2.common.app.models.data.Playlist;
 import com.liskovsoft.smartyoutubetv2.common.app.models.data.Video;
@@ -76,7 +78,7 @@ public final class MobileShortsHost {
     private final Callback mCallback;
     private final View mHost;
     private final View mPage;
-    private final AspectRatioFrameLayout mFrame;
+    private final FrameLayout mFrame;
     private final ImageView mStill;
     private final ImageView mPeek;
     private final ImageView mFlash;
@@ -85,6 +87,12 @@ public final class MobileShortsHost {
     private final TextView mTitle;
     private final TextView mMeta;
     private final TextView mDescription;
+    private final LinearLayout mActions;
+    private final ImageView mLikeIcon;
+    private final ImageView mDislikeIcon;
+    private final ImageView mDisc;
+    private final TextView mLikeCount;
+    private final TextView mCommentsCount;
     private final ProgressBar mProgress;
     private final Runnable mTick = this::onTick;
     private final Runnable mCoverTimeout = this::liftCover;
@@ -113,6 +121,10 @@ public final class MobileShortsHost {
     private boolean mScrubbing;
     private long mDurationMs;
     private final int mScrubBandPx;
+    private int mVideoBottomInsetPx;
+    private int mLastVideoW;
+    private int mLastVideoH;
+    private int mLastVideoRot;
     /** px from the bottom of the host to the floating nav capsule (measured, not assumed). */
     private int mPillInsetPx;
     @Nullable
@@ -132,17 +144,49 @@ public final class MobileShortsHost {
         mTitle = activity.findViewById(R.id.mobile_shorts_host_title);
         mMeta = activity.findViewById(R.id.mobile_shorts_host_meta);
         mDescription = activity.findViewById(R.id.mobile_shorts_host_description);
+        mActions = activity.findViewById(R.id.mobile_shorts_host_actions);
+        mLikeIcon = activity.findViewById(R.id.mobile_shorts_host_like);
+        mDislikeIcon = activity.findViewById(R.id.mobile_shorts_host_dislike);
+        mDisc = activity.findViewById(R.id.mobile_shorts_host_disc);
+        mLikeCount = activity.findViewById(R.id.mobile_shorts_host_like_count);
+        mCommentsCount = activity.findViewById(R.id.mobile_shorts_host_comments_count);
         mProgress = activity.findViewById(R.id.mobile_shorts_host_progress);
         mTouchSlop = ViewConfiguration.get(activity).getScaledTouchSlop();
         mScrubBandPx = Math.round(28 * activity.getResources().getDisplayMetrics().density);
 
-        // Center-crop the 9:16 short to the screen: a TextureView scales its buffer to its own
-        // bounds, so without the frame's zoom mode a vertical video would be stretched.
-        mFrame.setResizeMode(AspectRatioFrameLayout.RESIZE_MODE_ZOOM);
         mHost.setOnTouchListener(this::onTouch);
         // A tap on the picture is play/pause, as in the official Shorts. The touch listener above
         // consumes the events, so the click it dispatches for a tap lands here.
         mHost.setOnClickListener(v -> togglePlayPause());
+        // The action rail forwards to the playback Activity's own watch buttons; it keeps the
+        // like/subscribe/count state in one place for both surfaces.
+        if (mLikeIcon != null) {
+            mLikeIcon.setOnClickListener(v -> MiniPlayerBridge.shortsLike());
+        }
+        if (mDislikeIcon != null) {
+            mDislikeIcon.setOnClickListener(v -> MiniPlayerBridge.shortsDislike());
+        }
+        View comments = activity.findViewById(R.id.mobile_shorts_host_comments);
+        if (comments != null) {
+            comments.setOnClickListener(v -> MiniPlayerBridge.shortsComments());
+        }
+        // The count doubles as the "comments" label (it shows 留言 until the number arrives), so a
+        // tap on it has to do what the icon does. Same for the share label under its icon.
+        if (mCommentsCount != null) {
+            mCommentsCount.setOnClickListener(v -> MiniPlayerBridge.shortsComments());
+        }
+        View share = activity.findViewById(R.id.mobile_shorts_host_share);
+        if (share != null) {
+            share.setOnClickListener(v -> MiniPlayerBridge.shortsShare());
+        }
+        View shareLabel = activity.findViewById(R.id.mobile_shorts_host_share_label);
+        if (shareLabel != null) {
+            shareLabel.setOnClickListener(v -> MiniPlayerBridge.shortsShare());
+        }
+        View more = activity.findViewById(R.id.mobile_shorts_host_more);
+        if (more != null) {
+            more.setOnClickListener(v -> MiniPlayerBridge.shortsMore());
+        }
         // NOTE: the info block deliberately has NO click listener of its own. A clickable child
         // would swallow the DOWN and the vertical swipe would dead-zone over the short's text;
         // instead a tap inside its rect is recognized here (see release()) and opens it.
@@ -330,6 +374,37 @@ public final class MobileShortsHost {
         }
     }
 
+    /** The browse activity forwards the watch page's rail snapshot (both surfaces share state). */
+    public void onShortsActionsChanged(@Nullable MiniPlayerBridge.ShortsActions actions) {
+        if (mLikeIcon == null) {
+            return;
+        }
+        boolean liked = actions != null && actions.liked;
+        boolean disliked = actions != null && actions.disliked;
+        mLikeIcon.setImageResource(liked
+                ? R.drawable.ic_watch_thumb_up : R.drawable.ic_watch_thumb_up_outline);
+        if (mDislikeIcon != null) {
+            mDislikeIcon.setImageResource(disliked
+                    ? R.drawable.ic_watch_thumb_down : R.drawable.ic_watch_thumb_down_outline);
+        }
+        if (mLikeCount != null) {
+            mLikeCount.setText(actions != null && !isEmpty(actions.likeCount)
+                    ? actions.likeCount : mActivity.getString(R.string.mobile_watch_like));
+        }
+        if (mCommentsCount != null) {
+            mCommentsCount.setText(actions != null && !isEmpty(actions.commentCount)
+                    ? actions.commentCount : mActivity.getString(R.string.mobile_comments_title));
+        }
+        if (mDisc != null) {
+            if (actions != null && actions.avatar != null) {
+                mDisc.setImageDrawable(actions.avatar);
+                mDisc.setVisibility(View.VISIBLE);
+            } else {
+                mDisc.setVisibility(View.GONE);
+            }
+        }
+    }
+
     /** The rect the short's text occupies, in the host's own coordinates. */
     private boolean inInfo(float x, float y) {
         if (mInfo == null || mInfo.getWidth() <= 0 || mInfo.getHeight() <= 0) {
@@ -394,16 +469,27 @@ public final class MobileShortsHost {
         }
         if (mProgress != null && mProgress.getLayoutParams() instanceof FrameLayout.LayoutParams) {
             FrameLayout.LayoutParams pp = (FrameLayout.LayoutParams) mProgress.getLayoutParams();
-            if (pp.bottomMargin != mPillInsetPx) {
-                pp.bottomMargin = mPillInsetPx;
+            int progressBottom = Math.max(mPillInsetPx, mVideoBottomInsetPx);
+            if (pp.bottomMargin != progressBottom) {
+                pp.bottomMargin = progressBottom;
                 mProgress.setLayoutParams(pp);
+            }
+        }
+        // Keep the action rail above the floating nav capsule, on the same line as the text.
+        if (mActions != null
+                && mActions.getLayoutParams() instanceof ViewGroup.MarginLayoutParams) {
+            ViewGroup.MarginLayoutParams ap =
+                    (ViewGroup.MarginLayoutParams) mActions.getLayoutParams();
+            if (ap.bottomMargin != infoBottom) {
+                ap.bottomMargin = infoBottom;
+                mActions.setLayoutParams(ap);
             }
         }
     }
 
     /** The strip the horizontal scrub drag is read from: the band the line lives in. */
     private boolean inScrubBand(float y) {
-        float bottom = mHost.getHeight() - mPillInsetPx;
+        float bottom = mHost.getHeight() - Math.max(mPillInsetPx, mVideoBottomInsetPx);
         return mDurationMs > 0 && mPillInsetPx > 0
                 && y >= bottom - mScrubBandPx && y <= bottom;
     }
@@ -431,7 +517,7 @@ public final class MobileShortsHost {
         mHost.removeCallbacks(mCoverTimeout);
         mStill.animate().cancel();
         mStill.setAlpha(1f);
-        mStill.setScaleType(ImageView.ScaleType.FIT_XY);
+        mStill.setScaleType(ImageView.ScaleType.FIT_CENTER);
         mStill.setImageBitmap(frame);
         mStill.setVisibility(View.VISIBLE);
     }
@@ -511,7 +597,6 @@ public final class MobileShortsHost {
                             liftCover();
                         }
                     }
-                    MiniPlayerBridge.fitToVideo(mFrame);
                 }
             });
             mTexture = texture;
@@ -521,7 +606,6 @@ public final class MobileShortsHost {
                     ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.MATCH_PARENT));
             MiniPlayerBridge.setFullscreenViewport(mFrame.getWidth(), mFrame.getHeight());
         }
-        MiniPlayerBridge.fitToVideo(mFrame);
     }
 
     // ---------------------------------------------------------------------------------
@@ -735,6 +819,150 @@ public final class MobileShortsHost {
                 mFlash.animate().alpha(0f).setStartDelay(450).setDuration(200).start()).start();
     }
 
+    /**
+     * The TextureView is a raw surface, not a PlayerView: AspectRatioFrameLayout only supplies its
+     * shape, so a MATCH_PARENT child would still stretch the buffer. Give it the exact box for the
+     * stream's aspect ratio (rotation included), fitted inside the viewport.
+     */
+    private void applyTextureBox(float ratio) {
+        if (mTexture == null) {
+            return;
+        }
+        int hostW = mHost.getWidth();
+        int hostH = mHost.getHeight();
+        if (hostW <= 0 || hostH <= 0) {
+            return;
+        }
+        float density = mActivity.getResources().getDisplayMetrics().density;
+        // The picture lives between the floating top bar and the floating nav capsule, exactly
+        // as the official page does: the text and the rail are overlays on the video, and the
+        // video never runs under the bottom bar. Sizing it to the whole host (which extends behind
+        // that bar) is what made the picture's bottom collide with the capsule.
+        int areaTop = topBarBottomInHostPx();
+        int areaBottom = hostH - navTopInsetPx() - Math.round(12 * density);
+        int areaH = Math.max(1, areaBottom - areaTop);
+        int areaW = hostW;
+        // The viewport is also the coordinate frame the cover uses, so both show the same crop.
+        ViewGroup.LayoutParams frameRaw = mFrame.getLayoutParams();
+        if (frameRaw instanceof FrameLayout.LayoutParams) {
+            FrameLayout.LayoutParams fp = (FrameLayout.LayoutParams) frameRaw;
+            if (fp.width != areaW || fp.height != areaH || fp.topMargin != areaTop
+                    || fp.gravity != (Gravity.TOP | Gravity.CENTER_HORIZONTAL)) {
+                fp.width = areaW;
+                fp.height = areaH;
+                fp.topMargin = areaTop;
+                fp.gravity = Gravity.TOP | Gravity.CENTER_HORIZONTAL;
+                mFrame.setLayoutParams(fp);
+            }
+        }
+        // The cover and the neighbour's portrait are scaled like the picture, not like the whole
+        // screen: otherwise the cover shows a different crop than the first frame it gives way to.
+        applyMediaViewport(mStill, areaTop, areaH);
+        applyMediaViewport(mPeek, areaTop, areaH);
+        float areaRatio = areaW / (float) areaH;
+        int w;
+        int h;
+        if (ratio > areaRatio) {
+            w = areaW;
+            h = Math.min(areaH, Math.round(w / ratio));
+            w = Math.round(h * ratio);
+        } else {
+            h = areaH;
+            w = Math.round(h * ratio);
+        }
+        ViewGroup.LayoutParams raw = mTexture.getLayoutParams();
+        if (!(raw instanceof FrameLayout.LayoutParams)) {
+            return;
+        }
+        FrameLayout.LayoutParams lp = (FrameLayout.LayoutParams) raw;
+        if (lp.width != w || lp.height != h || lp.gravity != Gravity.CENTER
+                || lp.topMargin != 0) {
+            lp.width = w;
+            lp.height = h;
+            lp.topMargin = 0;
+            lp.gravity = Gravity.CENTER;
+            mTexture.setLayoutParams(lp);
+        }
+        // Where the visible picture ends, not the screen: the progress line belongs to the video's
+        // bottom edge, which sits above the floating nav capsule.
+        int boxTop = (areaH - h) / 2;
+        mVideoBottomInsetPx = Math.max(0, hostH - areaTop - boxTop - h);
+    }
+
+    /** Put a full-bleed cover image on the same rectangle the picture itself occupies. */
+    private void applyMediaViewport(View view, int top, int height) {
+        ViewGroup.LayoutParams raw = view.getLayoutParams();
+        if (!(raw instanceof FrameLayout.LayoutParams)) {
+            return;
+        }
+        FrameLayout.LayoutParams lp = (FrameLayout.LayoutParams) raw;
+        int width = mHost.getWidth();
+        if (lp.width != width || lp.height != height || lp.topMargin != top
+                || lp.gravity != (Gravity.TOP | Gravity.CENTER_HORIZONTAL)) {
+            lp.width = width;
+            lp.height = height;
+            lp.topMargin = top;
+            lp.gravity = Gravity.TOP | Gravity.CENTER_HORIZONTAL;
+            view.setLayoutParams(lp);
+        }
+    }
+
+    /** The bottom of the floating top bar, in the host's coordinates (0 when it is not laid out). */
+    private int topBarBottomInHostPx() {
+        View bar = mActivity.findViewById(R.id.mobile_top_glass);
+        if (bar == null || bar.getHeight() <= 0) {
+            return 0;
+        }
+        int[] barAt = new int[2];
+        int[] hostAt = new int[2];
+        bar.getLocationInWindow(barAt);
+        mHost.getLocationInWindow(hostAt);
+        return Math.max(0, barAt[1] + bar.getHeight() - hostAt[1]);
+    }
+
+    /** px from the host's bottom to the floating nav capsule's top. */
+    private int navTopInsetPx() {
+        if (mPillInsetPx > 0) {
+            return mPillInsetPx;
+        }
+        return Math.round(80 * mActivity.getResources().getDisplayMetrics().density);
+    }
+
+    private void applyVideoFit() {
+        ExoPlayer player = MiniPlayerBridge.getPlayer();
+        if (player == null) {
+            return;
+        }
+        VideoSize size = player.getVideoSize();
+        if (size.width <= 0 || size.height <= 0) {
+            return;
+        }
+        float ratio = size.width * size.pixelWidthHeightRatio / size.height;
+        boolean rotated = size.unappliedRotationDegrees == 90 || size.unappliedRotationDegrees == 270;
+        if (rotated) {
+            ratio = 1f / ratio;
+        }
+        // The rail stays a little smaller than the watch page's; keep its bottom-right corner
+        // anchored while it is scaled.
+        float scale = 0.82f;
+        if (mActions != null && mActions.getWidth() > 0 && mActions.getHeight() > 0
+                && mActions.getScaleX() != scale) {
+            mActions.setPivotX(mActions.getWidth());
+            mActions.setPivotY(mActions.getHeight());
+            mActions.setScaleX(scale);
+            mActions.setScaleY(scale);
+        }
+        applyTextureBox(ratio);
+        if (size.width != mLastVideoW || size.height != mLastVideoH
+                || size.unappliedRotationDegrees != mLastVideoRot) {
+            mLastVideoW = size.width;
+            mLastVideoH = size.height;
+            mLastVideoRot = size.unappliedRotationDegrees;
+            Log.d("ShortsHost", "video " + size.width + "x" + size.height
+                    + " rot=" + size.unappliedRotationDegrees + " ratio=" + ratio);
+        }
+    }
+
     private void onTick() {
         if (!isVisible()) {
             return;
@@ -748,7 +976,7 @@ public final class MobileShortsHost {
         if (mDurationMs > 0 && !mDragging && !mScrubbing) {
             mProgress.setProgress((int) (player.getCurrentPosition() * 1000 / mDurationMs));
         }
-        MiniPlayerBridge.fitToVideo(mFrame); // the next short may have another shape
+        applyVideoFit(); // the next short may have another shape (portrait fills, landscape fits)
         syncInfoBottomInset();
         startTick();
     }

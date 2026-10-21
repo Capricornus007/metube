@@ -3,6 +3,7 @@ package com.newtube.mobile.ui.playback;
 import android.content.Context;
 import android.graphics.Bitmap;
 import android.graphics.Rect;
+import android.graphics.drawable.Drawable;
 import android.graphics.SurfaceTexture;
 import android.os.SystemClock;
 import android.view.View;
@@ -80,8 +81,48 @@ public final class MiniPlayerBridge {
         /** The session is over (expanded back to the watch page, closed, or the player died). */
         void onShortsSessionEnded();
 
+        /** The watch page's like/dislike/count state changed; the host mirrors its action rail. */
+        default void onShortsActionsChanged(@Nullable ShortsActions actions) {
+        }
+
+        /** The rail's comments button: open the comments over the host, not over the hidden page. */
+        default void onShortsCommentsRequested(@Nullable ShortsActions actions) {
+        }
+
+
         /** The ViewManager view class that reorders this host's Activity to the front. */
         Class<?> getShortsHostViewClass();
+    }
+
+    /**
+     * METUBE(shorts): the watch page's action-rail state, mirrored by the in-place host. The
+     * values come from the playback Activity's own watch views, so a tap in either surface is
+     * reflected in the other without duplicating the like/subscribe logic.
+     */
+    public static final class ShortsActions {
+        public final boolean liked;
+        public final boolean disliked;
+        public final CharSequence likeCount;
+        public final CharSequence commentCount;
+        @Nullable
+        public final Drawable avatar;
+        /** The metadata's comment continuation keys, for the host's own comments panel. */
+        @Nullable
+        public final String commentsKey;
+        @Nullable
+        public final String newestCommentsKey;
+
+        public ShortsActions(boolean liked, boolean disliked, CharSequence likeCount,
+                CharSequence commentCount, @Nullable Drawable avatar,
+                @Nullable String commentsKey, @Nullable String newestCommentsKey) {
+            this.liked = liked;
+            this.disliked = disliked;
+            this.likeCount = likeCount;
+            this.commentCount = commentCount;
+            this.avatar = avatar;
+            this.commentsKey = commentsKey;
+            this.newestCommentsKey = newestCommentsKey;
+        }
     }
 
     /**
@@ -136,6 +177,7 @@ public final class MiniPlayerBridge {
     private static boolean sFullscreen;
     @Nullable
     private static ShortsInfo sShortsInfo;
+    private static ShortsActions sShortsActions;
     private static boolean sFullscreenRequested;
     private static long sFullscreenRequestedAtMs;
 
@@ -186,6 +228,7 @@ public final class MiniPlayerBridge {
      */
     public static void registerShortsHost(ShortsHost host) {
         sShortsHost = new WeakReference<>(host);
+        host.onShortsActionsChanged(sShortsActions);
     }
 
     public static void unregisterShortsHost(ShortsHost host) {
@@ -258,6 +301,62 @@ public final class MiniPlayerBridge {
     @Nullable
     public static ShortsInfo getShortsInfo() {
         return sShortsInfo;
+    }
+
+    /** The watch page pushed a new action-rail snapshot; mirror it in the in-place host. */
+    public static void setShortsActions(@Nullable ShortsActions actions) {
+        sShortsActions = actions;
+        ShortsHost host = getShortsHost();
+        if (host != null) {
+            host.onShortsActionsChanged(actions);
+        }
+    }
+
+    @Nullable
+    public static ShortsActions getShortsActions() {
+        return sShortsActions;
+    }
+
+    /** The host's rail forwards to the watch page's own buttons, so both surfaces share state. */
+    public static void shortsLike() {
+        if (isActive()) {
+            sActivity.get().hostShortsLike();
+        }
+    }
+
+    public static void shortsDislike() {
+        if (isActive()) {
+            sActivity.get().hostShortsDislike();
+        }
+    }
+
+    public static void shortsComments() {
+        ShortsHost host = getShortsHost();
+        if (host != null) {
+            host.onShortsCommentsRequested(getShortsActions());
+        }
+    }
+
+    public static void shortsShare() {
+        if (isActive()) {
+            sActivity.get().hostShortsShare();
+        }
+    }
+
+    public static void shortsMore() {
+        ShortsHost host = getShortsHost();
+        if (isActive() && host instanceof android.app.Activity) {
+            // The full player menu (quality, audio, captions, speed, PiP, ambient, more) is built
+            // from this Activity's controllers, but its sheets must use the visible host's window.
+            sActivity.get().hostShortsMore((android.app.Activity) host);
+        }
+    }
+
+    /** A comment's link to another video: keep playing it in the session behind the host. */
+    public static void openShortsVideo(String videoId) {
+        if (isActive() && videoId != null) {
+            sActivity.get().hostOpenVideo(videoId);
+        }
     }
 
     /** The new stream is READY: the host can stop covering the texture with a thumbnail. */
@@ -496,8 +595,17 @@ public final class MiniPlayerBridge {
         }
         VideoSize size = player.getVideoSize();
         if (size.width > 0 && size.height > 0) {
+            int width = size.width;
+            int height = size.height;
+            // A 90/270 rotation makes the displayed frame portrait even when the codec reports a
+            // landscape buffer; using the raw width/height would stretch the video sideways.
+            if (size.unappliedRotationDegrees == 90 || size.unappliedRotationDegrees == 270) {
+                int swap = width;
+                width = height;
+                height = swap;
+            }
             ((AspectRatioFrameLayout) frame).setAspectRatio(
-                    size.width * size.pixelWidthHeightRatio / size.height);
+                    width * size.pixelWidthHeightRatio / height);
         }
     }
 
