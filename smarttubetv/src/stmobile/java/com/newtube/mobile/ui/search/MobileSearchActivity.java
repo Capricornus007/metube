@@ -26,6 +26,8 @@ import androidx.core.view.WindowInsetsCompat;
 import androidx.recyclerview.widget.GridLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
+import com.liskovsoft.mediaserviceinterfaces.data.SearchOptions;
+import com.liskovsoft.smartyoutubetv2.common.app.models.data.Playlist;
 import com.liskovsoft.smartyoutubetv2.common.app.models.data.Video;
 import com.liskovsoft.smartyoutubetv2.common.app.models.data.VideoGroup;
 import com.liskovsoft.smartyoutubetv2.common.app.models.search.MediaServiceSearchTagProvider;
@@ -108,6 +110,10 @@ public class MobileSearchActivity extends MobileActivity
     private MediaServiceSearchTagProvider mTagsProvider;
 
     private final List<Video> mVideos = new ArrayList<>();
+    /** METUBE(shorts): every short this search has received, by id, in arrival order. */
+    private final java.util.LinkedHashMap<String, Video> mSearchShorts = new java.util.LinkedHashMap<>();
+    /** METUBE(shorts): shorts shown per result group - two rows of two, like YouTube's app. */
+    private static final int SHORTS_PER_BLOCK = 4;
     private int mLastPaginationTriggerCount = -1;
     /**
      * NEWTUBE(shorts): this search's result groups in arrival order (the first is the main list),
@@ -151,6 +157,18 @@ public class MobileSearchActivity extends MobileActivity
 
         mBackButton.setOnClickListener(v -> getOnBackPressedDispatcher().onBackPressed());
         mMicButton.setOnClickListener(v -> startVoiceRecognition());
+        // METUBE(search filters, #11): YouTube's own filter dialog.
+        findViewById(R.id.mobile_search_filters).setOnClickListener(v -> SearchFiltersDialog.show(this,
+                mPresenter.getSearchOptions(), options -> {
+                    mPresenter.setSearchOptions(options);
+                    syncChips();
+                }));
+        setupChips();
+        com.newtube.mobile.ui.common.Glass.blur(findViewById(R.id.mobile_search_glass),
+                findViewById(R.id.mobile_search_glass_source));
+        if (savedInstanceState == null) {
+            getWindow().getDecorView().post(() -> SiriGlow.play(this)); // METUBE(search glow)
+        }
         // Clear the query, keep editing: focus stays, history rows replace the suggestions.
         mClearButton.setOnClickListener(v -> {
             setQueryText("");
@@ -237,6 +255,49 @@ public class MobileSearchActivity extends MobileActivity
         }
     }
 
+    /** METUBE(search chips): {label, filter flag}; All is no flag. */
+    private static final int[][] CHIPS = {
+            {R.string.mobile_search_filter_all, 0},
+            {R.string.mobile_search_filter_videos, SearchOptions.TYPE_VIDEO},
+            {R.string.mobile_search_filter_live, SearchOptions.FEATURE_LIVE},
+            {R.string.mobile_search_filter_recent, SearchOptions.UPLOAD_DATE_THIS_WEEK}};
+    /** The flags a chip replaces with its own: every type, Live and every upload date. */
+    private static final int CHIP_FLAGS = SearchOptions.TYPE_VIDEO
+            | SearchOptions.TYPE_CHANNEL | SearchOptions.TYPE_PLAYLIST | SearchOptions.TYPE_MOVIE
+            | SearchOptions.FEATURE_LIVE | SearchOptions.UPLOAD_DATE_TODAY | SearchOptions.UPLOAD_DATE_THIS_WEEK
+            | SearchOptions.UPLOAD_DATE_THIS_MONTH | SearchOptions.UPLOAD_DATE_THIS_YEAR;
+    private com.google.android.material.chip.ChipGroup mChips;
+
+    /**
+     * METUBE(search chips): YouTube's chip row over the results. A chip is a one-tap filter: it
+     * searches again with its flag in place of the other chips' (Duration, Prioritize and Features
+     * from the dialog stay). Picked in the dialog, a mix no chip names leaves none picked.
+     */
+    private void setupChips() {
+        mChips = findViewById(R.id.mobile_search_chips);
+        for (int[] entry : CHIPS) {
+            com.google.android.material.chip.Chip chip = (com.google.android.material.chip.Chip)
+                    getLayoutInflater().inflate(R.layout.mobile_search_chip, mChips, false);
+            chip.setText(entry[0]);
+            int flag = entry[1];
+            chip.setOnClickListener(v -> {
+                int options = (mPresenter.getSearchOptions() & ~CHIP_FLAGS) | flag;
+                if (options != mPresenter.getSearchOptions()) {
+                    mPresenter.setSearchOptions(options);
+                }
+                syncChips();
+            });
+            mChips.addView(chip);
+        }
+    }
+
+    private void syncChips() {
+        int picked = mPresenter.getSearchOptions() & CHIP_FLAGS;
+        for (int i = 0; i < CHIPS.length; i++) {
+            ((com.google.android.material.chip.Chip) mChips.getChildAt(i)).setChecked(CHIPS[i][1] == picked);
+        }
+    }
+
     private void setupSuggestions() {
         mTagAdapter = new SearchTagAdapter(this::onTagClicked, this::onTagLongClicked, this::onTagInserted);
         mSuggestions.setAdapter(mTagAdapter);
@@ -244,13 +305,17 @@ public class MobileSearchActivity extends MobileActivity
 
     private void setupGrid() {
         mLayoutManager = new GridLayoutManager(this, computeSpanCount());
-        mAdapter = new VideoCardAdapter(this::onVideoClicked, this::onVideoLongClicked);
+        mAdapter = new VideoCardAdapter(this::onVideoClicked, this::onVideoLongClicked).showAvatars();
 
         // Channel results render as full-width rows even when landscape/tablet uses 2+ columns.
+        // METUBE(shorts): every column is two spans wide, so Shorts sit two to a column.
         mLayoutManager.setSpanSizeLookup(new GridLayoutManager.SpanSizeLookup() {
             @Override
             public int getSpanSize(int position) {
-                return mAdapter.isFullSpan(position) ? mLayoutManager.getSpanCount() : 1;
+                if (mAdapter.isFullSpan(position)) {
+                    return mLayoutManager.getSpanCount();
+                }
+                return mAdapter.isShort(position) ? 1 : 2;
             }
         });
 
@@ -438,6 +503,8 @@ public class MobileSearchActivity extends MobileActivity
         mSearchInput.clearFocus();
         mSuggestions.setVisibility(View.GONE);
         mTagAdapter.clearTags();
+        ((View) mChips.getParent()).setVisibility(View.VISIBLE);
+        syncChips();
         mPresenter.onSearch(normalized);
     }
 
@@ -461,7 +528,65 @@ public class MobileSearchActivity extends MobileActivity
             return;
         }
         mPresenter.onVideoItemSelected(video);
+        if (video.belongsToShorts()) {
+            queueShorts(video);
+        }
         mPresenter.onVideoItemClicked(video);
+    }
+
+    /**
+     * METUBE(shorts): a short opens the vertical player with every short this search has
+     * received as its queue - the grid shows only a few - so a swipe walks on through them.
+     */
+    private void queueShorts(Video tapped) {
+        ShortsFilter.queueAround(new ArrayList<>(mSearchShorts.values()), tapped);
+    }
+
+    /** METUBE(shorts): new results' shorts join the end of this search's Shorts queue, if it plays. */
+    private void extendShortsQueue(List<Video> added) {
+        List<Video> queue = Playlist.instance().getAll();
+        if (added.isEmpty() || queue.isEmpty() || !mSearchShorts.containsValue(queue.get(queue.size() - 1))) {
+            return;
+        }
+        List<Video> more = new ArrayList<>(added);
+        more.removeAll(queue);
+        Playlist.instance().addAll(more);
+    }
+
+    /**
+     * METUBE(shorts, #11): Shorts in search results, the way YouTube's app lays them out: a group's
+     * shorts gather into one block of two-column tall cards where its first short was, at most
+     * {@link #SHORTS_PER_BLOCK} of them (all of them when the Shorts type filter is on). Every
+     * short is kept for the player's queue. A tile that only opens a Shorts tab is still dropped.
+     */
+    private List<Video> withShortsBlock(List<Video> videos) {
+        if (videos == null) {
+            return null;
+        }
+        List<Video> result = new ArrayList<>(videos.size());
+        List<Video> shorts = new ArrayList<>();
+        List<Video> added = new ArrayList<>();
+        int blockAt = -1;
+        for (Video video : videos) {
+            if (video.isShorts && video.hasVideo()) {
+                video.markShorts();
+                if (mSearchShorts.putIfAbsent(video.videoId, video) == null) {
+                    added.add(video);
+                }
+                if (blockAt < 0) {
+                    blockAt = result.size();
+                }
+                shorts.add(video);
+            } else if (!ShortsFilter.isShort(video)) {
+                result.add(video);
+            }
+        }
+        int shown = Math.min(SHORTS_PER_BLOCK, shorts.size() / 2 * 2);
+        if (shown > 0) {
+            result.addAll(blockAt, shorts.subList(0, shown));
+        }
+        extendShortsQueue(added);
+        return result;
     }
 
     private boolean onVideoLongClicked(Video video) {
@@ -550,7 +675,7 @@ public class MobileSearchActivity extends MobileActivity
     }
 
     private int computeSpanCount() {
-        return com.newtube.mobile.ui.common.MobileGrid.computeSpanCount(this);
+        return 2 * com.newtube.mobile.ui.common.MobileGrid.computeSpanCount(this);
     }
 
     // ---------------------------------------------------------------------------------
@@ -662,7 +787,7 @@ public class MobileSearchActivity extends MobileActivity
 
         if (mLayoutManager != null) {
             mLayoutManager.setSpanCount(
-                    com.newtube.mobile.ui.common.MobileGrid.computeSpanCount(newConfig));
+                    2 * com.newtube.mobile.ui.common.MobileGrid.computeSpanCount(newConfig));
         }
     }
 
@@ -692,7 +817,7 @@ public class MobileSearchActivity extends MobileActivity
 
         runOnUiThread(() -> {
             int incoming = group.getVideos() != null ? group.getVideos().size() : 0;
-            List<Video> shown = ShortsFilter.withoutShorts(group.getVideos()); // NEWTUBE(shorts)
+            List<Video> shown = withShortsBlock(group.getVideos()); // METUBE(shorts)
             int shortsHidden = incoming - (shown != null ? shown.size() : 0);
             if (group.getAction() != VideoGroup.ACTION_REMOVE && group.getAction() != VideoGroup.ACTION_SYNC) {
                 if (!mGenerations.accept(group)) {
@@ -721,6 +846,9 @@ public class MobileSearchActivity extends MobileActivity
                     break;
                 case VideoGroup.ACTION_SYNC:
                     syncVideos(group.getVideos());
+                    // NEWTUBE(#45): a SYNC item was mutated in place (Original titles, DeArrow),
+                    // so submitList() sees the same objects and never rebinds - rebind it here.
+                    mAdapter.refreshItems(group.getVideos());
                     break;
                 case VideoGroup.ACTION_APPEND:
                 default:
@@ -827,6 +955,7 @@ public class MobileSearchActivity extends MobileActivity
     public void clearSearch() {
         runOnUiThread(() -> {
             mVideos.clear();
+            mSearchShorts.clear();
             mLastPaginationTriggerCount = -1;
             mResultGroups.clear();
             mTopUp.clear();

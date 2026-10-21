@@ -648,6 +648,12 @@ public class MobileMainApplication extends MainApplication {
                 VideoInfoService.setVodVrLateEnabled("1".equals(vodVrLate));
                 android.util.Log.w("NetPath", "vod-vr-late " + ("1".equals(vodVrLate) ? "on" : "off") + " (debug)");
             }
+            // NEWTUBE(wall-swap): rollback of the seamless swap (MediaRepoint): the wall's 403 is
+            // fatal again and the reload recovers, as in 1.11.0-1.15.x.
+            if ("0".equals(getDebugSystemProperty("debug.arc.wall_swap"))) {
+                com.newtube.mobile.player.MediaRepoint.setEnabled(false);
+                android.util.Log.w("NetPath", "wall-swap off (debug)");
+            }
             String wall = getDebugSystemProperty("debug.arc.poison_wall_s");
             if (wall.matches("[0-9]{1,4}") && Integer.parseInt(wall) > 0) {
                 VideoInfoService.setDebugPlaybackWall(true);
@@ -694,6 +700,9 @@ public class MobileMainApplication extends MainApplication {
         // NO NOTIFICATIONS (mobile-only): YouTube refuses the notification inbox to the TV sign-in
         // (HTTP 400 signed in and out, 2026-09-30), so the phone shows no Notifications section: not
         // in the You panel, Set-up sections or Boot to section (SidebarService). Prefs untouched.
+        // Re-checked 2026-10-18 (MeTube issue #6) on a signed-in phone: every client - TV,
+        // TVLegacy, TV_UA, Kids ("Precondition check failed"), Android, MWeb, Web ("invalid
+        // argument") - gets 400 with the TV OAuth token. The inbox wants a web cookie sign-in.
         com.liskovsoft.smartyoutubetv2.common.app.presenters.service.SidebarService.setNotificationsSectionHidden(true);
 
         // FEED FIRST-PAINT (mobile-only, round 2): Home's eager row-pad continuations exist to
@@ -1054,6 +1063,13 @@ public class MobileMainApplication extends MainApplication {
     @Override
     public void onTrimMemory(int level) {
         super.onTrimMemory(level);
+
+        // METUBE(app icon): a new launcher icon is applied once nothing of the app is on screen;
+        // not while a player plays on in the background (the alias switch closes its task).
+        if (level == TRIM_MEMORY_UI_HIDDEN
+                && com.liskovsoft.smartyoutubetv2.common.app.presenters.PlaybackPresenter.instance(this).getView() == null) {
+            com.newtube.mobile.ui.common.AppIcon.applyPending(this);
+        }
 
         if (level >= TRIM_MEMORY_RUNNING_LOW) {
             if (level != TRIM_MEMORY_UI_HIDDEN) {

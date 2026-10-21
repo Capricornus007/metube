@@ -27,13 +27,20 @@
     <string name="mobile_settings_group_video">Vídeo y audio</string>
     <string name="mobile_settings_group_other">Otros</string>
     <string name="mobile_settings_general">General</string>
-    <string name="mobile_settings_general_summary">Tema, idioma, pantalla de inicio</string>
-    <string name="mobile_settings_general_summary_value">Tema %1$s, idioma, pantalla de inicio</string>
+    <string name="mobile_settings_general_summary">Idioma, país, búsqueda por voz, reloj</string>
+    <string name="mobile_settings_customize">Personalización</string>
+    <string name="mobile_settings_app_icon">Icono de la app</string>
+    <string name="mobile_app_icon_default">MeTube (predeterminado)</string>
+    <string name="mobile_app_icon_classic">MeTube (clásico)</string>
+    <string name="mobile_app_icon_fantasy">MeTube (fantasía)</string>
+    <string name="mobile_app_icon_pending">Reinicia MeTube para usar el nuevo icono en todas partes, o cambiará cuando salgas de la app</string>
+    <string name="mobile_settings_customize_summary">Tema, pestañas, diseño de inicio, menú de vídeo</string>
+    <string name="mobile_settings_customize_summary_value">Tema %1$s, pestañas, diseño de inicio, menú de vídeo</string>
     <string name="mobile_settings_theme_system_short">del sistema</string>
     <string name="mobile_settings_theme_light_short">claro</string>
     <string name="mobile_settings_theme_dark_short">oscuro</string>
-    <string name="mobile_settings_feeds">Pestañas y feeds</string>
-    <string name="mobile_settings_feeds_summary">Pestañas, vídeos ocultos, menú de vídeo</string>
+    <string name="mobile_settings_feeds">Feeds</string>
+    <string name="mobile_settings_feeds_summary">Vídeos ocultos, títulos, orden de canales</string>
     <string name="mobile_settings_privacy">Historial y privacidad</string>
     <string name="mobile_settings_privacy_summary">Historial de reproducciones y de búsqueda</string>
     <string name="mobile_settings_playback">Reproducción</string>
@@ -67,7 +74,13 @@
 
     <!-- Tabs and feeds -->
     <string name="mobile_settings_tabs">Pestañas</string>
+    <string name="mobile_settings_tabs_before_search">Pestaña antes de Buscar</string>
+    <string name="mobile_settings_tabs_after_search">Pestaña después de Buscar</string>
+    <string name="mobile_settings_tabs_none">Ninguna</string>
+    <string name="mobile_settings_tabs_bar_note">Inicio, Buscar y Tú siempre están en la barra. Elige la opción de la otra pestaña para intercambiarlas.</string>
     <string name="mobile_settings_tabs_summary">Elige qué aparece en la barra inferior y en Tú</string>
+    <string name="mobile_settings_nav_labels">Nombres de las pestañas</string>
+    <string name="mobile_settings_nav_labels_summary">Mostrar el nombre de cada pestaña bajo su icono en la barra inferior</string>
     <string name="mobile_settings_tabs_bottom_bar">Barra inferior</string>
     <string name="mobile_settings_tabs_you">Tú</string>
     <string name="mobile_settings_tabs_note">También puedes mantener pulsada una pestaña o una fila de Tú para moverla, renombrarla u ocultarla.</string>

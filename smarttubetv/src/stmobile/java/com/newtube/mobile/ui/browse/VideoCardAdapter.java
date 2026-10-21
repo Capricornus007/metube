@@ -12,6 +12,7 @@ import android.widget.ProgressBar;
 import android.widget.TextView;
 
 import androidx.annotation.NonNull;
+import androidx.annotation.Nullable;
 import androidx.core.content.ContextCompat;
 import androidx.recyclerview.widget.DiffUtil;
 import androidx.recyclerview.widget.ListAdapter;
@@ -37,6 +38,8 @@ public class VideoCardAdapter extends ListAdapter<Video, RecyclerView.ViewHolder
     private static final int VIEW_TYPE_VIDEO = 0;
     /** Channel result row (round avatar + name + subs) — e.g. channels in search results. */
     private static final int VIEW_TYPE_CHANNEL = 1;
+    /** METUBE(shorts): a channel Shorts tab's tile (item_mobile_shorts_tile), see {@link #shortsTiles}. */
+    private static final int VIEW_TYPE_SHORT_TILE = 2;
 
     public interface OnVideoClickListener {
         void onVideoClick(Video video);
@@ -53,6 +56,28 @@ public class VideoCardAdapter extends ListAdapter<Video, RecyclerView.ViewHolder
 
     private final OnVideoClickListener mClickListener;
     private final OnVideoLongClickListener mLongClickListener;
+    private boolean mShowAvatars;
+
+    /**
+     * METUBE(card avatars, issue #6): a round channel avatar beside each card's title, and the
+     * avatar or the channel name in the meta line opens the channel. Off on a channel's own page.
+     */
+    public boolean showsAvatars() {
+        return mShowAvatars;
+    }
+
+    public VideoCardAdapter showAvatars() {
+        mShowAvatars = true;
+        return this;
+    }
+
+    private boolean mShortsTiles;
+
+    /** METUBE(shorts): Shorts as YouTube's channel Shorts tab draws them, not as search's cards. */
+    public VideoCardAdapter shortsTiles() {
+        mShortsTiles = true;
+        return this;
+    }
 
     public VideoCardAdapter(OnVideoClickListener clickListener) {
         this(clickListener, null);
@@ -86,12 +111,36 @@ public class VideoCardAdapter extends ListAdapter<Video, RecyclerView.ViewHolder
         // (videoId/playlistId null + a VL... channelId — the standard shape of the user
         // Playlists section): those must stay thumbnail cards, not round-avatar channel rows.
         Video item = getItem(position);
+        if (mShortsTiles && item.belongsToShorts()) {
+            return VIEW_TYPE_SHORT_TILE;
+        }
         return item.isChannel() && !item.isPlaylistAsChannel() ? VIEW_TYPE_CHANNEL : VIEW_TYPE_VIDEO;
     }
 
     /** Full-span rows (channel results) for the grid's SpanSizeLookup in multi-column layouts. */
     public boolean isFullSpan(int position) {
         return position >= 0 && position < getItemCount() && getItemViewType(position) == VIEW_TYPE_CHANNEL;
+    }
+
+    /**
+     * METUBE(shorts): which of a two-up Shorts row this card is in (0 left, 1 right), counted along
+     * its run of shorts, or -1 for any other card.
+     * ponytail: assumes two shorts per row (portrait phone); a wider grid gets the same margins.
+     */
+    private int shortsColumn(int position) {
+        if (!isShort(position)) {
+            return -1;
+        }
+        int run = 0;
+        while (isShort(position - 1 - run)) {
+            run++;
+        }
+        return run % 2;
+    }
+
+    /** METUBE(shorts): a tall Shorts card, half a column wide in the search grid. */
+    public boolean isShort(int position) {
+        return position >= 0 && position < getItemCount() && getItem(position).belongsToShorts();
     }
 
     @NonNull
@@ -101,15 +150,24 @@ public class VideoCardAdapter extends ListAdapter<Video, RecyclerView.ViewHolder
         if (viewType == VIEW_TYPE_CHANNEL) {
             return new ChannelViewHolder(inflater.inflate(R.layout.item_mobile_channel_card, parent, false), mClickListener);
         }
-        return new VideoViewHolder(inflater.inflate(R.layout.item_video_card, parent, false), mClickListener);
+        if (viewType == VIEW_TYPE_SHORT_TILE) {
+            return new ShortTileHolder(inflater.inflate(R.layout.item_mobile_shorts_tile, parent, false),
+                    mClickListener, mLongClickListener);
+        }
+        VideoViewHolder holder = new VideoViewHolder(inflater.inflate(R.layout.item_video_card, parent, false), mClickListener);
+        holder.mShowAvatar = mShowAvatars;
+        return holder;
     }
 
     @Override
     public void onBindViewHolder(@NonNull RecyclerView.ViewHolder holder, int position) {
         if (holder instanceof ChannelViewHolder) {
             ((ChannelViewHolder) holder).bind(getItem(position), mLongClickListener);
+        } else if (holder instanceof ShortTileHolder) {
+            ((ShortTileHolder) holder).bind(getItem(position));
         } else {
             ((VideoViewHolder) holder).bind(getItem(position), mLongClickListener);
+            ((VideoViewHolder) holder).bindShortsColumn(shortsColumn(position));
         }
     }
 
@@ -120,6 +178,79 @@ public class VideoCardAdapter extends ListAdapter<Video, RecyclerView.ViewHolder
             ((VideoViewHolder) holder).unbind();
         } else if (holder instanceof ChannelViewHolder) {
             ((ChannelViewHolder) holder).unbind();
+        } else if (holder instanceof ShortTileHolder) {
+            ((ShortTileHolder) holder).unbind();
+        }
+    }
+
+    /** METUBE(shorts): see item_mobile_shorts_tile. Tap plays, the corner menu is the long-press menu. */
+    static class ShortTileHolder extends RecyclerView.ViewHolder {
+        private final ImageView mThumbnail;
+        private final TextView mViews;
+        private Video mVideo;
+
+        ShortTileHolder(@NonNull View itemView, OnVideoClickListener clickListener,
+                @Nullable OnVideoLongClickListener longClickListener) {
+            super(itemView);
+            mThumbnail = itemView.findViewById(R.id.shorts_tile_thumbnail);
+            mViews = itemView.findViewById(R.id.shorts_tile_views);
+            itemView.setOnClickListener(v -> {
+                if (mVideo != null && clickListener != null) {
+                    PlayerTransitionBridge.clear();
+                    clickListener.onVideoClick(mVideo);
+                }
+            });
+            View more = itemView.findViewById(R.id.shorts_tile_more);
+            more.setVisibility(longClickListener == null ? View.GONE : View.VISIBLE);
+            View.OnLongClickListener menu = v -> mVideo != null && longClickListener != null
+                    && longClickListener.onVideoLongClick(mVideo);
+            itemView.setOnLongClickListener(menu);
+            more.setOnClickListener(menu::onLongClick);
+        }
+
+        void bind(Video video) {
+            mVideo = video;
+            itemView.setContentDescription(video.getTitle());
+            mViews.setText(viewsOf(video.getSecondTitle()));
+            Context context = itemView.getContext();
+            // The 720x1280 portrait, decoded at tile size (the cards' request crops it to 16:9).
+            com.bumptech.glide.RequestBuilder<android.graphics.drawable.Drawable> fallback = Glide.with(context)
+                    .load("https://i.ytimg.com/vi/" + video.videoId + "/hq720.jpg")
+                    .format(DecodeFormat.PREFER_RGB_565).override(TILE_W, TILE_H).centerCrop();
+            Glide.with(context)
+                    .load(VideoViewHolder.thumbnailUrl(context, video))
+                    .diskCacheStrategy(DiskCacheStrategy.ALL)
+                    .format(DecodeFormat.PREFER_RGB_565)
+                    .override(TILE_W, TILE_H)
+                    .centerCrop()
+                    .transition(com.bumptech.glide.load.resource.drawable.DrawableTransitionOptions.withCrossFade(150))
+                    .error(fallback)
+                    .into(mThumbnail);
+        }
+
+        void unbind() {
+            mVideo = null;
+            Glide.with(itemView.getContext().getApplicationContext()).clear(mThumbnail);
+        }
+
+        private static final int TILE_W = 360;
+        private static final int TILE_H = 640;
+
+        /**
+         * "1.2M views" out of the info line ("Channel · 1.2M views · 3 days ago"): its first part
+         * with a digit that isn't the @handle (the TV Shorts tile's whole line), else nothing.
+         */
+        static CharSequence viewsOf(@Nullable CharSequence info) {
+            if (info == null) {
+                return null;
+            }
+            for (String part : info.toString().split("[•·]")) {
+                String trimmed = part.trim();
+                if (!trimmed.startsWith("@") && trimmed.matches(".*\\d.*")) {
+                    return trimmed;
+                }
+            }
+            return null;
         }
     }
 
@@ -175,8 +306,14 @@ public class VideoCardAdapter extends ListAdapter<Video, RecyclerView.ViewHolder
         private final TextView mTitle;
         private final TextView mMeta;
         private final View mOverflow;
+        private final ImageView mAvatar;
+        private final ImageView mAvatar2;
+        private final TextView mShortTitle;
         private Video mVideo;
         private String mBoundThumbUrl;
+        boolean mShowAvatar;
+        /** Where the last touch landed in the meta line: on the channel name or not. */
+        private boolean mMetaTouchOnChannel;
 
         public VideoViewHolder(@NonNull View itemView, OnVideoClickListener clickListener) {
             super(itemView);
@@ -188,6 +325,30 @@ public class VideoCardAdapter extends ListAdapter<Video, RecyclerView.ViewHolder
             mTitle = itemView.findViewById(R.id.video_title);
             mMeta = itemView.findViewById(R.id.video_meta);
             mOverflow = itemView.findViewById(R.id.video_overflow);
+            mAvatar = itemView.findViewById(R.id.video_avatar);
+            mShortTitle = itemView.findViewById(R.id.video_short_title);
+            mAvatar2 = itemView.findViewById(R.id.video_avatar_2);
+
+            if (mAvatar != null) {
+                mAvatar.setOnClickListener(v -> openChannel());
+            }
+            // METUBE(issue #6): the channel name at the start of the meta line opens the channel;
+            // the rest of the line (views, age) still opens the video.
+            mMeta.setOnTouchListener((v, event) -> {
+                if (event.getActionMasked() == android.view.MotionEvent.ACTION_DOWN) {
+                    int offset = mMeta.getOffsetForPosition(event.getX(), event.getY());
+                    mMetaTouchOnChannel = mShowAvatar && offset >= 0 && offset < channelNameLength();
+                }
+                return false;
+            });
+            mMeta.setOnClickListener(v -> {
+                if (mMetaTouchOnChannel) {
+                    openChannel();
+                } else {
+                    itemView.performClick();
+                }
+            });
+            mMeta.setOnLongClickListener(v -> itemView.performLongClick());
 
             itemView.setOnClickListener(v -> {
                 if (mVideo != null && clickListener != null) {
@@ -201,9 +362,134 @@ public class VideoCardAdapter extends ListAdapter<Video, RecyclerView.ViewHolder
             });
         }
 
+        /** Length of the channel name that leads the meta line, or 0 when it doesn't lead it. */
+        private int channelNameLength() {
+            CharSequence text = mMeta.getText();
+            String author = mVideo != null ? mVideo.getAuthor() : null;
+            return author != null && !author.isEmpty() && text != null
+                    && text.toString().startsWith(author) ? author.length() : 0;
+        }
+
+        private void openChannel() {
+            if (mVideo != null && com.liskovsoft.smartyoutubetv2.common.app.presenters.ChannelPresenter.canOpenChannel(mVideo)) {
+                PlayerTransitionBridge.clear();
+                com.liskovsoft.smartyoutubetv2.common.misc.MediaServiceManager.chooseChannelPresenter(
+                        itemView.getContext(), mVideo);
+            }
+        }
+
+        private void bindAvatar(Context context, Video video) {
+            if (mAvatar == null) {
+                return;
+            }
+            // Not for mixes and playlists: YouTube shows none there either (many channels, no one).
+            boolean show = mShowAvatar && video.videoId != null && !video.isMix()
+                    && !video.belongsToShorts() && video.getAuthor() != null;
+            mAvatar.setVisibility(show ? View.VISIBLE : View.GONE);
+            String[] collab = show ? collabNames(video.getAuthor()) : null;
+            bindCollab(collab != null);
+            if (!show) {
+                return;
+            }
+            mAvatar.setContentDescription(video.getAuthor());
+            if (collab == null) {
+                loadAvatar(context, video, mAvatar, video.channelId, video.getAuthor());
+            } else {
+                // The TV tile's channel id is the first collaborator's; the second is known by name.
+                loadAvatar(context, video, mAvatar, video.channelId, collab[0]);
+                loadAvatar(context, video, mAvatar2, null, collab[1]);
+            }
+        }
+
+        private void loadAvatar(Context context, Video video, ImageView view, @Nullable String channelId, String name) {
+            android.graphics.drawable.Drawable letter = com.newtube.mobile.ui.common.ChannelAvatars.placeholder(name);
+            String url = com.newtube.mobile.ui.common.ChannelAvatars.get(context, channelId, name);
+            if (url == null) {
+                Glide.with(context.getApplicationContext()).clear(view);
+                view.setImageDrawable(letter);
+                com.newtube.mobile.ui.common.ChannelAvatars.fetch(context, channelId, name,
+                        () -> mVideo == video, found -> {
+                    if (mVideo == video && view.getVisibility() == View.VISIBLE) {
+                        Glide.with(itemView.getContext()).load(found).circleCrop().placeholder(letter)
+                                .transition(AVATAR_FADE).into(view);
+                    }
+                }, false);
+            } else {
+                Glide.with(context).load(url).circleCrop().placeholder(letter).error(letter)
+                        .transition(AVATAR_FADE).into(view);
+            }
+        }
+
+        /** METUBE(card avatars): an avatar fades in over its placeholder orb instead of popping. */
+        private static final com.bumptech.glide.load.resource.drawable.DrawableTransitionOptions AVATAR_FADE =
+                com.bumptech.glide.load.resource.drawable.DrawableTransitionOptions.withCrossFade(
+                        new com.bumptech.glide.request.transition.DrawableCrossFadeFactory.Builder(280)
+                                .setCrossFadeEnabled(true).build());
+
+        /**
+         * METUBE(card avatars): look up and decode the avatar(s) of a card about to scroll in, so
+         * it arrives with them (FeedThumbnailPreloader). Same request shape as the bind's.
+         */
+        public static void prefetchAvatars(Context context, Video video) {
+            if (video.videoId == null || video.isMix() || video.belongsToShorts() || video.getAuthor() == null) {
+                return;
+            }
+            String[] collab = collabNames(video.getAuthor());
+            if (collab == null) {
+                prefetchAvatar(context, video.channelId, video.getAuthor());
+            } else {
+                prefetchAvatar(context, video.channelId, collab[0]);
+                prefetchAvatar(context, null, collab[1]);
+            }
+        }
+
+        private static void prefetchAvatar(Context context, @Nullable String channelId, String name) {
+            int size = Math.round(36 * context.getResources().getDisplayMetrics().density);
+            Context app = context.getApplicationContext();
+            String url = com.newtube.mobile.ui.common.ChannelAvatars.get(context, channelId, name);
+            if (url != null) {
+                Glide.with(app).load(url).circleCrop().preload(size, size);
+            } else {
+                com.newtube.mobile.ui.common.ChannelAvatars.fetch(context, channelId, name, () -> true,
+                        found -> Glide.with(app).load(found).circleCrop().preload(size, size), false);
+            }
+        }
+
+        /** METUBE(collab avatars): two overlapping circles, the first shrunk to the top-left. */
+        private void bindCollab(boolean collab) {
+            if (mAvatar2 == null) {
+                return;
+            }
+            mAvatar2.setVisibility(collab ? View.VISIBLE : View.GONE);
+            if (!collab) {
+                Glide.with(itemView.getContext().getApplicationContext()).clear(mAvatar2);
+            }
+            float scale = collab ? 26f / 36f : 1f;
+            mAvatar.setPivotX(0f);
+            mAvatar.setPivotY(0f);
+            mAvatar.setScaleX(scale);
+            mAvatar.setScaleY(scale);
+        }
+
+        /**
+         * METUBE(collab avatars): a two-channel collab's byline, "A and B" (YouTube's form), split
+         * into the two names, or null for one channel (or for "A and 2 more").
+         * ponytail: English "and" only, and a channel whose own name has " and " in it reads as a
+         * collab - its second "avatar" then stays a placeholder unless a channel has that exact name.
+         */
+        @Nullable
+        static String[] collabNames(String author) {
+            int at = author.indexOf(" and ");
+            if (at <= 0 || author.indexOf(" and ", at + 1) >= 0 || author.endsWith(" more")) {
+                return null;
+            }
+            return new String[] {author.substring(0, at), author.substring(at + 5)};
+        }
+
         public void bind(Video video, OnVideoLongClickListener longClickListener) {
             mVideo = video;
             Context context = itemView.getContext();
+            bindAvatar(context, video);
 
             itemView.setOnLongClickListener(v ->
                     mVideo != null && longClickListener != null && longClickListener.onVideoLongClick(mVideo));
@@ -235,6 +521,33 @@ public class VideoCardAdapter extends ListAdapter<Video, RecyclerView.ViewHolder
             bindReadiness(video);
             bindShape(video);
             bindThumbnail(context, video);
+        }
+
+        /**
+         * METUBE(shorts): a Short in the search grid is compact like YouTube's - title on the
+         * thumbnail, one meta line under it, narrow gutters (column 0/1; -1 = a normal card).
+         * The ⋮ menu stays on long-press.
+         */
+        void bindShortsColumn(int column) {
+            boolean shortCard = column >= 0;
+            mShortTitle.setVisibility(shortCard ? View.VISIBLE : View.GONE);
+            mShortTitle.setText(shortCard ? mVideo.getTitle() : null);
+            mTitle.setVisibility(shortCard ? View.GONE : View.VISIBLE);
+            if (shortCard && mOverflow != null) {
+                mOverflow.setVisibility(View.GONE);
+            }
+            float dp = itemView.getResources().getDisplayMetrics().density;
+            int edge = itemView.getResources().getDimensionPixelSize(R.dimen.mobile_card_spacing);
+            int inner = Math.round(3 * dp);
+            ViewGroup.MarginLayoutParams lp = (ViewGroup.MarginLayoutParams) itemView.getLayoutParams();
+            // left/right, not start/end: RecyclerView lays out with the resolved margins.
+            int left = !shortCard ? edge : column == 0 ? edge : inner;
+            int right = !shortCard ? edge : column == 0 ? inner : edge;
+            int vertical = shortCard ? Math.round(4 * dp) : edge;
+            if (lp.leftMargin != left || lp.rightMargin != right || lp.topMargin != vertical) {
+                lp.setMargins(left, vertical, right, vertical);
+                itemView.setLayoutParams(lp);
+            }
         }
 
         /** METUBE(shorts): Shorts-tab cards are tall (9:16), everything else 16:9. */
@@ -479,6 +792,8 @@ public class VideoCardAdapter extends ListAdapter<Video, RecyclerView.ViewHolder
             mMeta.setText(meta);
             mMeta.setVisibility(meta.length() == 0 ? View.GONE : View.VISIBLE);
 
+            com.newtube.mobile.ui.common.ChannelAvatars.put(itemView.getContext(), video.channelId,
+                    video.getTitle(), video.getCardImageUrl()); // METUBE(card avatars)
             Glide.with(itemView.getContext())
                     .load(video.getCardImageUrl())
                     .circleCrop()

@@ -24,6 +24,11 @@
       stays dark in both, like YouTube's: its chrome uses the fixed mobile_player_* colours.
     -->
     <style name="Theme.NewTube" parent="Theme.MaterialComponents.DayNight.NoActionBar">
+        <!-- METUBE(app icon): a task the system restores after killing the app (reopened from the
+             launcher or recents) gets its splash from this theme, not the per-icon one AppIcon
+             persists - and without an icon here that splash showed the manifest's (default) icon
+             whatever icon was picked. A blank splash is never the wrong icon. -->
+        <item name="android:windowSplashScreenAnimatedIcon" tools:targetApi="31">@android:color/transparent</item>
         <!-- METUBE(loader): every circular spinner is the morphing cookie (metube_loader). -->
         <item name="android:progressBarStyle">@style/Widget.MeTube.Loader</item>
         <item name="android:progressBarStyleLarge">@style/Widget.MeTube.Loader.Large</item>
@@ -428,7 +433,6 @@
         <item name="android:windowBackground">@android:color/transparent</item>
         <item name="android:windowContentOverlay">@null</item>
         <item name="android:backgroundDimEnabled">false</item>
-        <item name="android:windowCloseOnTouchOutside">true</item>
         <item name="android:windowSoftInputMode">adjustResize|stateAlwaysVisible</item>
         <item name="android:windowAnimationStyle">@android:style/Animation.InputMethod</item>
     </style>
@@ -517,7 +521,6 @@
     <style name="MeTubeShortsAction">
         <item name="android:layout_width">48dp</item>
         <item name="android:layout_height">48dp</item>
-        <item name="android:background">@drawable/bg_shorts_action</item>
         <item name="android:padding">12dp</item>
         <item name="android:scaleType">fitCenter</item>
         <item name="android:tint">@android:color/white</item>

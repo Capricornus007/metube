@@ -25,7 +25,6 @@
   <string name="mobile_settings_group_other">其他</string>
   <string name="mobile_settings_general">一般</string>
   <string name="mobile_settings_general_summary">主題、語言、啟動畫面</string>
-  <string name="mobile_settings_general_summary_value">%1$s主題、語言、啟動畫面</string>
   <string name="mobile_settings_theme_system_short">系統</string>
   <string name="mobile_settings_theme_light_short">淺色</string>
   <string name="mobile_settings_theme_dark_short">深色</string>

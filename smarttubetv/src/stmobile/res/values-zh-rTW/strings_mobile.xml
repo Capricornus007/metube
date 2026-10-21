@@ -377,4 +377,155 @@
     <string name="mobile_next_in">%1$d 秒後播放下一支</string>
     <string name="mobile_next_play">立即播放</string>
     <string name="mobile_next_cancel">取消</string>
+
+    <!-- Merged from upstream (zh-rTW); keys this fork had not translated yet. -->
+    <string name="mobile_lyrics">
+        歌詞
+    </string>
+    <string name="mobile_lyrics_none">
+        這首歌沒有歌詞
+    </string>
+    <string name="mobile_lyrics_source">
+        來源：%1$s
+    </string>
+    <string name="mobile_lyrics_provider_description">
+        歌詞提供者：%1$s
+    </string>
+    <string name="mobile_lyrics_provider_choose">
+        選擇歌詞提供者
+    </string>
+    <string name="mobile_lyrics_provider_current">
+        目前使用的提供者
+    </string>
+    <string name="mobile_lyrics_provider_found">
+        已找到歌詞 · 輕觸即可使用
+    </string>
+    <string name="mobile_lyrics_provider_fetching">
+        正在取得歌詞…
+    </string>
+    <string name="mobile_lyrics_provider_not_fetched">
+        輕觸即可取得
+    </string>
+    <string name="mobile_lyrics_provider_not_found">
+        找不到歌詞
+    </string>
+    <string name="mobile_search_filters">
+        搜尋篩選條件
+    </string>
+    <string name="mobile_search_filter_type">
+        類型
+    </string>
+    <string name="mobile_search_filter_all">
+        全部
+    </string>
+    <string name="mobile_search_filter_videos">
+        影片
+    </string>
+    <string name="mobile_search_filter_channels">
+        頻道
+    </string>
+    <string name="mobile_search_filter_playlists">
+        播放清單
+    </string>
+    <string name="mobile_search_filter_movies">
+        電影
+    </string>
+    <string name="mobile_search_filter_duration">
+        時間長度
+    </string>
+    <string name="mobile_search_filter_any">
+        不限
+    </string>
+    <string name="mobile_search_filter_under_4">
+        4 分鐘以下
+    </string>
+    <string name="mobile_search_filter_4_20">
+        4 - 20 分鐘
+    </string>
+    <string name="mobile_search_filter_over_20">
+        20 分鐘以上
+    </string>
+    <string name="mobile_search_filter_upload_date">
+        上傳日期
+    </string>
+    <string name="mobile_search_filter_anytime">
+        任何時間
+    </string>
+    <string name="mobile_search_filter_today">
+        今天
+    </string>
+    <string name="mobile_search_filter_this_week">
+        本週
+    </string>
+    <string name="mobile_search_filter_recent">最近上傳</string>
+    <string name="mobile_search_filter_this_month">
+        本月
+    </string>
+    <string name="mobile_search_filter_this_year">
+        今年
+    </string>
+    <string name="mobile_search_filter_prioritize">
+        排序偏好
+    </string>
+    <string name="mobile_search_filter_relevance">
+        相關程度
+    </string>
+    <string name="mobile_search_filter_popularity">
+        熱門程度
+    </string>
+    <string name="mobile_search_filter_features">
+        功能
+    </string>
+    <string name="mobile_search_filter_live">
+        直播
+    </string>
+    <string name="mobile_search_filter_subtitles">
+        字幕/CC
+    </string>
+    <string name="mobile_search_filter_creative_commons">
+        Creative Commons
+    </string>
+    <string name="mobile_search_filter_location">
+        位置
+    </string>
+    <string name="mobile_search_filter_purchased">
+        已購買
+    </string>
+    <string name="mobile_search_filter_apply">
+        套用
+    </string>
+    <string name="mobile_channel_tab_more">
+        更多
+    </string>
+    <string name="app_name">MeTube</string>
+    <string name="mobile_player_time_default">0:00</string>
+    <string name="mobile_player_live">直播</string>
+    <string name="mobile_player_sleep_timer">睡眠計時器</string>
+    <string name="mobile_feed_all">全部</string>
+    <string name="mobile_feed_show_filters">顯示篩選器</string>
+    <string name="mobile_player_autoplay">自動播放</string>
+    <string name="mobile_sleep_end_of_video">影片結束時</string>
+    <string name="mobile_sleep_left">剩 %1$d 分鐘</string>
+    <string name="mobile_sleep_toast_minutes">影片將於 %1$s 後暫停</string>
+    <string name="mobile_sleep_toast_end">影片結束時將暫停</string>
+    <string name="mobile_sleep_toast_off">睡眠計時器已關閉</string>
+    <string name="mobile_player_duration">\u0020/ %1$s</string>
+    <string name="mobile_player_chapter_title">·\u0020%1$s</string>
+    <string name="mobile_player_hold_speed">2x</string>
+    <string name="mobile_watch_queue_position">%1$d / %2$d</string>
+    <string name="mobile_description_likes">讚</string>
+    <string name="mobile_description_views">觀看次數</string>
+    <string name="mobile_watch_count_placeholder">–</string>
+    <string name="mobile_search_filter_shorts">Shorts</string>
+    <string name="mobile_search_filter_4k">4K</string>
+    <string name="mobile_search_filter_hd">HD</string>
+    <string name="mobile_search_filter_360">360°</string>
+    <string name="mobile_search_filter_vr180">VR180</string>
+    <string name="mobile_search_filter_3d">3D</string>
+    <string name="mobile_search_filter_hdr">HDR</string>
+    <string name="mobile_settings_double_tap_seek">輕觸兩下跳轉</string>
+    <string name="mobile_cast_code_youtube">YouTube</string>
+    <string name="mobile_cast_code_smarttube">SmartTube</string>
+    <string name="mobile_about_repo_url">https://github.com/yashoncode/metube</string>
+    <string name="mobile_about_site_url">https://github.com/yashoncode/metube</string>
 </resources>

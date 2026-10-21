@@ -45,6 +45,21 @@ public final class MobileMiniPlayerController {
     private final ImageButton mClose;
     private final ProgressBar mProgress;
     private final Runnable mTick = this::onTick;
+    /**
+     * SCREEN-ON (#50): the card's screen-on hold follows the player's own events, not the 500 ms
+     * tick. The tick stops when the host pauses, but the card stays up (frozen, audio playing) while
+     * a translucent window such as the card menu sits on top and the host never reaches onStop - a
+     * pause or end there must still let the screen go, and playing there must still hold it.
+     */
+    private final Player.Listener mScreenOnListener = new Player.Listener() {
+        @Override
+        public void onEvents(Player player, Player.Events events) {
+            if (events.containsAny(Player.EVENT_PLAY_WHEN_READY_CHANGED, Player.EVENT_PLAYBACK_STATE_CHANGED)) {
+                setKeepScreenOn(isActivelyPlaying(player));
+            }
+        }
+    };
+    private Player mScreenOnPlayer;
 
     private TextureView mTexture;
     private boolean mEntryAnimating;
@@ -81,6 +96,7 @@ public final class MobileMiniPlayerController {
         });
 
         mClose.setOnClickListener(v -> close());
+        MiniPip.wireAudioButton(activity.findViewById(R.id.mobile_mini_audio));
         // NEWTUBE(motion): or swipe the card away sideways.
         mSwipe = MiniCardSwipe.attach(mBar, new MiniCardSwipe.Callback() {
             @Override
@@ -325,6 +341,8 @@ public final class MobileMiniPlayerController {
         resetTransform();
         mBar.setAlpha(1f);
         mBar.setVisibility(View.GONE);
+        unwatchScreenOn();
+        setKeepScreenOn(false); // no card, no video on this screen
     }
 
     private void fadeInControls() {
@@ -472,9 +490,49 @@ public final class MobileMiniPlayerController {
     }
 
     private void updatePlayPause(ExoPlayer player) {
+        MiniPip.syncAudioButton(mActivity.findViewById(R.id.mobile_mini_audio));
         boolean playing = player.getPlayWhenReady()
                 && player.getPlaybackState() != Player.STATE_ENDED
                 && player.getPlaybackState() != Player.STATE_IDLE;
         mPlayPause.setImageResource(playing ? R.drawable.ic_player_pause : R.drawable.ic_player_play);
+        // SCREEN-ON (#50): the docked card is a visible video, so this host window holds the screen
+        // while it plays (the stopped player Activity no longer does), and lets go when it pauses.
+        watchScreenOn(player);
+        setKeepScreenOn(isActivelyPlaying(player));
+    }
+
+    private static boolean isActivelyPlaying(Player player) {
+        return player.getPlayWhenReady()
+                && (player.getPlaybackState() == Player.STATE_READY
+                    || player.getPlaybackState() == Player.STATE_BUFFERING);
+    }
+
+    /** Listen while the card is up (see mScreenOnListener); fold() stops it. */
+    private void watchScreenOn(Player player) {
+        if (mScreenOnPlayer == player) {
+            return;
+        }
+        unwatchScreenOn();
+        player.addListener(mScreenOnListener);
+        mScreenOnPlayer = player;
+    }
+
+    private void unwatchScreenOn() {
+        if (mScreenOnPlayer != null) {
+            mScreenOnPlayer.removeListener(mScreenOnListener);
+            mScreenOnPlayer = null;
+        }
+    }
+
+    private void setKeepScreenOn(boolean on) {
+        android.view.Window window = mActivity.getWindow();
+        if (window == null) {
+            return;
+        }
+        if (on) {
+            window.addFlags(android.view.WindowManager.LayoutParams.FLAG_KEEP_SCREEN_ON);
+        } else {
+            window.clearFlags(android.view.WindowManager.LayoutParams.FLAG_KEEP_SCREEN_ON);
+        }
     }
 }

@@ -3,6 +3,7 @@ package com.liskovsoft.smartyoutubetv2.common.prefs;
 import android.annotation.SuppressLint;
 import android.content.Context;
 import android.content.SharedPreferences;
+import android.net.ConnectivityManager;
 import android.os.Build;
 import android.os.Build.VERSION;
 
@@ -64,10 +65,14 @@ public class PlayerData extends DataChangeBase implements PlayerConstants, Profi
     private boolean mIsRemainingTimeEnabled;
     private int mBackgroundMode;
     private FormatItem mVideoFormat;
+    // METUBE(quality-network): the quality on mobile data; null = the same as on Wi-Fi (mVideoFormat).
+    private FormatItem mCellularVideoFormat;
     private FormatItem mTempVideoFormat;
     private FormatItem mAudioFormat;
     // NEWTUBE(pin-rescue): session-scoped audio override, mirrors mTempVideoFormat (never persisted).
     private FormatItem mTempAudioFormat;
+    private FormatItem mVideoAudioFormat;
+    private String mVideoAudioFormatVideoId;
     private FormatItem mSubtitleFormat;
     private int mVideoBufferType;
     private final List<SubtitleStyle> mSubtitleStyles = new ArrayList<>();
@@ -383,7 +388,7 @@ public class PlayerData extends DataChangeBase implements PlayerConstants, Profi
 
         switch (type) {
             case FormatItem.TYPE_VIDEO:
-                format = mVideoFormat;
+                format = isOnMobileData() ? mCellularVideoFormat : mVideoFormat;
                 break;
             case FormatItem.TYPE_AUDIO:
                 format = mAudioFormat;
@@ -409,7 +414,11 @@ public class PlayerData extends DataChangeBase implements PlayerConstants, Profi
 
         switch (format.getType()) {
             case FormatItem.TYPE_VIDEO:
-                mVideoFormat = format;
+                if (isOnMobileData()) {
+                    mCellularVideoFormat = format;
+                } else {
+                    mVideoFormat = format;
+                }
                 break;
             case FormatItem.TYPE_AUDIO:
                 mAudioFormat = format;
@@ -421,6 +430,44 @@ public class PlayerData extends DataChangeBase implements PlayerConstants, Profi
         }
         
         persistState();
+    }
+
+    /** METUBE(quality-network): the Wi-Fi quality, whatever network is active (Settings). */
+    public FormatItem getWifiVideoFormat() {
+        return FormatItem.checkFormat(mVideoFormat, FormatItem.TYPE_VIDEO);
+    }
+
+    public void setWifiVideoFormat(FormatItem format) {
+        if (format != null) {
+            mVideoFormat = format;
+            persistState();
+        }
+    }
+
+    /** The mobile-data quality, null when it follows Wi-Fi's. */
+    public FormatItem getCellularVideoFormat() {
+        return mCellularVideoFormat;
+    }
+
+    public void setCellularVideoFormat(FormatItem format) {
+        mCellularVideoFormat = format;
+        persistState();
+    }
+
+    /**
+     * Metered = mobile data (a hotspot too), as Android counts it. Asked on each read: opens and
+     * sheets are rare, and a cached flag would miss the network switch right before an open.
+     */
+    private boolean isOnMobileData() {
+        if (mCellularVideoFormat == null) {
+            return false;
+        }
+        try {
+            ConnectivityManager manager = (ConnectivityManager) mPrefs.getContext().getSystemService(Context.CONNECTIVITY_SERVICE);
+            return manager != null && manager.isActiveNetworkMetered();
+        } catch (RuntimeException e) {
+            return false;
+        }
     }
 
     public void setTempVideoFormat(FormatItem format) {
@@ -438,6 +485,40 @@ public class PlayerData extends DataChangeBase implements PlayerConstants, Profi
 
     public FormatItem getTempAudioFormat() {
         return mTempAudioFormat;
+    }
+
+    /**
+     * NEWTUBE(issues #52/#53): a manual Audio track pick belongs to the video it was made on. It is
+     * kept in memory for that video id only (so a reload of the same video keeps it) and never
+     * persisted: the next video starts on its own original track again, like YouTube.
+     */
+    public void setVideoAudioFormat(String videoId, FormatItem format) {
+        mVideoAudioFormatVideoId = format != null ? videoId : null;
+        mVideoAudioFormat = videoId != null ? format : null;
+    }
+
+    /** The manual audio pick made on {@code videoId}, or null (another video's pick never applies). */
+    public FormatItem getVideoAudioFormat(String videoId) {
+        return videoId != null && videoId.equals(mVideoAudioFormatVideoId) ? mVideoAudioFormat : null;
+    }
+
+    /**
+     * NEWTUBE(issues #52/#53): the persisted audio format as it may apply to ANY video: a codec
+     * preference only. A concrete track stored by older versions (a language pick from the gear
+     * sheet, saved app-wide) is replaced by the default preset, so it no longer drags every later
+     * dubbed video onto that language.
+     */
+    public FormatItem getStoredAudioPreference() {
+        FormatItem format = getFormat(FormatItem.TYPE_AUDIO);
+        return isConcreteAudioTrack(format) ? getDefaultAudioFormat() : format;
+    }
+
+    private static boolean isConcreteAudioTrack(FormatItem format) {
+        if (format == null || format.isPreset() || FormatItem.NO_AUDIO.equals(format)) {
+            return false;
+        }
+        MediaTrack track = format.getTrack();
+        return track != null && track.format != null && track.format.id != null;
     }
 
     public FormatItem getLastSubtitleFormat() {
@@ -919,6 +1000,7 @@ public class PlayerData extends DataChangeBase implements PlayerConstants, Profi
         mLastAudioLanguages = Helpers.parseStrList(split, 60);
         mIsVideoFlipEnabled = Helpers.parseBoolean(split, 61, false);
         mIsAudioDelayEnabled = Helpers.parseBoolean(split, 62, false);
+        mCellularVideoFormat = ExoFormatItem.from(Helpers.parseStr(split, 63));
 
         if (speeds != null) {
             for (String speedSpec : speeds) {
@@ -956,7 +1038,7 @@ public class PlayerData extends DataChangeBase implements PlayerConstants, Profi
                 mIsNumberKeySeekEnabled, mIsSkip24RateEnabled, mAfrPauseMs, mIsLiveChatEnabled, mLastSubtitleFormats, mLastSpeed, mRotationAngle,
                 mZoomPercents, mPlaybackMode, mAudioLanguage, mSubtitleLanguage, mEnabledSubtitlesPerChannel, mIsSubtitlesPerChannelEnabled,
                 mIsSpeedPerChannelEnabled, Helpers.mergeArray(mSpeeds.values().toArray()), mPitch, mIsSkipShortsEnabled, mLastAudioLanguages,
-                mIsVideoFlipEnabled, mIsAudioDelayEnabled
+                mIsVideoFlipEnabled, mIsAudioDelayEnabled, mCellularVideoFormat
         ));
     }
 

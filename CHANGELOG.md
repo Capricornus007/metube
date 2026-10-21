@@ -1,6 +1,189 @@
 # MeTube Changelog
 
-All notable user-facing changes to MeTube. MeTube is a fork of NewTube; for NewTube's own history, see [CHANGELOG.newtube.md](CHANGELOG.newtube.md).
+All notable user-facing changes to MeTube. MeTube is a fork of NewTube; for NewTube's own history, see [NewTube's releases](https://github.com/aleixrodriala/newtube/releases).
+
+## 3.0.5 — 2026-10-21 — MeTube in Traditional Chinese, Shorts on channels, search chips
+
+### New
+
+- **MeTube in Traditional Chinese (繁體中文).** Every phone screen is translated for Taiwan, thanks to [@Capricornus007](https://github.com/Capricornus007) (#14). Channel pages now also show their stats in your language's own script.
+- **A Shorts tab on channel pages.** Like YouTube's: tall tiles three to a row with the view count on each. Tap one to open the Shorts player and swipe through the channel's Shorts. Channels that only post Shorts no longer show an empty page.
+- **Subscribe on the channel page.** Signed in, the channel header has a Subscribe button with the same splash as the watch page, and Undo.
+- **Search chips.** All, Videos, Shorts, Live and Recently uploaded sit under the search bar, like YouTube's. One tap filters the results.
+- **A frosted glass bar on channel pages.** The top bar and tabs frost the page scrolling under them.
+
+### Fixed
+
+- Tapping the channel name or picture on a Short opened nothing, and a double tap there liked the video. Both now open the channel (#12).
+- Tapping a channel picture on Home opened the channel after about a second; the page now opens at once and fills in.
+- A channel opened from a youtube.com/@handle link now shows its header, Subscribe button and Shorts view counts.
+- On a channel whose latest video is a collab, the header could show the other channel.
+
+## 3.0.1 — 2026-10-19 — YouTube's search filters, Shorts in search, a real channel page
+
+### New
+
+- **YouTube's search filters.** The filter button opens the same "Search filters" YouTube has: Type, Duration, Upload date and Prioritize, plus Features chips: Live, 4K, HD, Subtitles/CC, Creative Commons, 360°, VR180, 3D, HDR, Location and Purchased. Any combination works now; before, many combinations quietly searched without a filter (#11).
+- **Shorts in search.** Search results show Shorts the way YouTube does: a block of tall cards, two to a row. Tap one to open the Shorts player and swipe through the search's Shorts. Type › Shorts shows only Shorts (#11).
+- **A channel page with a header.** The channel's banner, picture, name, @handle, subscribers and video count and its description (tap to read it all), over a soft blur of the banner. The header scrolls away; the tabs stay (#10).
+- **Both channels on a collab.** A video made by two channels shows both channel pictures, like YouTube.
+- **Hide the tab names.** Settings › Customization › Tab names: off leaves only the icons in the bottom bar.
+
+### Changed
+
+- Channel pictures on cards load sooner while you scroll and fade in instead of popping in.
+- The search filters YouTube no longer has (Last hour, sort by upload date or rating) are gone.
+
+## 3.0.0 — 2026-10-19 — Your own bottom bar, three app icons, a truthful quality label
+
+### New
+
+- **Choose your bottom bar.** Home, Search and You always stay; the tab before Search and the tab after it are yours: Shorts, Subscriptions, Downloads, History or none. Settings › Customization › Tabs. Picking what the other tab shows swaps the two. Subscriptions can be on the bar again (#7).
+- **A third icon: MeTube (Fantasy).** The red heart with a white play button on a white tile, beside MeTube (default) and MeTube (Classic). The icon list shows each one.
+- **The icon is everywhere.** The icon you pick now also shows in the Home pill, the launch screen and the update sheet, not only on the home screen. Picking one offers Restart to switch right away.
+
+### Changed
+
+- Settings choices (theme, app icon, interface size, ...) open in a bottom sheet instead of a pop-up in the middle of the screen.
+- Switches and the picked option are red, the app's accent colour.
+- Trending is gone from Tabs and You: YouTube removed it and its feed came back empty.
+
+### Fixed
+
+- **"Auto (1080p60)" on videos without 60 fps.** In Auto the Quality row showed the Auto ceiling instead of the quality playing. It now shows the real one, for example "Auto (720p)" in the small player and "Auto (1080p)" in fullscreen (#8).
+- **Subscriptions never reached the bottom bar** when turned on in Settings › Tabs (#7).
+- Long tab names such as Subscriptions fit their tab instead of ending in "...".
+
+## 2.9.9 — 2026-10-18 — Shorts in picture-in-picture, channel pictures, a new icon
+
+### New
+
+- **Shorts in picture-in-picture.** Press Home while a short plays and it keeps playing in a portrait window with previous, play/pause and next, like YouTube.
+- **Channel pictures on cards.** Home, Subscriptions and Search show each channel's picture beside the video title. Tap the picture or the channel name to open the channel.
+- **Sort a channel.** The new button on a channel page sorts its videos by Latest, Popular or Oldest.
+- **Choose your double-tap.** Settings › Playback › Double-tap to seek: 3, 5, 10, 15 or 30 seconds.
+- **A new icon.** A glossy heart with a play button, on the home screen, the launch animation and the Home pill. Prefer the old one? Settings › Customization › App icon › Classic.
+- **Customization page.** Settings › Customization holds the theme, app icon, glass, interface size, start screen, Home layout, tabs, video menu, thumbnails and playlist style. General keeps language, country, voice search and number formats.
+- **Update pop-up.** When a new version is out, MeTube asks once with Update now or Later. Later asks again a day later; Don't ask again turns it off (Settings › About › Update pop-up).
+
+### Changed
+
+- Group titles in Settings and pop-ups are smaller and red, so they no longer look like options.
+- The account and Buy me a coffee rows left the top of Settings. Switch accounts from the You tab; the thank-you stays at the bottom of About.
+- Updating to 2.9.9 removes MeTube from your home screen once (the launcher entry was renamed for the icon choice). It is still in the app drawer; pin it again from there.
+
+### Fixed
+
+- **Ads in the Shorts feed.** Promoted shorts are now dropped.
+- **Shorts wouldn't swipe right after opening.** The Shorts tab could open on a single subscription short before the rest of the feed arrived, and a swipe did nothing. It now waits for the next short.
+- **Shorts picture-in-picture turned landscape on next.** The window keeps the short's shape while the next one loads.
+- **Home could crash** reattaching the mini player's video.
+- Searches that failed once are retried properly, and captions are no longer offered from auto-dubbed audio (from SmartTube).
+
+## 2.9.8 — 2026-10-17 — Home filters, sleep timer, steadier background play
+
+### New
+
+- **Filters on Home.** Liquid-glass chips at the top of Home: All, Music, Gaming, News, Sports and Live. They slide away as you scroll down; scrolling back up shows a small arrow beside the MeTube pill that brings them back.
+- **Home as rows.** Settings › General › Home layout › Rows shows Home like SmartTube: one titled row per topic that you swipe sideways. Feed stays the default.
+- **Channels on Subscriptions.** A row of your subscribed channels heads Subscriptions. Tap one to see only that channel's videos; tap All for everything again.
+- **Sleep timer.** In the player's settings: pause after 10 to 90 minutes, or at the end of the video.
+- **Autoplay switch.** In the player's settings, one tap turns playing the next video on or off.
+- **Video quality for Wi-Fi and mobile data.** Settings › Video quality has a default for each. Mobile data starts as "Same as Wi-Fi".
+
+### Fixed
+
+- **Music stopped, and the app was closed, with the screen off.** MeTube now keeps the phone awake and connected while it plays, and asks once to be allowed to run in the background, which battery savers on phones like realme respect. Settings › Playback › "Keep playing with the screen off" shows whether it's allowed.
+
+## 2.9.6 — 2026-10-15 — Hotfix
+
+### Fixed
+
+- **The player could freeze half-shrunk.** A back swipe in the vertical fullscreen left the video stuck part-way to the mini player, with the page dimmed and no button or gesture working. Back now just leaves the vertical fullscreen, and if the player is ever caught half-way, Back puts it right.
+
+## 2.9.5 — 2026-10-15 — Headphones on the mini player, iOS-style switches
+
+### New
+
+- **Headphones on the mini player.** The in-app mini player has a headphones button to switch to audio only, and so does its floating picture-in-picture window.
+- **iOS-style switches.** Settings switches are compact capsules with a white pill knob that turns into clear glass as it slides.
+- **Frosted search in Settings.** The "Search settings" bar is liquid glass, and the list scrolls under it. It follows the Liquid glass setting.
+- **Buy me a coffee.** If you love MeTube and want to support it, there's a link in Settings and a small thank-you at the bottom of About.
+
+### Changed
+
+- **Pulling down into the vertical fullscreen follows your finger,** and springs back if you let go early. Going in and coming back out are smoother.
+- **Smoother picture-in-picture from the mini player.** Its buttons hide before the window shrinks, and the card eases back into its corner when you return.
+- **In the vertical fullscreen, the minimize and headphones buttons sit under the seek bar,** within reach of your thumb, and the top buttons stay clear of the camera notch.
+
+## 2.9.3 — 2026-10-15 — Lyrics providers, smoother comments and fullscreen
+
+### New
+
+- **Choose your lyrics provider.** Like BitChord, the lyrics panel lists every source that has the song's words, and you can switch between them.
+- **Glass buttons on Shorts.** Like, comments, share and the other buttons sit on the same frosted liquid glass as the player's buttons.
+- **Remove from playlist and Watch later, from the card menu,** on your own playlists (from NewTube).
+- **Channel links open,** including @handle links, and the channel page shows its name (from NewTube).
+
+### Changed
+
+- **Pulling Home to refresh shows videos you haven't seen.** The videos already on screen make room for the rest of YouTube's picks, with no extra wait.
+- **Writing a comment shows a single bar,** with your picture and a rounded glass pill, and it rises smoothly with the keyboard.
+- **The vertical fullscreen opens and closes smoothly,** without the page vanishing or the video jumping.
+- **The Liquid glass setting covers every glass surface,** the player's and Shorts' buttons included.
+
+### Fixed
+
+- **The lyrics panel fades away with the player** when you swipe the video down to the mini player, like comments and the description.
+- **No more stray Shorts tiles in a channel's navigation row,** and the untitled row of channel tabs is called "More" (from NewTube).
+- **The screen can sleep when the mini player is paused under a menu,** and a dubbed video's download keeps the right audio if the app closes mid-download (from NewTube).
+
+## 2.9.2 — 2026-10-14 — Lyrics, liquid glass player, Description panel
+
+### New
+
+- **Lyrics for every song.** The Music button is now Lyrics: a panel under the video with the song's words, found across BitChord's lyrics sources (lrc.red, LyricsPlus, KuGou, LRCLIB, YouTube Music, Genius and more). Timed lyrics light up line by line with the song; tapping the video still works the player.
+- **Liquid glass player buttons.** Every button over the video sits on frosted glass that blurs the picture behind it, in portrait, landscape and the vertical fullscreen.
+- **A YouTube-style Description panel.** Tapping the title opens the description in a frosted panel under the video, with likes, views and the date, and text you can copy. The video keeps playing, undimmed.
+- **Swipe between a channel's tabs.** Slide left or right on a channel's videos to change tabs.
+- **Frosted comments.** The comments panel, the "Add a comment" pill and the sort and comment menus are frosted glass.
+
+### Changed
+
+- **Swipe up to leave the vertical fullscreen,** as well as down, and it settles smoothly.
+
+### Fixed
+
+- **Comments by people with Arabic or Hebrew names read properly.** The name line no longer jumbles the date ("days ago 4 •"), and replies that are just a timestamp line up with the rest.
+
+## 2.8.0 — 2026-10-13 — Search tab and filters, Shorts edge to edge, floating mini player
+
+### New
+
+- **Search has its own tab.** Search now sits in the bottom bar where Subscriptions was (Subscriptions is in the You panel), and the search icon left the top bar.
+- **Search filters are back.** The button next to the search bar narrows results by upload date (last hour to this year), length, type (videos, channels, playlists, movies) and features (live, 4K, HDR), and sorts them by date, views or rating.
+- **The mini player floats when you leave the app.** Going home while the mini player plays on Home now opens a picture-in-picture window. Expanding it brings you back; closing it stops the video.
+- **Shorts fill the screen, edge to edge.** Ambient blur takes the strips under the status and navigation bars, and the video's edges fade into it.
+- **A frosted glass search bar that glows as you type.** Results scroll under a frosted search bar with clear and voice search inside it. What you type glows in Siri's colours, and opening Search lights up the screen's edges.
+- **A beating heart on launch.** The heart beats once on the start screen (Android 12 and later) and in the top bar.
+
+### Changed
+
+- **Shorts pause when you leave the app.** Shorts no longer open picture-in-picture, play in the background or shrink to the mini player; coming back plays them again.
+
+### Fixed
+
+- **Shorts no longer turn into normal videos at random.** A Short could lose track of the Shorts feed and open on the watch page, and the end of the loaded Shorts fell back to an ordinary next video.
+- **Picture-in-picture fills its window for vertical and square videos.** It showed the video in the top half over black, with the fullscreen button below.
+- **The screen sleeps when a video ends or is paused.** It used to stay on until the battery ran out.
+- **An audio track you pick applies to that video only.** A dub chosen once no longer follows you to every dubbed video, and "en" no longer matches "ben".
+- **Downloads of dubbed videos keep the original audio,** also after a retry.
+- **Original titles work, with or without DeArrow.**
+- **Backups leave your sign-in tokens out.** Android's backup and the app's backup file restore signed out.
+- **Fullscreen works on tablets,** where Android 16 ignores rotation requests.
+- **No blank Shorts tile on channel pages, and no channel actions on playlist cards.**
+
+The last seven fixes come from NewTube 1.15.1.
 
 ## 2.5.7 — 2026-10-09 — Music button opens your music app
 

@@ -17,6 +17,18 @@
     <string name="mobile_player_audio_track">Audio track</string>
     <string name="mobile_player_subtitles">Subtitles</string>
     <string name="mobile_player_speed">Playback speed</string>
+    <!-- METUBE(sleep-timer): gear-sheet row + sheet title, and its states. -->
+    <string name="mobile_player_sleep_timer">Sleep timer</string>
+    <!-- METUBE(feed-strip): the first chip on Home and the first avatar on Subscriptions. -->
+    <string name="mobile_feed_all">All</string>
+    <string name="mobile_feed_show_filters">Show filters</string>
+    <!-- METUBE(autoplay): gear-sheet switch over Settings > When a video ends (on = next, off = pause). -->
+    <string name="mobile_player_autoplay">Autoplay</string>
+    <string name="mobile_sleep_end_of_video">End of video</string>
+    <string name="mobile_sleep_left">%1$d min left</string>
+    <string name="mobile_sleep_toast_minutes">Video will pause in %1$s</string>
+    <string name="mobile_sleep_toast_end">Video will pause at the end</string>
+    <string name="mobile_sleep_toast_off">Sleep timer off</string>
     <!-- Spoken for the current-chapter button above the seek bar (it opens the Chapters list). -->
     <string name="mobile_player_chapter_button">Chapter: %1$s. Show all chapters</string>
     <!-- NEWTUBE(seek bar): the duration after the position ("1:10 / 4:26:52"), and the current
@@ -63,6 +75,17 @@
     <string name="mobile_watch_share">Share</string>
     <string name="mobile_watch_music">Music</string>
     <string name="mobile_watch_music_missing">No music app linked</string>
+    <string name="mobile_lyrics">Lyrics</string>
+    <string name="mobile_lyrics_none">Lyrics aren\'t available for this song</string>
+    <string name="mobile_lyrics_source">Source: %1$s</string>
+    <!-- METUBE(lyrics): the lyrics provider chooser (LyricsSheet), in BitChord's words -->
+    <string name="mobile_lyrics_provider_description">Lyrics provider: %1$s</string>
+    <string name="mobile_lyrics_provider_choose">Choose lyrics provider</string>
+    <string name="mobile_lyrics_provider_current">Current provider</string>
+    <string name="mobile_lyrics_provider_found">Lyrics found · Tap to use</string>
+    <string name="mobile_lyrics_provider_fetching">Fetching lyrics&#8230;</string>
+    <string name="mobile_lyrics_provider_not_fetched">Tap to fetch</string>
+    <string name="mobile_lyrics_provider_not_found">Lyrics not found</string>
     <!-- Watch-page action pill: opens the add/remove-from-playlist sheet. "Saved" while the video
          is in at least one playlist. -->
     <string name="mobile_watch_save">Save</string>
@@ -78,6 +101,8 @@
     <string name="mobile_watch_queue_fallback">queue</string>
     <string name="mobile_watch_queue_now_playing">Now playing</string>
     <string name="mobile_watch_description">Description</string>
+    <string name="mobile_description_likes">Likes</string>
+    <string name="mobile_description_views">Views</string>
     <string name="mobile_watch_count_placeholder" translatable="false">&#8211;</string>
     <string name="mobile_watch_share_subject">Watch this video</string>
 
@@ -146,12 +171,53 @@
     <!-- The NW arrow on a suggestion row: puts the text into the field without searching. -->
     <string name="mobile_search_insert">Refine this search</string>
     <string name="mobile_search_clear">Clear search</string>
+    <string name="mobile_search_filters">Search filters</string>
+    <!-- SearchFiltersDialog: YouTube's own filter names. -->
+    <string name="mobile_search_filter_type">Type</string>
+    <string name="mobile_search_filter_all">All</string>
+    <string name="mobile_search_filter_videos">Videos</string>
+    <string name="mobile_search_filter_shorts">Shorts</string>
+    <string name="mobile_search_filter_channels">Channels</string>
+    <string name="mobile_search_filter_playlists">Playlists</string>
+    <string name="mobile_search_filter_movies">Movies</string>
+    <string name="mobile_search_filter_duration">Duration</string>
+    <string name="mobile_search_filter_any">Any</string>
+    <string name="mobile_search_filter_under_4">Under 4 minutes</string>
+    <string name="mobile_search_filter_4_20">4 - 20 minutes</string>
+    <string name="mobile_search_filter_over_20">Over 20 minutes</string>
+    <string name="mobile_search_filter_upload_date">Upload date</string>
+    <string name="mobile_search_filter_anytime">Anytime</string>
+    <string name="mobile_search_filter_today">Today</string>
+    <string name="mobile_search_filter_this_week">This week</string>
+    <string name="mobile_search_filter_this_month">This month</string>
+    <string name="mobile_search_filter_this_year">This year</string>
+    <!-- The chip row over search results: uploads of this week, as YouTube's chip. -->
+    <string name="mobile_search_filter_recent">Recently uploaded</string>
+    <string name="mobile_search_filter_prioritize">Prioritize</string>
+    <string name="mobile_search_filter_relevance">Relevance</string>
+    <string name="mobile_search_filter_popularity">Popularity</string>
+    <string name="mobile_search_filter_features">Features</string>
+    <string name="mobile_search_filter_live">Live</string>
+    <string name="mobile_search_filter_4k" translatable="false">4K</string>
+    <string name="mobile_search_filter_hd" translatable="false">HD</string>
+    <string name="mobile_search_filter_subtitles">Subtitles/CC</string>
+    <string name="mobile_search_filter_creative_commons">Creative Commons</string>
+    <string name="mobile_search_filter_360" translatable="false">360°</string>
+    <string name="mobile_search_filter_vr180" translatable="false">VR180</string>
+    <string name="mobile_search_filter_3d" translatable="false">3D</string>
+    <string name="mobile_search_filter_hdr" translatable="false">HDR</string>
+    <string name="mobile_search_filter_location">Location</string>
+    <string name="mobile_search_filter_purchased">Purchased</string>
+    <string name="mobile_search_filter_apply">Apply</string>
     <!-- Zero-result / failed search (the two are indistinguishable at this seam); tap = retry. -->
     <!-- SearchLoadState: an honest empty answer (no retry), and a failed search. -->
     <string name="mobile_search_no_results">No results for “%1$s”</string>
     <string name="mobile_search_error">Couldn\'t load results.</string>
     <!-- Fallback tab label for a channel section the API delivered without a title. -->
     <string name="mobile_channel_tab_videos">Videos</string>
+    <!-- Tab label for the channel's untitled shortcut row (cards opening its own Videos / Live /
+         Releases / Playlists tabs), so it does not read "Videos" twice. -->
+    <string name="mobile_channel_tab_more">More</string>
 
     <!-- Bottom-nav "You" tab (account + extra sections + settings) -->
     <string name="mobile_nav_you">You</string>
@@ -266,6 +332,7 @@
     <string name="mobile_settings_gesture_levels_summary">Up and down on the left or right of the fullscreen video</string>
     <string name="mobile_settings_gesture_seek">Swipe to seek</string>
     <string name="mobile_settings_gesture_seek_summary">Sideways on the video</string>
+    <string name="mobile_settings_double_tap_seek">Double-tap to seek</string>
     <!-- Default-locale twins of the values-es overrides below (lint ExtraTranslation). -->
     <string name="subscribed_to_channel">Subscribed</string>
     <string name="unsubscribed_from_channel">Unsubscribed</string>

@@ -18,7 +18,6 @@ import com.liskovsoft.smartyoutubetv2.common.misc.AppDataSourceManager;
 import com.liskovsoft.smartyoutubetv2.common.prefs.AppPrefs;
 import com.liskovsoft.smartyoutubetv2.common.prefs.DeArrowData;
 import com.liskovsoft.smartyoutubetv2.common.prefs.GeneralData;
-import com.liskovsoft.smartyoutubetv2.common.prefs.MainUIData;
 import com.liskovsoft.smartyoutubetv2.common.prefs.NetworkData;
 import com.liskovsoft.smartyoutubetv2.common.prefs.PlayerData;
 import com.liskovsoft.smartyoutubetv2.common.prefs.PlayerTweaksData;
@@ -116,6 +115,11 @@ final class PlayerPages {
                 tweaks::isAudioTimeStretchingEnabled, tweaks::setAudioTimeStretchingEnabled));
 
         rows.add(sleepTimer(context, playerData));
+        // METUBE(background): OEM battery managers kill an optimized app's screen-off audio.
+        rows.add(SettingsRow.action(0, context.getString(R.string.mobile_settings_screen_off),
+                () -> context.getString(com.newtube.mobile.ui.playback.BackgroundPlay.isExempt(context)
+                        ? R.string.mobile_settings_screen_off_on : R.string.mobile_settings_screen_off_off),
+                page -> com.newtube.mobile.ui.playback.BackgroundPlay.request(page.requireActivity())));
 
         rows.add(SettingsRow.toggle(context.getString(R.string.mobile_settings_audio_focus),
                 context.getString(R.string.mobile_settings_audio_focus_summary),
@@ -140,6 +144,13 @@ final class PlayerPages {
                 context.getString(R.string.mobile_settings_gesture_seek_summary),
                 () -> PlayerGesturePrefs.isSeekSwipeOn(context),
                 on -> PlayerGesturePrefs.setSeekSwipeOn(context, on)));
+        // METUBE(double-tap seek, issue #6): how far a double tap jumps; 10 s stays the default.
+        SettingsRow.Choice<Integer> doubleTap = SettingsRow.choice(
+                context.getString(R.string.mobile_settings_double_tap_seek));
+        for (int seconds : new int[] {3, 5, 10, 15, 30}) {
+            doubleTap.option(context.getString(R.string.seek_interval_sec, String.valueOf(seconds)), seconds * 1000);
+        }
+        rows.add(doubleTap.bind(playerData::getSeekIncrementMs, playerData::setSeekIncrementMs));
 
         rows.add(SettingsRow.header(context.getString(R.string.mobile_settings_watch_page)));
         // METUBE(ambient): on by default.
@@ -236,7 +247,8 @@ final class PlayerPages {
         PlayerTweaksData tweaks = PlayerTweaksData.instance(context);
 
         rows.add(SettingsRow.note(context.getString(R.string.mobile_settings_quality_intro)));
-        rows.add(defaultQuality(context));
+        rows.add(defaultQuality(context, false));
+        rows.add(defaultQuality(context, true));
 
         rows.add(SettingsRow.header(context.getString(R.string.mobile_settings_audio)));
         rows.add(SettingsRow.toggle(context.getString(R.string.mobile_settings_loudness),
@@ -251,13 +263,17 @@ final class PlayerPages {
 
     /** "Auto (up to 1080p)" or the cap the user picked, for the Video quality row on the top level. */
     static CharSequence qualitySummary(Context context) {
-        SettingsRow row = defaultQuality(context);
-        CharSequence text = row.summaryText();
-        return text != null ? text : "";
+        CharSequence wifi = defaultQuality(context, false).summaryText();
+        if (PlayerData.instance(context).getCellularVideoFormat() == null) {
+            return wifi != null ? wifi : "";
+        }
+        return context.getString(R.string.mobile_settings_quality_both, wifi,
+                defaultQuality(context, true).summaryText());
     }
 
     private static final String QUALITY_AUTO = "auto";
     private static final String QUALITY_OTHER = "other";
+    private static final String QUALITY_SAME = "same";
 
     /**
      * YouTube-style quality choice: Auto plus one cap per resolution. Each cap is a preset (a
@@ -265,9 +281,20 @@ final class PlayerPages {
      * codec presets stay one level down, under Advanced > Video format. A preset picked there shows
      * here under its own name.
      */
-    private static SettingsRow defaultQuality(Context context) {
+    private static SettingsRow defaultQuality(Context context, boolean mobileData) {
         PlayerData playerData = PlayerData.instance(context);
-        FormatItem current = playerData.getFormat(FormatItem.TYPE_VIDEO);
+        // METUBE(quality-network): one row for Wi-Fi, one for mobile data ("Same as Wi-Fi" = none).
+        FormatItem current = mobileData ? playerData.getCellularVideoFormat() : playerData.getWifiVideoFormat();
+        SettingsRow.Pick<FormatItem> store = format -> {
+            if (playerData.isLegacyCodecsForced()) {
+                playerData.setLegacyCodecsForced(false); // same as setFormat below
+            }
+            if (mobileData) {
+                playerData.setCellularVideoFormat(format);
+            } else {
+                playerData.setWifiVideoFormat(format);
+            }
+        };
         FormatItem auto = playerData.getDefaultVideoFormat();
         int autoHeight = auto != null && auto.getHeight() > 0 ? auto.getHeight() : 1080;
 
@@ -282,10 +309,19 @@ final class PlayerPages {
             }
         }
 
-        SettingsRow.Choice<String> choice = SettingsRow.choice(context.getString(R.string.mobile_settings_default_quality));
+        SettingsRow.Choice<String> choice = SettingsRow.choice(context.getString(mobileData
+                ? R.string.mobile_settings_quality_mobile : R.string.mobile_settings_quality_wifi));
+        String currentKey;
+        if (mobileData) {
+            choice.option(context.getString(R.string.mobile_settings_quality_same), QUALITY_SAME);
+        }
         choice.option(context.getString(R.string.mobile_settings_quality_auto, autoHeight),
                 context.getString(R.string.mobile_settings_quality_auto_desc), QUALITY_AUTO);
-        String currentKey = current == null || !current.isPreset() ? QUALITY_AUTO : null;
+        if (mobileData && current == null) {
+            currentKey = QUALITY_SAME;
+        } else {
+            currentKey = current == null || !current.isPreset() ? QUALITY_AUTO : null;
+        }
         for (VideoPreset preset : caps) {
             int height = preset.getHeight();
             String description = height > autoHeight ? context.getString(R.string.mobile_settings_quality_more_data)
@@ -303,12 +339,14 @@ final class PlayerPages {
         }
         String selected = currentKey;
         return choice.bind(() -> selected, key -> {
-            if (QUALITY_AUTO.equals(key)) {
-                setFormat(playerData, playerData.getDefaultVideoFormat());
+            if (QUALITY_SAME.equals(key)) {
+                playerData.setCellularVideoFormat(null);
+            } else if (QUALITY_AUTO.equals(key)) {
+                store.pick(playerData.getDefaultVideoFormat());
             } else if (!QUALITY_OTHER.equals(key)) {
                 for (VideoPreset preset : caps) {
                     if (preset.name.equals(key)) {
-                        setFormat(playerData, preset.format);
+                        store.pick(preset.format);
                     }
                 }
             }
@@ -533,14 +571,12 @@ final class PlayerPages {
     static SettingsPages.Page deArrow(Context context) {
         List<SettingsRow> rows = new ArrayList<>();
         DeArrowData data = DeArrowData.instance(context);
-        MainUIData mainUIData = MainUIData.instance(context);
 
         rows.add(SettingsRow.toggle(context.getString(R.string.mobile_settings_dearrow_titles),
                 context.getString(R.string.mobile_settings_dearrow_titles_summary),
-                data::isReplaceTitlesEnabled, on -> {
-                    data.setReplaceTitlesEnabled(on);
-                    mainUIData.setUnlocalizedTitlesEnabled(false); // DeArrow's title or the original one
-                }));
+                // NEWTUBE(#45): no longer turns Original titles off - both can be on; DeArrow's
+                // title wins and the original title covers videos DeArrow has none for.
+                data::isReplaceTitlesEnabled, data::setReplaceTitlesEnabled));
         rows.add(SettingsRow.toggle(context.getString(R.string.mobile_settings_dearrow_thumbnails),
                 context.getString(R.string.mobile_settings_dearrow_thumbnails_summary),
                 data::isReplaceThumbnailsEnabled, data::setReplaceThumbnailsEnabled));

@@ -85,6 +85,19 @@ public class VideoLoaderController extends BasePlayerController {
         mUnplayableBudget.onAdvance(SystemClock.elapsedRealtime());
         loadNext();
     };
+    /**
+     * METUBE(shorts): a swipe past the last loaded short waits for the feed's next page instead of
+     * being dropped. Signed in, the Shorts tab opens on a partial first page (a subscription short
+     * or two) and the rest of the feed lands seconds later, appended to the queue by the tab.
+     */
+    private static final int SHORTS_NEXT_TRIES = 30; // 500 ms apart: 15 s
+    private Video mShortsNextWaitFor;
+    private int mShortsNextTries;
+    private final Runnable mShortsNextRetry = () -> {
+        if (getPlayer() != null && getVideo() != null && getVideo() == mShortsNextWaitFor) {
+            loadNext();
+        }
+    };
     private final Runnable mMetadataSync = () -> {
         if (getPlayer() != null) {
             waitMetadataSync(getVideo(), false);
@@ -234,6 +247,7 @@ public class VideoLoaderController extends BasePlayerController {
 
     @Override
     public boolean onNextClicked() {
+        mShortsNextTries = 0; // METUBE(shorts): a new swipe waits afresh
         if (getGeneralData().isChildModeEnabled()) {
             onPlayEnd();
         } else {
@@ -249,7 +263,11 @@ public class VideoLoaderController extends BasePlayerController {
             return;
         }
 
-        openVideoInt(mSuggestionsController.getPrevious());
+        Video previous = mSuggestionsController.getPrevious();
+        if (previous != null) {
+            previous.fromPrevious = true; // NEWTUBE(prev-resume): resume where the user left it
+        }
+        openVideoInt(previous);
 
         if (getPlayerTweaksData().isPlayerUiOnNextEnabled()) {
             getPlayer().showOverlay(true);
@@ -445,6 +463,19 @@ public class VideoLoaderController extends BasePlayerController {
 
     private void waitMetadataSync(Video current, boolean showLoadingMsg) {
         if (current == null) {
+            return;
+        }
+
+        if (current.belongsToShorts()) {
+            // METUBE(shorts): past the loaded shorts - never the watch page's next (a normal video);
+            // keep asking while the feed's next page loads (mShortsNextRetry).
+            if (current != mShortsNextWaitFor) {
+                mShortsNextWaitFor = current;
+                mShortsNextTries = 0;
+            }
+            if (mShortsNextTries++ < SHORTS_NEXT_TRIES) {
+                Utils.postDelayed(mShortsNextRetry, 500);
+            }
             return;
         }
 
@@ -797,7 +828,7 @@ public class VideoLoaderController extends BasePlayerController {
         MediaServiceManager.instance().disposeActions();
         RxHelper.disposeActions(mFormatInfoAction);
         Utils.removeCallbacks(mReloadVideo, mLoadNext, mLoadNextPastUnplayable, mRestartEngine,
-                mMetadataSync, mNextPrefetchDue);
+                mMetadataSync, mNextPrefetchDue, mShortsNextRetry);
         mUpcomingPollDueAtMs = 0; // NEWTUBE(upcoming-poll): its reload was just removed above
     }
 

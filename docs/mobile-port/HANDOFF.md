@@ -1,4 +1,4 @@
-# NewTube — Deep handoff (engine, network, verification)
+# MeTube — Deep handoff (engine, network, verification)
 
 Written 2026-07-12 after the live-DVR round + a 4-iteration improvement loop.
 Audience: a future working session (any device) picking this codebase up cold.
@@ -6,7 +6,7 @@ Companion: `STATUS.md` (current state + backlog), root `CLAUDE.md` (hard rules).
 
 ## 1. Repo topology
 
-- `origin` = github.com/aleixrodriala/newtube (`main`).
+- `origin` = github.com/yashoncode/metube (`main`).
 - Submodules `MediaServiceCore`, `SharedModules` = our forks; remote name
   `fork`, branch `master`. Commit inside the submodule → push `fork master` →
   commit the pointer bump in main. Upstream (yuliskov) fixes for YouTube
@@ -425,7 +425,7 @@ automatic resume with `first-frame +4047` at the exact position it died
 `recovery-auto-retry trigger=timer|network`, `recovery-auto-retry-exhausted`,
 `recovery-recovered`, `recovery-retry-now user=`.
 
-## 12. Bad-network round (2026-08-06, emulator `NewTube_Network_Test`)
+## 12. Bad-network round (2026-08-06, emulator `MeTube_Network_Test`)
 
 Field report: on LTE with poor signal the app is slow and fragile. Five parallel
 read-only audits were run (InnerTube/OkHttp path, media3 byte path, recovery
@@ -667,7 +667,7 @@ OkHttp `result=ok` means transport completion; inspect HTTP status for 403.
 [`BOT-CHECK-2026-09-07.md`](BOT-CHECK-2026-09-07.md) records the preserved Pixel
 screen and HTTP200/LOGIN_REQUIRED response for Rusowsky. No media preparation
 occurred. The owner confirmed the video plays in the official YouTube app;
-that does not establish the cause of NewTube's denial. The existing challenge
+that does not establish the cause of MeTube's denial. The existing challenge
 cooldown stays intact. No fingerprint/client-identity changes or external-player
 flow were added.
 
@@ -939,7 +939,7 @@ describes a multi-MB parse, but treat that as unconfirmed.
 On this device (11.8 GB) it is invisible and self-correcting. It matters only
 on a low-RAM phone, where a 471 MB peak at second five of every cold start -
 before the user has touched anything - lands exactly when the LMK is most
-willing to kill a young process. If NewTube ever targets 3-4 GB devices, gating
+willing to kill a young process. If MeTube ever targets 3-4 GB devices, gating
 the warmup on `ActivityManager.isLowRamDevice()` is the cheap mitigation. Not
 done: no low-RAM device to measure on, and guessing at the threshold is how you
 ship a regression to the machines you cannot test.
@@ -1039,7 +1039,7 @@ about a second of first-play latency on this Pixel.
 The apparent second PiP belonged to ReVanced, opened by an incorrectly quoted
 ad-hoc adb URL; the owner dismissed it. The harness now quotes and verifies the
 target package, refuses existing PiP, and tests the quoting regression. The
-later NewTube PiP → different video test left one activity and no pinned task.
+later MeTube PiP → different video test left one activity and no pinned task.
 Further rapid-card/lifecycle and normal sustained validation is pending server
 playback availability, not a license to change credentials or client behavior.
 
@@ -1321,7 +1321,7 @@ return zero formats with URLs — they are SABR-only today. `VISIONOS` and
 keeps playback possible when VISIONOS follows them.
 
 **Shipped as a second source in 1.8.1** (versionCode 10801, signed with the
-NewTube release key, `releases/1.8.1/`). DASH stays the default and the toggle
+MeTube release key, `releases/1.8.1/`). DASH stays the default and the toggle
 stays off until the user turns it on; the SABR module's runtime classes are in
 the release DEX and its proof/fixture code is not. This supersedes the 1.8.0
 `sabr-experimental` candidate under `releases/experimental-sabr-2026-09-08/`,
@@ -1540,9 +1540,9 @@ the method, the traps, and the NetPath lines to grep.
   by up to ~400 ms in activity bring-up alone.
 - The AVD clock ran ~32 s behind WSL's. When correlating netshape actions with
   logcat, poll the device log for the trigger line instead of comparing clocks.
-- `NewTube_Network_Test` (emulator-5558) had an unvalidated Wi-Fi where every
+- `MeTube_Network_Test` (emulator-5558) had an unvalidated Wi-Fi where every
   app request hung; it was shut down. `emulator-5554` (Medium_Phone) and
-  `emulator-5556` (NewTube_Verify) were used. Scratch harnesses (card taps, cold
+  `emulator-5556` (MeTube_Verify) were used. Scratch harnesses (card taps, cold
   deep links, fresh-data Home paint, per-UID bytes) are session-local; the
   logic is simple enough to rebuild from the NetPath lines below.
 
@@ -1662,7 +1662,7 @@ reason=account-change`, `restore-auth-route-quarantine ... format=v3 ... probati
 `player-ring definitive-unplayable video= clients= reason-hash= attempts= skipped=`,
 `buffer-default aligned from=MEDIUM to=HIGH pass=v2` (logged by the process Android starts
 right after an install, often before a capture begins), `buffer-cap network metered= dataSaver=
-event= -> on|off`, `viewport inline size= metered= dataSaver= -> cap on|off reason=`,
+event= -> on|off`, (`viewport inline ...` until 2026-10-19, see §38),
 `startup-init-timeout adaptive budgetMs= early= reason=`, `... action=transport-failover from=cronet
 to=okhttp ... cronetStatus=`, `startup-failover okhttp answered|no-response|failed ... bypass=
 reason=`, `media-transport cronet-bypass ... evidence=okhttp-answered`, `okhttp-fallback active
@@ -2021,11 +2021,11 @@ With `botwall anon` a signed-in walk has one anonymous hit (VISIONOS -> TV_TIZEN
 - **The link router has its own task** (`IntentRouterActivity`, `taskAffinity ":router"`): starting
   it leaves a playing player with auto-enter PiP armed, so the system enters PiP first.
 - **Harness incidents on the owner's phone (three).** A heads-up can reach y~650, so a scripted tap there opens
-  WhatsApp through SystemUI and later taps land inside it; BACK at NewTube's task root hands the
-  screen to the previous app. The harness now checks before every tap, swipe or key that NewTube
+  WhatsApp through SystemUI and later taps land inside it; BACK at MeTube's task root hands the
+  screen to the previous app. The harness now checks before every tap, swipe or key that MeTube
   has focus and no `StatusBar`/`NotificationShade` input window reaches below y=180 (`dumpsys
   input`), waits otherwise, never sends BACK at our root or HOME (launcher by intent), collapses an
-  idle shade, checks `mCallState` before each open, and only dumps/screenshots with NewTube in front.
+  idle shade, checks `mCallState` before each open, and only dumps/screenshots with MeTube in front.
   Third, 20:13 (r3e): an incoming call arrived mid-run; the guard checked focus and banners only,
   so once the call banner left it tapped the mini X and turned **mobile data and Wi-Fi off for ~30 s
   during the call** (the call held; it ended normally at 20:32). Every input, intent and network
@@ -2081,7 +2081,7 @@ python3 psum.py runs/base runs/candA
 whole APK in silence (69 MB for 1.10.4), then pinned a TV-style "Update" section that the phone put
 under You -> Explore and rendered as a blank page. Settings -> About -> Check for updates gave no
 feedback at all while it downloaded the APK (`LoadingManager` has no case for the settings screen),
-then opened a settings level titled "NewTube 1.10.4" with the changelog as checkbox rows. Android's
+then opened a settings level titled "MeTube 1.10.4" with the changelog as checkbox rows. Android's
 "Install unknown apps" detour returned to that page without installing, and after the update nothing
 said it had happened.
 
@@ -2101,7 +2101,7 @@ said it had happened.
   is in the background it posts "Update ready to install", which opens the installer.
 - A known update puts a dot on the You tab (until its sheet is opened) and a row at the top of You;
   both persist across launches (prefs `newtube_app_updates`) while automatic checks are on.
-- The first launch at the version handed to the installer shows "Updated to NewTube X · What's new".
+- The first launch at the version handed to the installer shows "Updated to MeTube X · What's new".
 - The manifest now carries `downloadSize_<abi>` / `downloadSize` inside `package`
   (`tools/update_manifest.py`); the sheet shows the size when present. Every top-level key but
   `package` is read as a version by 1.10.3 and older, so new fields must stay inside `package`.
@@ -2201,9 +2201,24 @@ after the wall (browse identity untouched, 2 per 6 h). Synthetic wall for tests:
 synthetic wall on the Mi 8 and the Pixel (Wi-Fi and LTE): recovery in 0.84-1.22 s, no reload cap,
 the next videos on the fresh identity at normal start times.
 
-**Left for after 1.11.0 (LANES §9):** Media3 treats the wall's 403 as fatal, so playback stops
-with buffer left and the resume snaps back ~6 s to the previous sync sample. Act on the first
-past-60 s 403 before the buffer drains and join the recovery source at the buffer's end.
+**The stop and the rewind (issue #84, branch `fix/wall-seamless`, 2026-10-19).** Media3 took the
+wall's 403 as fatal: the loader meets the wall far ahead of the playhead (emulator: stream 60 s
+requested at position 20-27 s), yet the error ended playback with 22-40 s still buffered, and the
+reload's history-resume keyframe snap put it 0.8-6.3 s back. Two changes:
+- **Seamless swap (`MediaRepoint`, rollback `debug.arc.wall_swap=0`).** A DataSource layer under
+  the cache holds a 403 of the armed open (the watched generated-DASH VOD source, after it has
+  been served) while `ErrorFixerController.onMediaRefusedAhead` runs the usual blame, wall memory
+  and recovery walk; `PlayerEngine.repointMedia` then points the held request, and the rest of the
+  open, at the new answer's URL for the same file (itag, lmt, xtags, clen; the URL's `id` is per
+  answer). Two swaps per open, 20 s. An answer without the file (WEB_EMBED's SABR-only + HLS
+  answers) gets one more walk with that source as the suspect (TV_TIZEN served it on the
+  emulator); no answer at all lets the 403 through to the old reload, which reuses the walk's
+  answer. Logs `wall-swap wait|request|walk|landed|mismatch|served|give-up|timeout`.
+- **Exact recovery resume (`debug.arc.recovery_exact=0`).** The reload after a source error seeks
+  exactly to the error position instead of the keyframe snap.
+Emulator, synthetic wall: no error, no reload, no rewind in 4/4 runs (walk 1.0-1.8 s, 32-39 s still
+buffered when it landed); a seek past the wall waits on a spinner for the walk and resumes at the
+target. Not yet on a phone; not seen signed in (by code the walk asks TV_TIZEN with the account).
 
 Reports: `~/projects/newtube-launch/netbench/r11-{pixel,mi8,emu-home}.md`, the TTFF analysis
 `r11-ttff-analysis.md`; design and evidence `docs/player-sources/LANES.md` §2.3, §7-9.
@@ -2375,3 +2390,66 @@ seek bar was rebuilt the way YouTube draws it, with a touch band as wide as YouT
 on YouTube 21.18) that `WatchRootLayout` hit-tests because half of it lies over the page; press
 and hold for 2x keeps the pitch and ends with its video. Details and measurements are in the
 commit messages `8ef63af9`..`d406874a`.
+
+## 38. Quality start: vertical 1080p and startup chunks (2026-10-19, branch fix/quality-start)
+
+Users reported that Auto takes too long to reach full quality and that a 1080p default "is not
+obeyed". Three causes, all measured on the Pixel 9 with a benchmark `.check` build
+(`tools/netbench` appbench, raw logs and `summarize.py` in
+`~/projects/newtube-launch/netbench/quality-start/`):
+
+- **Vertical videos were capped at YouTube's 480p.** The Auto ceiling (and every Settings cap)
+  was `setMaxVideoSize(1920, 1080)`; media3 checks `width <= max && height <= max` with no
+  rotation (1.10.1 bytecode, `DefaultTrackSelector$VideoTrackInfo`), so a vertical video's 1080p
+  (1080x1920) and 720p (720x1280) never fit and 608x1080 (itag 779/780, "480p") won. The ceilings
+  are square now (`VideoRung.ceilingSide`: 1080p -> 1920x1920). Labels, the quality sheet's rung
+  order and the loose match of a carried-over session pick use `VideoRung.classHeight`
+  (YouTube's class: the larger of the short side and the long side's 16:9 equivalent, 10% slack).
+  A box is not the class rule: under a 720p cap a square 1080x1080 fits, under 480p the 608x1080
+  variant does not (480x854 does). Rare shapes, documented in `VideoRung`.
+- **Low startup chunks played out after 1080p was already fetched.** With no fresh bandwidth
+  hint (the first video after 5 min) the first chunk is 240-480p by design (TTFF; see the
+  2026-09-08 startup-bandwidth section in STATUS). The estimate allows 1080p within 1-3 s, but
+  stock `AdaptiveTrackSelection.evaluateQueueSize` only drops buffered chunks starting more than
+  25 s ahead AND at most 1279x719, so on Wi-Fi, where 2-3 low chunks are buffered before the
+  switch, 1080p reached the screen 10-18 s in. `ViewportCappedTrackSelection.evaluateQueueSize`
+  now drops chunks loaded before the selection's first switch (`trackSelectionReason == INITIAL`)
+  from 5 s of playout ahead, below the selected rung in class and bitrate, only when: the
+  selection switched by its own decision (ADAPTIVE; a selection re-created by an audio/captions
+  change is UNKNOWN with its top rung nominally selected), the selected rung still fits
+  `estimate x fraction` and the window cap (the selection only refreshes per chunk request), and
+  within 30 s of the selection's creation (never a paused live stream whose window moved on).
+  Chunks from later switches keep the stock rule: a dip mid-video never throws a long buffer
+  away. Why 5 s: media3 only picks a rung whose bitrate is <= 0.7 x the estimate, so a 5 s chunk
+  at the new rung takes <= 3.5 s to fetch; 5 s of kept buffer covers it, a smaller window may
+  not. Logged as `rung replace ... chunks= from= pos= to=`. SABR never discards (empty
+  `reevaluateBuffer`), so this is DASH/HLS only.
+- **60 fps videos open below 1080p60 even with a fresh hint**: the fresh seed is capped at
+  4 Mbps (`StartupBandwidthMeter.MAX_RECENT_SEED_BPS`) and 1080p60 VP9's manifest (peak) bitrate
+  needs ~7-11 Mbps of estimate. NOT changed: a 1080p60 first chunk is ~2.6 MB vs ~0.4 MB at 480p,
+  about a second more before the first frame on LTE; the owner's priority is speed.
+
+**"Background data off" is Data Saver to the app, so the portrait-box cap is gone.**
+`ConnectivityManager.getRestrictBackgroundStatus()` answers ENABLED both for global Data Saver
+and for an app whose per-app "Background data" is off (`REJECT_METERED_BACKGROUND`; measured:
+the system's Restrict background was false while `.check`, once on that list, logged
+`dataSaver=y`). Public APIs cannot tell the two apart. So a user who turned background data off
+for NewTube got the data-saving caps on mobile data: the portrait box capped at 720p (the quality
+row read "Auto (720p)") and the 30 s cellular buffer. The owner's own Pixel has background data
+off for the daily app, `.debug` and ~40 other apps. No public route to the global state exists:
+toggling Data Saver changes no readable setting (only the Quick Settings tile lists, emulator
+API 35), and `NetworkPolicyManager.getRestrictBackground` needs MANAGE_NETWORK_POLICY.
+Decision (owner delegated it, 2026-10-19): the portrait-box rung cap was removed
+(`VideoViewportCap` has only the PiP/mini window now; `setInline`/`clearInline`/
+`setInlineViewport` are gone), and the invisible part stays: the forward-buffer ceiling
+(`MeteredBufferLoadControl`, 30 s + played) still applies on metered + "Data Saver". The visible
+saving was small (1080p vs 720p in a 1080x608 box, ~2.4 vs ~1.8 Mbps) and it read as a bug.
+
+`rung fetch` / `rung show` (`VideoRungLog`) are logged in every build type, so a user's
+diagnostic log shows when quality went up. `debug.arc.startup_abr=stale` (debug/benchmark builds)
+treats every stored bandwidth hint as too old, to measure the first-open-of-a-session case
+without waiting 5 minutes.
+
+Pixel harness note: `cmd media_session volume --set` cannot unmute a stream that a 0 muted on
+Android 17; appbench restores with `cmd audio set-volume 3 <n>` now (one run had left the owner's
+media volume muted).

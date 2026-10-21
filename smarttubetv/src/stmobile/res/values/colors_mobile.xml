@@ -12,6 +12,8 @@
     <color name="mobile_color_background">#FFFFFF</color>
     <color name="mobile_color_surface">#FFFFFF</color>
     <color name="mobile_color_on_surface">#0F0F0F</color>
+    <!-- Group titles in Settings and dialogs: the accent, dark enough for small text on white (5:1). -->
+    <color name="mobile_color_section_title">#D7372D</color>
     <color name="mobile_color_on_surface_secondary">#606060</color>
     <color name="mobile_color_badge_bg">#73000000</color>
     <color name="mobile_color_badge_live_bg">#CCD32F2F</color>
@@ -32,7 +34,7 @@
          disappear into a white button on-device. -->
     <color name="mobile_color_subscribed_button">#F2F2F2</color>
     <!-- NEWTUBE(comments-panel): the comment a replies page is about, set apart from its replies. -->
-    <color name="mobile_color_comment_parent">#F2F2F2</color>
+    <color name="mobile_color_comment_parent">#0D000000</color>
     <!-- The creator's handle on their own comments, and the panel's Top / Newest menu. -->
     <color name="mobile_color_comment_creator_pill">#14000000</color>
     <color name="mobile_color_menu_surface">#FFFFFF</color>
@@ -73,6 +75,10 @@
 
     <!-- METUBE(glass): the floating-glass surfaces (light side; dark in values-night). -->
     <color name="metube_glass_tint">#66FAFAFA</color>
+    <!-- METUBE(search): the search pill stays visible over a plain page, frosted over results. -->
+    <color name="metube_search_glass_tint">#14000000</color>
+    <!-- METUBE(glass): a pill on a frosted sheet ("Add a comment"): a see-through lift. -->
+    <color name="metube_glass_pill_tint">#14000000</color>
     <!-- METUBE(glass): sheet surfaces - the surface, a little see-through over the blurred page. -->
     <color name="metube_sheet_glass">#D6FFFFFF</color>
     <color name="metube_glass_fill">#0D000000</color>
@@ -82,4 +88,7 @@
     <!-- METUBE(glass): the frosted top bar - the page colour at ~75%. -->
     <color name="metube_bar_tint">#C7FFFFFF</color>
     <color name="metube_switch_off">#E3E3E8</color>
+    <!-- METUBE(accent): the app's accent - switches and choice radios (a picker can come later). -->
+    <color name="metube_accent">#D7372D</color>
+    <color name="metube_switch_on">@color/metube_accent</color>
 </resources>

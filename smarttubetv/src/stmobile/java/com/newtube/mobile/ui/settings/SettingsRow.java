@@ -40,6 +40,8 @@ public final class SettingsRow {
     public static final int KIND_CHOICE = 3;
     public static final int KIND_NOTE = 4;
     public static final int KIND_DIVIDER = 5;
+    /** METUBE(support): a centred thank-you at the foot of a page - icon, a line, a small link. */
+    public static final int KIND_FOOTER = 6;
 
     /** What a toggle or a choice does after it has been applied. */
     public interface Toggle {
@@ -59,6 +61,8 @@ public final class SettingsRow {
         final CharSequence label;
         @Nullable final CharSequence description;
         final Object value;
+        /** A preview beside the label (the app icon picker), 0 for none. */
+        @DrawableRes int icon;
 
         Option(CharSequence label, @Nullable CharSequence description, Object value) {
             this.label = label;
@@ -96,6 +100,16 @@ public final class SettingsRow {
 
     public static SettingsRow divider() {
         return new SettingsRow(KIND_DIVIDER);
+    }
+
+    public static SettingsRow footer(@DrawableRes int icon, CharSequence title, CharSequence summary,
+                                     @NonNull Action action) {
+        SettingsRow row = new SettingsRow(KIND_FOOTER);
+        row.icon = icon;
+        row.title = title;
+        row.summary = () -> summary;
+        row.action = action;
+        return row;
     }
 
     public static SettingsRow note(CharSequence text) {
@@ -257,6 +271,14 @@ public final class SettingsRow {
 
         public Choice<T> option(CharSequence label, @Nullable CharSequence description, T value) {
             mOptions.add(new Option(label, description, value));
+            return this;
+        }
+
+        /** An option with a preview image beside its label. */
+        public Choice<T> option(CharSequence label, @DrawableRes int icon, T value) {
+            Option option = new Option(label, null, value);
+            option.icon = icon;
+            mOptions.add(option);
             return this;
         }
 

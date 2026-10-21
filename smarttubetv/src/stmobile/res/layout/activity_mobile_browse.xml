@@ -300,7 +300,7 @@
                     android:layout_height="22dp"
                     android:layout_marginEnd="8dp"
                     android:importantForAccessibility="no"
-                    android:src="@drawable/ic_metube_mark" />
+                    android:src="@drawable/ic_metube_mark_art" />
 
                 <TextView
                     android:id="@+id/mobile_title_bar"
@@ -317,6 +317,18 @@
             </LinearLayout>
 
         </com.newtube.mobile.ui.common.GlassView>
+
+        <!-- METUBE(feed-strip): what Home's chips fold into while the feed scrolls back up, beside
+             the brand pill (ChipBar); a tap brings the chips back. -->
+        <ImageView
+            android:id="@+id/mobile_chip_expand"
+            android:layout_width="44dp"
+            android:layout_height="44dp"
+            android:contentDescription="@string/mobile_feed_show_filters"
+            android:elevation="6dp"
+            android:scaleType="center"
+            android:src="@drawable/ic_chips_expand"
+            android:visibility="gone" />
 
         <Space
             android:layout_width="0dp"
@@ -352,6 +364,7 @@
                     android:id="@+id/mobile_search_button"
                     android:layout_width="44dp"
                     android:layout_height="44dp"
+                    android:visibility="gone"
                     android:background="?attr/selectableItemBackgroundBorderless"
                     android:contentDescription="@string/mobile_search_button"
                     android:padding="11dp"
@@ -362,6 +375,21 @@
         </com.newtube.mobile.ui.common.GlassView>
 
     </LinearLayout>
+
+    <!-- METUBE(feed-strip): Home's topic chips, liquid-glass pills floating under the top pills;
+         the feed scrolls under them (FeedStrip, the page padded by this row too). -->
+    <androidx.recyclerview.widget.RecyclerView
+        android:id="@+id/mobile_chip_row"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:clipToPadding="false"
+        android:overScrollMode="never"
+        android:paddingHorizontal="12dp"
+        android:paddingBottom="8dp"
+        android:visibility="gone"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/mobile_top_glass" />
 
     <!-- METUBE(quotes): the quote a tap on the brand pill shows for three seconds (QuoteCard),
          on the same liquid glass as the pills. -->
@@ -483,6 +511,17 @@
                 android:contentDescription="@string/mobile_mini_close"
                 android:padding="15dp"
                 android:src="@drawable/ic_sheet_close"
+                android:tint="@color/mobile_player_on_video" />
+
+            <ImageButton
+                android:id="@+id/mobile_mini_audio"
+                android:layout_width="48dp"
+                android:layout_height="48dp"
+                android:layout_gravity="top|start"
+                android:background="@drawable/bg_mini_scrim_circle_touch"
+                android:contentDescription="@string/mobile_player_audio_only"
+                android:padding="14dp"
+                android:src="@drawable/ic_player_headphones"
                 android:tint="@color/mobile_player_on_video" />
 
             <ProgressBar
