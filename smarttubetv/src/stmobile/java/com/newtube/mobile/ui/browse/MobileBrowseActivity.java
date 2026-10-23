@@ -187,6 +187,7 @@ public class MobileBrowseActivity extends MobileActivity
     private ImageView mMiniFreeze;
     private TextureView mMiniTexture;
     private ImageButton mMiniPlayPause;
+    private com.newtube.mobile.ui.playback.MiniControls mMiniControls;
     private ProgressBar mMiniProgress;
     /**
      * METUBE(shorts): the Shorts tab's player, played IN PLACE on this page: the playback Activity
@@ -351,6 +352,7 @@ public class MobileBrowseActivity extends MobileActivity
         mMiniFreeze = findViewById(R.id.mobile_mini_freeze);
         mMiniPlayPause = findViewById(R.id.mobile_mini_play_pause);
         mMiniProgress = findViewById(R.id.mobile_mini_progress);
+        mMiniControls = new com.newtube.mobile.ui.playback.MiniControls(findViewById(R.id.mobile_mini_controls));
         setupMiniPlayerBar();
         mMiniPip = new com.newtube.mobile.ui.playback.MiniPip(this, mMiniPlayerBar, () -> {
             hideMiniPlayer();
@@ -452,7 +454,8 @@ public class MobileBrowseActivity extends MobileActivity
         if (visible) {
             mSkeletonShows++;
             mFeedSkeleton.animate().cancel();
-            mFeedSkeleton.setAlpha(1f);
+            // The Shorts tab shows a spinner, never the skeleton (showShortsTab).
+            mFeedSkeleton.setAlpha(mCurrentSectionId == MediaGroup.TYPE_SHORTS ? 0f : 1f);
             mFeedSkeleton.setVisibility(View.VISIBLE);
             return;
         }
@@ -464,12 +467,20 @@ public class MobileBrowseActivity extends MobileActivity
         if (mFeedSkeleton.getVisibility() != View.VISIBLE) {
             return;
         }
-        mFeedSkeleton.animate().cancel();
         if (mCurrentVideos.isEmpty()) {
+            mFeedSkeleton.animate().cancel();
             mFeedSkeleton.setVisibility(View.GONE);
             mFeedSkeleton.setAlpha(1f);
             return;
         }
+        // Issue #20: each page of a loading feed says "hide" again (3-8 times a page), and each call
+        // used to cancel the fade and start it over, so on a slow phone the skeleton stayed over
+        // the cards for as long as pages kept coming. One fade per show; only a new show stops it.
+        if (mSkeletonLeaving == mSkeletonShows) {
+            return;
+        }
+        mSkeletonLeaving = mSkeletonShows;
+        mFeedSkeleton.animate().cancel();
         int shows = mSkeletonShows;
         SkeletonReveal.fadeOverCards(mFeedSkeleton, mContentGrid, () -> shows == mSkeletonShows, () -> {
             mFeedSkeleton.setVisibility(View.GONE);
@@ -479,18 +490,22 @@ public class MobileBrowseActivity extends MobileActivity
 
     /** Counts skeleton shows, so a reveal waiting for its cards yields to a newer load. */
     private int mSkeletonShows;
+    /** The show whose fade-out is under way (setSkeletonVisible(false) starts one per show). */
+    private int mSkeletonLeaving = -1;
 
     // ---------------------------------------------------------------------------------
     // In-app mini-player bar
     // ---------------------------------------------------------------------------------
 
     private void setupMiniPlayerBar() {
-        // Tap the video (anywhere but the overlay buttons) = expand back to the watch screen.
+        // Tap the video = show the overlay buttons (METUBE(mini-controls), see MiniControls); tap
+        // it again while they show (anywhere but the buttons) = expand back to the watch screen.
         // The card keeps rendering until our onPause detaches it (hideMiniPlayer there) - the
         // player's onResume then re-parents the session texture back. Detaching HERE would blank
         // the card for the whole activity-switch latency.
         View.OnClickListener expand = v -> {
-            if (!mMiniClosing && MiniPlayerBridge.isActive()) { // not while a closed card leaves
+            if (!mMiniClosing && MiniPlayerBridge.isActive() // not while a closed card leaves
+                    && !mMiniControls.onVideoTap()) {
                 MiniPlayerBridge.expand(this);
             }
         };
@@ -503,6 +518,7 @@ public class MobileBrowseActivity extends MobileActivity
                 player.setPlayWhenReady(!player.getPlayWhenReady());
                 updateMiniPlayPauseIcon(player);
             }
+            mMiniControls.show(); // a few seconds more
         });
 
         findViewById(R.id.mobile_mini_close).setOnClickListener(v -> closeMiniPlayer());
@@ -960,6 +976,7 @@ public class MobileBrowseActivity extends MobileActivity
         stopMiniSwipe();
         mMiniPlayerBar.animate().cancel();
         mMiniPlayerBar.setVisibility(View.GONE);
+        mMiniControls.reset();
         unwatchMiniScreenOn();
         setMiniKeepScreenOn(false); // no card, no video on this screen
         mMiniPlayerBar.setAlpha(1f);
@@ -1123,6 +1140,19 @@ public class MobileBrowseActivity extends MobileActivity
                 maybeTriggerPagination();
             }
         });
+        if (com.newtube.mobile.ui.common.FocusRing.isTv(this)) {
+            // METUBE(tv): the remote's way to the chips is up from the first row, so there the feed
+            // goes back to its top and the chips come out (a touch gets them by scrolling up).
+            mContentGrid.getViewTreeObserver().addOnGlobalFocusChangeListener((oldFocus, newFocus) -> {
+                View item = newFocus != null ? mContentGrid.findContainingItemView(newFocus) : null;
+                int position = item != null ? mContentGrid.getChildAdapterPosition(item) : RecyclerView.NO_POSITION;
+                if (position != RecyclerView.NO_POSITION && mContentGrid.canScrollVertically(-1)
+                        && mLayoutManager.getSpanSizeLookup().getSpanGroupIndex(position,
+                                mLayoutManager.getSpanCount()) <= stripRows()) {
+                    mContentGrid.smoothScrollToPosition(0);
+                }
+            });
+        }
     }
 
     /**
@@ -1314,6 +1344,13 @@ public class MobileBrowseActivity extends MobileActivity
             if (isFreshShort(video) || (anyShort && video.belongsToShorts() && video.hasVideo())) {
                 mShortsLaunchPending = false;
                 mShortsLaunchPages = 0;
+                // The player covers the tab now (its window is translucent, so this one keeps
+                // drawing): a spinner left turning here redrew this window ~100 times a second
+                // under every short, GPU time taken from the player's own swipes.
+                View loading = findViewById(R.id.mobile_shorts_loading);
+                if (loading != null) {
+                    loading.setVisibility(View.GONE);
+                }
                 onVideoClicked(video);
                 return;
             }
@@ -1337,7 +1374,11 @@ public class MobileBrowseActivity extends MobileActivity
     /** METUBE(shorts): the grid never shows on the Shorts tab - a spinner until the player opens. */
     private void showShortsTab(boolean shorts) {
         mContentSwipe.setAlpha(shorts ? 0f : 1f);
-        mFeedSkeleton.setAlpha(shorts ? 0f : 1f);
+        // A skeleton already fading out over the new tab's cards keeps its alpha: putting it back
+        // to 1 flashed it over them until the fade caught up.
+        if (shorts || mSkeletonLeaving != mSkeletonShows) {
+            mFeedSkeleton.setAlpha(shorts ? 0f : 1f);
+        }
         View loading = findViewById(R.id.mobile_shorts_loading);
         if (loading != null) {
             loading.setVisibility(shorts ? View.VISIBLE : View.GONE);
@@ -2552,6 +2593,13 @@ public class MobileBrowseActivity extends MobileActivity
     public void onConfigurationChanged(Configuration newConfig) {
         super.onConfigurationChanged(newConfig);
 
+        // METUBE(fullscreen): the fullscreen player turns Home with it, under its window. Following
+        // it there re-laid the grid twice out of sight (two columns, then one), so Home came back
+        // scrolled elsewhere with its cards rebinding as the player minimized. onResume squares
+        // the grid with Home's own configuration when Home is next on screen.
+        if (com.newtube.mobile.ui.playback.MobilePlaybackActivity.isCoveringScreens()) {
+            return;
+        }
         updateGridSpanCount(com.newtube.mobile.ui.common.MobileGrid.computeSpanCount(newConfig));
     }
 
@@ -2611,6 +2659,15 @@ public class MobileBrowseActivity extends MobileActivity
         if (mShortsHost != null && mShortsHost.isVisible()) {
             closeShortsHostForNavigation();
             return;
+        }
+
+        // METUBE(tv): Back from the page goes to the bottom bar first - a remote has no other way
+        // down to it (Down keeps scrolling the feed). From the bar, Back does what it always did.
+        if (com.newtube.mobile.ui.common.FocusRing.isTv(this) && !mBottomNav.hasFocus()) {
+            View tab = mBottomNav.findViewById(mBottomNav.getSelectedItemId());
+            if (tab != null && tab.requestFocus()) {
+                return;
+            }
         }
         // A grid section opened from a You-panel row: back returns to the panel (its natural
         // parent surface), like YouTube's You-tab sub-screens.
@@ -3228,7 +3285,10 @@ public class MobileBrowseActivity extends MobileActivity
                 // to carry, and running the section's own onAction here would be the wrong thing.
                 actionData = null;
             } else {
-                mErrorMessage.setText(R.string.mobile_empty_generic);
+                // Issue #19: TV, the one client that takes MeTube's sign-in, never lists private or
+                // unlisted uploads, not even to their owner, so an empty My videos needs saying why.
+                mErrorMessage.setText(mCurrentSectionId == MediaGroup.TYPE_MY_VIDEOS
+                        ? R.string.mobile_empty_my_videos : R.string.mobile_empty_generic);
                 mErrorAction.setVisibility(View.GONE);
             }
 

@@ -159,6 +159,7 @@
         <item name="shapeAppearanceOverlay">@style/ShapeAppearance.NewTube.BottomSheet</item>
         <!-- METUBE: Material squares the top corners off once a sheet is expanded; keep them round. -->
         <item name="shouldRemoveExpandedCorners">false</item>
+        <item name="android:maxWidth">@dimen/metube_sheet_max_width</item>
     </style>
 
     <style name="ShapeAppearance.NewTube.BottomSheet" parent="">
@@ -389,6 +390,17 @@
         <item name="android:textSize">14sp</item>
     </style>
 
+    <!-- METUBE(fullscreen-actions): an action on the fullscreen pill - a size under the player's
+         48dp buttons. -->
+    <style name="MobilePlayerAction">
+        <item name="android:layout_width">38dp</item>
+        <item name="android:layout_height">38dp</item>
+        <item name="android:background">?attr/selectableItemBackgroundBorderless</item>
+        <item name="android:padding">10dp</item>
+        <item name="android:scaleType">fitCenter</item>
+        <item name="android:tint">@color/mobile_player_on_video</item>
+    </style>
+
     <style name="MobileSkeletonRelatedRow">
         <item name="android:layout_width">match_parent</item>
         <item name="android:layout_height">wrap_content</item>
@@ -519,9 +531,9 @@
 
     <!-- METUBE(shorts): the vertical player's action column (mobile_shorts_overlay). -->
     <style name="MeTubeShortsAction">
-        <item name="android:layout_width">48dp</item>
-        <item name="android:layout_height">48dp</item>
-        <item name="android:padding">12dp</item>
+        <item name="android:layout_width">42dp</item>
+        <item name="android:layout_height">42dp</item>
+        <item name="android:padding">10dp</item>
         <item name="android:scaleType">fitCenter</item>
         <item name="android:tint">@android:color/white</item>
     </style>

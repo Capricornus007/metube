@@ -10,6 +10,8 @@
     <string name="mobile_player_pause">Pause</string>
     <string name="mobile_player_replay">Replay</string>
     <string name="mobile_player_fullscreen">Toggle fullscreen</string>
+    <string name="mobile_player_hide_actions">Hide actions</string>
+    <string name="mobile_player_show_actions">Show actions</string>
     <string name="mobile_player_time_default" translatable="false">0:00</string>
     <string name="mobile_player_live" translatable="false">LIVE</string>
     <string name="mobile_player_quality">Quality</string>
@@ -297,6 +299,7 @@
     <string name="action_signin">Sign in</string>
     <string name="mobile_empty_generic">Nothing to show here yet</string>
     <string name="mobile_empty_subscriptions">Videos from channels you subscribe to show up here</string>
+    <string name="mobile_empty_my_videos">Your public uploads show up here. YouTube keeps private and unlisted videos out of the TV sign-in MeTube uses.</string>
     <!-- Same empty state, but the device has no working network: say so instead of blaming the feed. -->
     <string name="mobile_empty_no_connection">No connection. Check your network and try again.</string>
     <!-- Channel / uploads / playlist pages (MobileChannel*Activity): the first page failed with a
