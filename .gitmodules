@@ -1,6 +1,6 @@
 [submodule "SharedModules"]
 	path = SharedModules
-	url = https://github.com/aleixrodriala/SharedModules
+	url = git@github.com:Capricornus007/SharedModules
 [submodule "MediaServiceCore"]
 	path = MediaServiceCore
 	url = https://github.com/yashoncode/MediaServiceCore
