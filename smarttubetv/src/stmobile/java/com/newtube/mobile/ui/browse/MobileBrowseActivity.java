@@ -1719,7 +1719,7 @@ public class MobileBrowseActivity extends MobileActivity
         mPresenter.onVideoItemSelected(video);
 
         // METUBE(shorts): a short opens the vertical player with the tab's shorts as its queue,
-        // so a swipe up plays the next one (and down the previous) - see ShortsOverlay.
+        // so a swipe up plays the next one (and down the previous) - see MobileShortsHost.
         if (video.belongsToShorts() && video.hasVideo()) {
             queueShorts(video);
             // ...and with the vertical player on (the default), it plays HERE: the request below is

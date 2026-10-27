@@ -84,9 +84,6 @@
                 app:yt_animationDuration="500"
                 app:yt_seekSeconds="10" />
 
-            <!-- METUBE(shorts): vertical-player overlay, under the controls. -->
-            <include layout="@layout/mobile_shorts_overlay" />
-
             <!-- Custom controls overlay. clickable so taps on empty space hide it. -->
             <FrameLayout
                 android:id="@+id/mobile_controls_root"

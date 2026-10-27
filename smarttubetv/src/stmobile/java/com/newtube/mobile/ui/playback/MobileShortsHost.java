@@ -1,8 +1,10 @@
 package com.newtube.mobile.ui.playback;
 
 import android.app.Activity;
+import android.content.Context;
 import android.graphics.Bitmap;
 import android.graphics.SurfaceTexture;
+import android.graphics.drawable.Drawable;
 import android.util.Log;
 import android.view.Gravity;
 import android.view.MotionEvent;
@@ -12,6 +14,7 @@ import android.view.View;
 import android.view.ViewConfiguration;
 import android.view.ViewGroup;
 import android.view.animation.DecelerateInterpolator;
+import android.view.animation.OvershootInterpolator;
 import android.widget.FrameLayout;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
@@ -20,14 +23,22 @@ import android.widget.TextView;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
+import androidx.core.view.AccessibilityDelegateCompat;
+import androidx.core.view.ViewCompat;
+import androidx.core.view.accessibility.AccessibilityNodeInfoCompat;
 import androidx.media3.common.Player;
 import androidx.media3.common.VideoSize;
 import androidx.media3.exoplayer.ExoPlayer;
 
+import com.bumptech.glide.RequestBuilder;
+import com.bumptech.glide.load.DecodeFormat;
+import com.bumptech.glide.load.engine.DiskCacheStrategy;
+import com.bumptech.glide.Glide;
 import com.liskovsoft.smartyoutubetv2.common.app.models.data.Playlist;
 import com.liskovsoft.smartyoutubetv2.common.app.models.data.Video;
 import com.liskovsoft.smartyoutubetv2.common.utils.Utils;
 import com.liskovsoft.smartyoutubetv2.tv.R;
+import com.newtube.mobile.ui.common.Burst;
 import com.newtube.mobile.ui.common.FrameGate;
 import com.newtube.mobile.ui.common.Haptics;
 import com.newtube.mobile.ui.common.Motion;
@@ -55,6 +66,14 @@ import java.util.List;
  * into the gap it opens - the same image the new short is then covered with until its first real
  * frame arrives, as the official pager does. With nothing queued in that direction the drag only
  * rubber-bands.</p>
+ *
+ * <p>METUBE(shorts) 8c: this is the ONLY Shorts surface. The full-screen {@code ShortsOverlay} that
+ * used to duplicate it inside the playback Activity is deleted, and the three things only it did are
+ * done here: the neighbour portraits are warmed in Glide's memory cache as a short opens
+ * ({@link #preloadNeighbours}), a double tap likes with a popped heart ({@link #onTapUp},
+ * {@link #popHeart}), and a like made here splashes on this rail ({@link #onShortsActionsChanged}).
+ * A short opened anywhere else (search, a channel tab, a link) is an ordinary watch-page video, the
+ * way it already was for those screens.</p>
  */
 public final class MobileShortsHost {
     /** What the hosting screen still has to do for this player. */
@@ -73,6 +92,17 @@ public final class MobileShortsHost {
     private static final long COVER_MAX_MS = 2500;
     /** A frame this soon after a page turn is still the OLD stream's queued buffer, not the new one. */
     private static final long COVER_SETTLE_MS = 350;
+    /**
+     * METUBE(shorts): at once - a swipe inside the old 1.2 s window found no neighbour warmed (the
+     * value and the finding come from the deleted ShortsOverlay). The portraits are small next to the
+     * short's own media chunks.
+     */
+    private static final long NEIGHBOUR_PRELOAD_DELAY_MS = 0;
+    /** The steps whose portraits are warmed: the reachable neighbours plus two pages ahead. */
+    private static final int[] PRELOAD_STEPS = {1, -1, 2, 3};
+    /** oar2 is asked for at the short's own shape, never at the view's (Glide downsamples to this). */
+    private static final int PORTRAIT_W = 720;
+    private static final int PORTRAIT_H = 1280;
 
     private final Activity mActivity;
     private final Callback mCallback;
@@ -82,6 +112,7 @@ public final class MobileShortsHost {
     private final ImageView mStill;
     private final ImageView mPeek;
     private final ImageView mFlash;
+    private final ImageView mHeart;
     private final LinearLayout mInfo;
     private final TextView mChannel;
     private final TextView mTitle;
@@ -96,6 +127,7 @@ public final class MobileShortsHost {
     private final ProgressBar mProgress;
     private final Runnable mTick = this::onTick;
     private final Runnable mCoverTimeout = this::liftCover;
+    private final Runnable mPreloadNeighbours = this::preloadNeighbours;
     private final int mTouchSlop;
 
     @Nullable
@@ -111,6 +143,16 @@ public final class MobileShortsHost {
     private boolean mDescriptionExpanded;
     /** close()'s fade is running: the session-end callback must not cut it short. */
     private boolean mClosing;
+    /** The last pushed like state, so a like made here can splash exactly once. */
+    private boolean mWasLiked;
+    /** The last pushed dislike state, for the same one-shot reason. */
+    private boolean mWasDisliked;
+    /** The tap waits this long for a possible second tap: one pauses, two like (see {@link #onTapUp}). */
+    private final int mDoubleTapTimeoutMs;
+    private long mLastTapAt;
+    private float mLastTapX;
+    private float mLastTapY;
+    private final Runnable mSingleTap = this::togglePlayPause;
 
     // Touch / drag state.
     private float mDownY;
@@ -121,6 +163,10 @@ public final class MobileShortsHost {
     private boolean mScrubbing;
     private long mDurationMs;
     private final int mScrubBandPx;
+    /** METUBE(shorts): how far the line (and the band that owns it) sits off the bottom edge. */
+    private final int mProgressInsetPx;
+    /** The line's measured distance from the host's bottom edge, inset included; 0 until laid out. */
+    private int mProgressBottomPx;
     private int mVideoBottomInsetPx;
     private int mLastVideoW;
     private int mLastVideoH;
@@ -151,20 +197,46 @@ public final class MobileShortsHost {
         mLikeCount = activity.findViewById(R.id.mobile_shorts_host_like_count);
         mCommentsCount = activity.findViewById(R.id.mobile_shorts_host_comments_count);
         mProgress = activity.findViewById(R.id.mobile_shorts_host_progress);
+        mHeart = activity.findViewById(R.id.mobile_shorts_host_heart);
         mTouchSlop = ViewConfiguration.get(activity).getScaledTouchSlop();
-        mScrubBandPx = Math.round(28 * activity.getResources().getDisplayMetrics().density);
+        // METUBE(shorts) 8a: the scrub band and the line's inset are resources, not arithmetic on a
+        // magic density (values/dimens_mobile.xml; values-sw600dp sizes them up for a tablet).
+        mScrubBandPx = activity.getResources()
+                .getDimensionPixelSize(R.dimen.metube_shorts_scrub_band);
+        mProgressInsetPx = activity.getResources()
+                .getDimensionPixelSize(R.dimen.metube_shorts_progress_inset);
+        mDoubleTapTimeoutMs = ViewConfiguration.get(activity).getDoubleTapTimeout();
 
         mHost.setOnTouchListener(this::onTouch);
         // A tap on the picture is play/pause, as in the official Shorts. The touch listener above
-        // consumes the events, so the click it dispatches for a tap lands here.
+        // consumes the events, so the click it dispatches for a tap lands here. (A real finger gets
+        // the same thing through onTapUp, which is what can tell a tap from a double tap; this
+        // listener is what an accessibility "click" and a keyboard activate go through, and they have
+        // no second tap to wait for.)
         mHost.setOnClickListener(v -> togglePlayPause());
         // The action rail forwards to the playback Activity's own watch buttons; it keeps the
         // like/subscribe/count state in one place for both surfaces.
         if (mLikeIcon != null) {
             mLikeIcon.setOnClickListener(v -> MiniPlayerBridge.shortsLike());
+            mirrorCheckedState(mLikeIcon);
         }
         if (mDislikeIcon != null) {
             mDislikeIcon.setOnClickListener(v -> MiniPlayerBridge.shortsDislike());
+            mirrorCheckedState(mDislikeIcon);
+        }
+        // METUBE(shorts) 8d: the labels under the icons repeat their button's action (the count
+        // doubles as the "comments" label until the number arrives). They stay clickable - a thumb
+        // lands on the text as often as on the glyph - but not focusable, so a D-pad walks the rail
+        // once per action instead of stopping twice, and TalkBack does not read "留言" as its own
+        // control after it has read the button. Taken by type: the rail alternates ImageButton and
+        // TextView, and only the text ones are duplicates.
+        if (mActions != null) {
+            for (int i = 0; i < mActions.getChildCount(); i++) {
+                View child = mActions.getChildAt(i);
+                if (child instanceof TextView) {
+                    setLabelChrome(child);
+                }
+            }
         }
         View comments = activity.findViewById(R.id.mobile_shorts_host_comments);
         if (comments != null) {
@@ -190,6 +262,63 @@ public final class MobileShortsHost {
         // NOTE: the info block deliberately has NO click listener of its own. A clickable child
         // would swallow the DOWN and the vertical swipe would dead-zone over the short's text;
         // instead a tap inside its rect is recognized here (see release()) and opens it.
+    }
+
+    /**
+     * METUBE(shorts) 8d: a rail label is a second hit area for the icon above it, not a control of
+     * its own: focusable off (the icon is the D-pad stop), and its contentDescription stays null so
+     * the accessible name comes from the button, not from a bare count.
+     */
+    private static void setLabelChrome(@Nullable View label) {
+        if (label == null) {
+            return;
+        }
+        label.setFocusable(false);
+        label.setFocusableInTouchMode(false);
+    }
+
+    /**
+     * METUBE(shorts) 8d: like / dislike are toggles, so say so to accessibility: TalkBack reads
+     * "讚，已選取" instead of announcing the same action again. {@code isSelected()} carries the
+     * state (set in {@link #onShortsActionsChanged}); the drawable swap is the sighted half.
+     */
+    private static void mirrorCheckedState(@NonNull View button) {
+        ViewCompat.setAccessibilityDelegate(button, new AccessibilityDelegateCompat() {
+            @Override
+            public void onInitializeAccessibilityNodeInfo(View host, AccessibilityNodeInfoCompat info) {
+                super.onInitializeAccessibilityNodeInfo(host, info);
+                info.setCheckable(true);
+                info.setChecked(host.isSelected());
+            }
+        });
+    }
+
+    /**
+     * The short's own portrait, at its own aspect (oar2). One request shape for the cover, the peek,
+     * its preload and the watch page's loading still - moved here verbatim from the deleted
+     * {@code ShortsOverlay} so the one Shorts surface owns it.
+     *
+     * <p>fitCenter, not centerCrop: oar2 is the short's own aspect, and the views showing it crop it
+     * into the video's box as the player crops the video - cropped twice, it jumped when the video
+     * replaced it.</p>
+     */
+    public static RequestBuilder<Drawable> portrait(@NonNull Context context, @NonNull String videoId) {
+        return Glide.with(context.getApplicationContext())
+                .load("https://i.ytimg.com/vi/" + videoId + "/oar2.jpg")
+                .diskCacheStrategy(DiskCacheStrategy.ALL)
+                .format(DecodeFormat.PREFER_RGB_565)
+                .override(PORTRAIT_W, PORTRAIT_H)
+                .fitCenter();
+    }
+
+    /**
+     * A short fills a phone's screen (zoomed, YouTube's way), cropping a little off a 9:16 short's
+     * sides. A tablet's screen is shaped too unlike a short for that: there a short follows the zoom
+     * setting, so Default shows all of it - zoomed, a 4:5 short lost a fifth of its width (#25).
+     * Also the watch page's rule for its own loading still of a short (from the deleted overlay).
+     */
+    public static boolean fillsScreen(@NonNull Context context) {
+        return context.getApplicationContext().getResources().getConfiguration().smallestScreenWidthDp < 600;
     }
 
     public boolean isVisible() {
@@ -275,6 +404,13 @@ public final class MobileShortsHost {
             return;
         }
         mHost.removeCallbacks(mCoverTimeout);
+        mHost.removeCallbacks(mPreloadNeighbours);
+        mHost.removeCallbacks(mSingleTap);
+        mLastTapAt = 0L;
+        if (mHeart != null) {
+            mHeart.animate().cancel();
+            mHeart.setAlpha(0f);
+        }
         mHost.animate().cancel();
         mCoverArmed = false;
         mCoverReady = false;
@@ -371,6 +507,24 @@ public final class MobileShortsHost {
             if (info.videoId != null) {
                 armCover(info.videoId);
             }
+            // METUBE(shorts): warm Glide's memory cache with the shorts a swipe can reach, so the
+            // peek is on screen at once instead of arriving halfway through the slide. Folded here
+            // from the deleted ShortsOverlay: the same finding (a preload started 1.2 s after the
+            // open never served the next swipe) is why this runs at once.
+            mHost.removeCallbacks(mPreloadNeighbours);
+            mHost.postDelayed(mPreloadNeighbours, NEIGHBOUR_PRELOAD_DELAY_MS);
+        }
+    }
+
+    private void preloadNeighbours() {
+        if (!isVisible()) {
+            return;
+        }
+        for (int step : PRELOAD_STEPS) {
+            Video video = neighbour(step);
+            if (video != null && video.videoId != null) {
+                portrait(mHost.getContext(), video.videoId).preload();
+            }
         }
     }
 
@@ -381,12 +535,39 @@ public final class MobileShortsHost {
         }
         boolean liked = actions != null && actions.liked;
         boolean disliked = actions != null && actions.disliked;
+        // METUBE(shorts) 8d: three channels for the same state, none of them a guess by the user.
+        //  * the glyph: filled while on, outlined while off (what the watch page's own row does);
+        //  * isSelected(): the pressed look for anything that styles it (and the value TalkBack
+        //    reads through the delegate installed in the constructor);
+        //  * the contentDescription: "Like" while off, "Liked" while on (@string/mobile_watch_liked,
+        //    the same pair the state uses in every locale).
+        // Like and dislike are mutually exclusive because BOTH surfaces forward to the watch page's
+        // own buttons (MiniPlayerBridge.shortsLike / shortsDislike) - the InnerTube rating call
+        // toggles one and clears the other there, and this rail only mirrors what comes back.
         mLikeIcon.setImageResource(liked
                 ? R.drawable.ic_watch_thumb_up : R.drawable.ic_watch_thumb_up_outline);
+        mLikeIcon.setSelected(liked);
+        mLikeIcon.setContentDescription(mActivity.getString(liked
+                ? R.string.mobile_watch_liked : R.string.mobile_watch_like));
         if (mDislikeIcon != null) {
             mDislikeIcon.setImageResource(disliked
                     ? R.drawable.ic_watch_thumb_down : R.drawable.ic_watch_thumb_down_outline);
+            mDislikeIcon.setSelected(disliked);
+            mDislikeIcon.setContentDescription(mActivity.getString(disliked
+                    ? R.string.mobile_watch_disliked : R.string.mobile_watch_dislike));
         }
+        // METUBE(burst): where a like made on the Shorts page splashes. The deleted ShortsOverlay was
+        // the target when the tap came from its own rail; this rail is the Shorts page's rail now, so
+        // the splash follows the state change however it was made - this button, a double tap, or the
+        // watch page's row after an expand.
+        if (liked && !mWasLiked) {
+            Burst.play(mLikeIcon, androidx.core.content.ContextCompat.getColor(
+                    mActivity, R.color.mobile_color_primary));
+        } else if (disliked && !mWasDisliked && mDislikeIcon != null) {
+            Motion.pop(mDislikeIcon);
+        }
+        mWasLiked = liked;
+        mWasDisliked = disliked;
         if (mLikeCount != null) {
             mLikeCount.setText(actions != null && !isEmpty(actions.likeCount)
                     ? actions.likeCount : mActivity.getString(R.string.mobile_watch_like));
@@ -467,9 +648,15 @@ public final class MobileShortsHost {
             lp.bottomMargin = infoBottom;
             mInfo.setLayoutParams(lp);
         }
+        // METUBE(shorts) 8a: the line never sits flush with the screen's bottom edge. Whatever the
+        // geometry lands on (the floating capsule, or the picture's own bottom edge when the short is
+        // letterboxed inside the viewport), @dimen/metube_shorts_progress_inset is added to it, so a
+        // line at the very bottom - which reads as part of the system bar and is the first thing a
+        // thumb covers - is a thing the user can see and aim at.
         if (mProgress != null && mProgress.getLayoutParams() instanceof FrameLayout.LayoutParams) {
             FrameLayout.LayoutParams pp = (FrameLayout.LayoutParams) mProgress.getLayoutParams();
-            int progressBottom = Math.max(mPillInsetPx, mVideoBottomInsetPx);
+            int progressBottom = Math.max(mPillInsetPx, mVideoBottomInsetPx) + mProgressInsetPx;
+            mProgressBottomPx = progressBottom;
             if (pp.bottomMargin != progressBottom) {
                 pp.bottomMargin = progressBottom;
                 mProgress.setLayoutParams(pp);
@@ -489,8 +676,10 @@ public final class MobileShortsHost {
 
     /** The strip the horizontal scrub drag is read from: the band the line lives in. */
     private boolean inScrubBand(float y) {
-        float bottom = mHost.getHeight() - Math.max(mPillInsetPx, mVideoBottomInsetPx);
-        return mDurationMs > 0 && mPillInsetPx > 0
+        // The band belongs to the LINE, not to the screen edge: it moves with the inset above, or
+        // 8a would have lifted the picture out of the gesture's reach.
+        float bottom = mHost.getHeight() - mProgressBottomPx;
+        return mDurationMs > 0 && mProgressBottomPx > 0
                 && y >= bottom - mScrubBandPx && y <= bottom;
     }
 
@@ -505,7 +694,7 @@ public final class MobileShortsHost {
         mStill.animate().cancel();
         mStill.setAlpha(1f);
         mStill.setScaleType(ImageView.ScaleType.CENTER_CROP);
-        ShortsOverlay.portrait(mActivity, videoId).into(mStill);
+        portrait(mActivity, videoId).into(mStill);
         mStill.setVisibility(View.VISIBLE);
         mHost.removeCallbacks(mCoverTimeout);
         mHost.postDelayed(mCoverTimeout, COVER_MAX_MS);
@@ -654,11 +843,11 @@ public final class MobileShortsHost {
                     MiniPlayerBridge.seekShortTo(mPendingScrubMs);
                     return true;
                 }
-                release(travelTo(event), velocity(event), view, false);
+                release(travelTo(event), velocity(event), false);
                 return true;
             case MotionEvent.ACTION_CANCEL:
                 mScrubbing = false;
-                release(travelTo(event), 0f, view, true);
+                release(travelTo(event), 0f, true);
                 return true;
             default:
                 return false;
@@ -712,19 +901,22 @@ public final class MobileShortsHost {
         return event.getY() - mDownY;
     }
 
-    private void release(float dy, float yVelocity, @NonNull View view, boolean cancelled) {
+    private void release(float dy, float yVelocity, boolean cancelled) {
         recycleTracker();
         float height = Math.max(1, mPage.getHeight());
         boolean far = Math.abs(dy) > height * 0.18f;
         boolean fling = Math.abs(yVelocity) > FLING_PX_PER_S
                 && Math.signum(yVelocity) == Math.signum(dy);
         if (!mDragged) {
-            if (!cancelled) {
-                if (inInfo(mDownX, mDownY)) {
-                    toggleDescription(); // a tap on the text opens it, it is not a play/pause
-                } else {
-                    view.performClick(); // a tap on the picture: the OnClickListener above
-                }
+            if (cancelled) {
+                mHost.removeCallbacks(mSingleTap);
+                mLastTapAt = 0L;
+                return;
+            }
+            if (inInfo(mDownX, mDownY)) {
+                toggleDescription(); // a tap on the text opens it, it is not a play/pause
+            } else {
+                onTapUp(); // a tap on the picture: pause, unless it turns out to be a double
             }
             return;
         }
@@ -773,7 +965,7 @@ public final class MobileShortsHost {
         float height = Math.max(1, mPage.getHeight());
         mPeek.setTranslationY(dir > 0 ? height : -height);
         mPeek.setVisibility(View.VISIBLE);
-        ShortsOverlay.portrait(mPeek.getContext(), mPeekVideo.videoId).into(mPeek);
+        portrait(mPeek.getContext(), mPeekVideo.videoId).into(mPeek);
     }
 
     private void hidePeek() {
@@ -796,6 +988,61 @@ public final class MobileShortsHost {
     // ---------------------------------------------------------------------------------
     // Play / pause, and the progress line
     // ---------------------------------------------------------------------------------
+
+    /**
+     * METUBE(shorts): a tap on the picture, with the double tap answered. Folded here from the
+     * deleted {@code ShortsOverlay}, which was the only Shorts surface that could like by double
+     * tap: one tap pauses, a second inside the platform's double-tap window likes the short instead
+     * (never un-likes, exactly as the watch page's own double tap did) and pops the heart.
+     *
+     * <p>The pause is therefore deferred by {@link #mDoubleTapTimeoutMs}. That is YouTube's own
+     * trade - and the same wait the old full-screen shorts page ran, where a tap that paused and
+     * then a second that liked left the short paused. A tap from an accessibility service or a
+     * keyboard goes through the host's OnClickListener instead, with no wait, because it can never
+     * be the first half of a double tap.</p>
+     */
+    private void onTapUp() {
+        long now = android.os.SystemClock.uptimeMillis();
+        boolean second = (now - mLastTapAt) <= mDoubleTapTimeoutMs
+                && Math.abs(mDownX - mLastTapX) <= 3 * mTouchSlop
+                && Math.abs(mDownY - mLastTapY) <= 3 * mTouchSlop;
+        mLastTapAt = now;
+        mLastTapX = mDownX;
+        mLastTapY = mDownY;
+        mHost.removeCallbacks(mSingleTap);
+        if (second) {
+            mLastTapAt = 0L; // a third tap is a new first tap, not another like
+            likeByDoubleTap();
+            return;
+        }
+        mHost.postDelayed(mSingleTap, mDoubleTapTimeoutMs);
+    }
+
+    /** METUBE(shorts): double tap = like, through the watch page's own button so both stay in sync. */
+    private void likeByDoubleTap() {
+        MiniPlayerBridge.ShortsActions actions = MiniPlayerBridge.getShortsActions();
+        if (actions == null || !actions.liked) {
+            MiniPlayerBridge.shortsLike(); // the splash comes back with the state push
+        }
+        popHeart();
+    }
+
+    /** Double tap: a big heart springs in and floats off (the overlay's animation, same numbers). */
+    private void popHeart() {
+        if (mHeart == null) {
+            return;
+        }
+        mHeart.animate().cancel();
+        mHeart.setAlpha(1f);
+        mHeart.setScaleX(0.4f);
+        mHeart.setScaleY(0.4f);
+        mHeart.setRotation((float) (Math.random() * 24 - 12));
+        mHeart.animate().scaleX(1f).scaleY(1f)
+                .setInterpolator(new OvershootInterpolator(2.5f)).setDuration(260)
+                .withEndAction(() -> mHeart.animate().scaleX(1.4f).scaleY(1.4f).alpha(0f)
+                        .setStartDelay(250).setInterpolator(new DecelerateInterpolator())
+                        .setDuration(400).start()).start();
+    }
 
     private void togglePlayPause() {
         ExoPlayer player = MiniPlayerBridge.getPlayer();
@@ -942,16 +1189,11 @@ public final class MobileShortsHost {
         if (rotated) {
             ratio = 1f / ratio;
         }
-        // The rail stays a little smaller than the watch page's; keep its bottom-right corner
-        // anchored while it is scaled.
-        float scale = 0.82f;
-        if (mActions != null && mActions.getWidth() > 0 && mActions.getHeight() > 0
-                && mActions.getScaleX() != scale) {
-            mActions.setPivotX(mActions.getWidth());
-            mActions.setPivotY(mActions.getHeight());
-            mActions.setScaleX(scale);
-            mActions.setScaleY(scale);
-        }
+        // METUBE(shorts) 8d: the rail used to be scaled to 0.82 here to keep it under the watch
+        // page's own row. A scale is not a size: 42dp at 0.82 is a 34dp touch target that also made
+        // every glyph land below the 24dp the rest of the player uses. The rail is now sized like
+        // every other icon button (@dimen/mobile_player_icon_button, 48dp around a 24dp glyph) and
+        // drawn at 1.0, so what the finger hits is what the layout says.
         applyTextureBox(ratio);
         if (size.width != mLastVideoW || size.height != mLastVideoH
                 || size.unappliedRotationDegrees != mLastVideoRot) {

@@ -281,8 +281,16 @@ public class MobilePlaybackActivity extends MobileActivity
     private TextView mWatchMeta;
     /** METUBE(ambient): the YouTube-style glow behind the watch page. */
     private AmbientGlow mAmbient;
-    /** METUBE(shorts): the vertical player mode for videos from the Shorts tab. */
-    private ShortsOverlay mShorts;
+    /**
+     * METUBE(shorts): this session is a Shorts session, meaning its picture belongs to a host screen
+     * (the browse page's {@link MobileShortsHost}) instead of to this window. True while a hand-off
+     * is pending and while the session is hosted; false everywhere else, because a short opened from
+     * search, a channel tab or a link is an ordinary watch-page video here - the exact rule that
+     * already decided whether the deleted full-screen overlay painted anything (see
+     * {@link #bindWatchVideo}). It replaces that overlay's own active/fullscreen state, which every
+     * layout guard in this Activity read.
+     */
+    private boolean mShortsSession;
     /**
      * METUBE(shorts): a short tapped on the browse page plays THERE, in place: this Activity keeps
      * the player but hands its session SurfaceTexture to the browse screen and leaves the visible
@@ -890,111 +898,26 @@ public class MobilePlaybackActivity extends MobileActivity
         mQueueChevron = findViewById(R.id.mobile_watch_queue_chevron);
         mQueueList = findViewById(R.id.mobile_watch_queue_list);
         mWatchCommentsEntry = findViewById(R.id.mobile_watch_comments_entry);
-        View shortsOverlay = findViewById(R.id.mobile_shorts_overlay);
-        ViewCompat.setOnApplyWindowInsetsListener(shortsOverlay, (v, insets) -> {
+        // METUBE(shorts): the video's box (METUBE(glass)). This is where the Shorts session's
+        // edge-to-edge pass lives: it used to hang off the full-screen ShortsOverlay's own view (and
+        // to pad that overlay's children past the system bars); with the overlay deleted the same
+        // pass runs on the box it insets, because the ambient fill and the edge fade still want the
+        // bars' strips while a short is being hosted.
+        ViewCompat.setOnApplyWindowInsetsListener(videoGlass, (v, insets) -> {
             // METUBE(shorts): the content is edge to edge only while a short fills the screen.
             Insets bars = isShortsMode() ? insets.getInsets(WindowInsetsCompat.Type.systemBars()
                     | WindowInsetsCompat.Type.displayCutout()) : Insets.NONE;
-            insetShortsOverlay((ViewGroup) v, bars.top, bars.bottom);
-            // The short fills the screen between the bars (cropped, as before); the ambient fill
-            // takes the bars' strips and the video's edges fade into it.
-            View glass = findViewById(R.id.mobile_player_glass); // the video's box (METUBE(glass))
-            FrameLayout.LayoutParams video = (FrameLayout.LayoutParams) glass.getLayoutParams();
+            FrameLayout.LayoutParams video = (FrameLayout.LayoutParams) v.getLayoutParams();
             if (video.topMargin != bars.top || video.bottomMargin != bars.bottom) {
                 video.topMargin = bars.top;
                 video.bottomMargin = bars.bottom;
-                glass.setLayoutParams(video);
+                v.setLayoutParams(video);
             }
-            if (mShorts != null) {
-                mShorts.alignPeek(bars.top, bars.bottom);
-            }
-            mVideoArea.setEdgeFade(isShortsMode() ? glass : null,
+            mVideoArea.setEdgeFade(isShortsMode() ? v : null,
                     mPlayerView != null ? mPlayerView.getContentFrame() : null,
                     dp(48));
             return insets;
         });
-        mShorts = new ShortsOverlay(getWindow().getDecorView(), mVideoArea, new ShortsOverlay.Host() {
-            @Override
-            public void onShortsModeChanged(boolean on) {
-                // No double-tap seek ripple over a short: double tap likes it instead.
-                mPlayerView.controller(on ? null : mYouTubeOverlay);
-                applyShortsLayout();
-                if (on) {
-                    hideControls();
-                }
-                // METUBE(shorts): a short tapped on the browse page does NOT open this window: the
-                // browse screen plays it in place and this Activity goes behind it. Pending mode
-                // keeps every pixel of the watch page off screen from here until the hand-off (the
-                // translucent window shows Browse through it, so the page never changes).
-                if (on) {
-                    maybeStartShortsHandoff();
-                    if (mShortsHandoffPending) {
-                        return; // the host paints this one; no pill, no still, no chrome
-                    }
-                }
-                // METUBE(shorts): the in-place player is for shorts only. The queue's next item being
-                // an ordinary video means the watch page has to come back - it owns all the controls
-                // a landscape or 16:9 video needs.
-                if (!on && mShortsHosted) {
-                    MiniPlayerBridge.clearFullscreenRequest();
-                    expandFromShortsHost();
-                }
-                // METUBE(shorts): the pill comes and goes with shorts mode; rebuilt each time it
-                // opens so a tab the user enabled/disabled in the meantime is reflected.
-                if (mShortsNavGlass != null) {
-                    if (on && !mShortsNavBuilt) {
-                        buildShortsNav();
-                    }
-                    mShortsNavGlass.setVisibility(on && mShortsNavBuilt ? View.VISIBLE : View.GONE);
-                }
-            }
-
-            @Override
-            public void playNextShort() {
-                if (mPresenter != null) {
-                    mPresenter.onNextClicked();
-                }
-            }
-
-            @Override
-            public void playPreviousShort() {
-                if (mPresenter != null) {
-                    mPresenter.onPreviousClicked();
-                }
-            }
-
-            @Override
-            public void freezeShortFrame(boolean freeze) {
-                setShortFreeze(freeze);
-            }
-
-            @Override
-            public void openShortsComments() {
-                if (mCommentsKey == null || mCommentsPanel == null) {
-                    return; // comments still loading (or off for this short)
-                }
-                mShorts.setCommentsOpen(true);
-                applyShortsLayout();
-                onCommentsEntryClicked();
-            }
-
-            @Override
-            public void openShortsMore() {
-                openPlayerMenu(); // quality, speed, captions... the gear sheet
-            }
-
-            @Override
-            public void seekShortTo(long positionMs) {
-                if (mExoPlayerController != null) {
-                    mExoPlayerController.setPositionMs(positionMs);
-                }
-            }
-
-            @Override
-            public void exitShorts() {
-                getOnBackPressedDispatcher().onBackPressed();
-            }
-        }, shortsWatchViews());
         mWatchCommentsCount = findViewById(R.id.mobile_watch_comments_count);
         android.text.TextWatcher shortsActionsWatcher = new android.text.TextWatcher() {
             @Override
@@ -1086,9 +1009,6 @@ public class MobilePlaybackActivity extends MobileActivity
             if ((r - l) != (or_ - ol) || (b - t) != (ob - ot)) {
                 applyControlsInsets();
             }
-            if (mShortsCommentsGone >= 0f) {
-                followShortsComments(mShortsCommentsGone); // METUBE(shorts): the box's new size
-            }
         });
 
         // No extra system-bar padding on the watch page itself: in portrait the Activity content
@@ -1101,11 +1021,10 @@ public class MobilePlaybackActivity extends MobileActivity
         // single (non-double) tap to performClick() on the view captured at construction (itself,
         // since it isn't attached yet), so an OnClickListener here is exactly that single tap.
         mPlayerView.setOnClickListener(v -> {
-            if (isShortsMode()) {
-                mVideoArea.removeCallbacks(mShortsSingleTap);
-                mVideoArea.postDelayed(mShortsSingleTap, 260);
-                return;
-            }
+            // METUBE(shorts): a tap on a short is a tap on any other video here. The Shorts session
+            // owns its taps in the host (play/pause, and the double tap that likes); this window is
+            // not showing a short at all while that lasts - and after the host ends, the watch page's
+            // own controls are the right answer.
             boolean reveal = !mControlsVisible;
             toggleControls();
             mInstantRevealAt = reveal ? android.os.SystemClock.uptimeMillis() : 0L;
@@ -1133,11 +1052,9 @@ public class MobilePlaybackActivity extends MobileActivity
             }
         });
         mPlayerView.setDoubleTapBeganListener(posX -> {
-            if (isShortsMode()) {
-                mVideoArea.removeCallbacks(mShortsSingleTap);
-                likeShort();
-                return;
-            }
+            // METUBE(shorts): a double tap on a short likes it - in the host (MobileShortsHost#onTapUp);
+            // here it is a seek like any other video's, because a short this window plays in place is
+            // an ordinary watch-page video.
             if (mPlayer != null && doubleTapSeekForward(mPlayer, posX) != null) {
                 hideControls();
             } else {
@@ -1459,9 +1376,9 @@ public class MobilePlaybackActivity extends MobileActivity
                 lp.weight = 0;
                 mVideoArea.setLayoutParams(lp);
             }
-            // METUBE(shorts): a short's comments sit over a black page, not the watch page - so
-            // sliding them down never shows the short as an ordinary video.
-            boolean shorts = mShorts != null && mShorts.isActive();
+            // METUBE(shorts): a hosted shorts session has no watch page behind it at all (the host
+            // screen is showing the feed), so the page and its floating button stay down.
+            boolean shorts = mShortsSession;
             if (mWatchScroll != null) {
                 mWatchScroll.setVisibility(isTallMode() || shorts ? View.GONE : View.VISIBLE);
             }
@@ -1814,7 +1731,7 @@ public class MobilePlaybackActivity extends MobileActivity
         mIsStopped = false;
         if (mShortPausedByLeave) { // METUBE(shorts): back in the app - the short plays on
             mShortPausedByLeave = false;
-            if (mShorts != null && mShorts.isActive() && mExoPlayerController != null) {
+            if (mShortsSession && mExoPlayerController != null) {
                 mExoPlayerController.setPlayWhenReady(true);
             }
         }
@@ -1862,15 +1779,13 @@ public class MobilePlaybackActivity extends MobileActivity
             if (mVideoArea != null) {
                 mVideoArea.setBackgroundColor(Color.BLACK);
             }
-            if (mShorts != null) {
-                mShorts.setChromeSuppressed(false);
-                if (mShorts.isActive() && mShortsNavGlass != null) {
-                    if (!mShortsNavBuilt) {
-                        buildShortsNav();
-                    }
-                    mShortsNavGlass.setVisibility(View.VISIBLE);
-                }
-            }
+            // METUBE(shorts): the watch page owns the session again. This is where the deleted
+            // ShortsOverlay was brought back (setChromeSuppressed(false)) and its own pill raised
+            // with it; there is no overlay to bring back, so shorts mode simply ends - the watch
+            // page's title, action row, seek bar and controls are what the user gets, and the pill
+            // goes away with the flag (setShortsSession does that half).
+            setShortsSession(false);
+            showControlsInternal(false);
         }
         mDismissDragActive = false;
         if (mPipEnterPending) {
@@ -2056,7 +1971,7 @@ public class MobilePlaybackActivity extends MobileActivity
         // and decoding - onStop is not delivered while a PiP window stays visible, so reaching here
         // uninhibited means a real background (home without PiP, screen off, another screen on top).
         // Re-enabled at the top of onResume, before the texture reattach.
-        if (mShorts != null && mShorts.isActive() && !mIsInPip && !isFinishing()) {
+        if (mShortsSession && !mIsInPip && !isFinishing()) {
             // METUBE(shorts): no background play for Shorts - leaving pauses, coming back plays.
             // (Home with a short playing opens PiP instead; this is a paused short or the screen off.)
             if (mExoPlayerController != null && mExoPlayerController.getPlayWhenReady()) {
@@ -2375,11 +2290,10 @@ public class MobilePlaybackActivity extends MobileActivity
             toggleFullscreen();
             return;
         }
-        if (mShorts != null && mShorts.isActive()) {
-            if (mShorts.isCommentsOpen() && mCommentsPanel != null) {
-                mCommentsPanel.close();
-                return;
-            }
+        if (mShortsSession) {
+            // METUBE(shorts): Back closes Shorts. A short's comments are not this window's business
+            // any more (the in-place host shows its own sheet on the browse page), so Back goes
+            // straight from a shorts session to closing it.
             if (canAnimateClose()) {
                 animateCloseThenFinish();
                 return;
@@ -2430,7 +2344,7 @@ public class MobilePlaybackActivity extends MobileActivity
 
     private void onBackGestureStarted() {
         mBackPreview = false;
-        if (mClosing || !canMinimizeByBack() || (mShorts != null && mShorts.isActive())) { // Back closes Shorts
+        if (mClosing || !canMinimizeByBack() || mShortsSession) { // Back closes Shorts
             return;
         }
         if (mPortraitFull && !isLandscape()) {
@@ -3029,11 +2943,6 @@ public class MobilePlaybackActivity extends MobileActivity
             if (config.orientation == Configuration.ORIENTATION_LANDSCAPE) {
                 return Math.min(height, Math.round(windowHeight * 0.6f));
             }
-            if (mShorts != null && mShorts.isCommentsOpen()) {
-                // METUBE(shorts): YouTube's split for a short's comments - the short in the top
-                // third, the comments under it. The two-thirds cap below left them a third (#27).
-                return windowHeight / 3;
-            }
             if (mInlineAspect > 0f && mInlineAspect < 16f / 9f) {
                 height = Math.min(Math.round(width / mInlineAspect), windowHeight * 2 / 3);
             }
@@ -3147,9 +3056,6 @@ public class MobilePlaybackActivity extends MobileActivity
                 mTimeBar.setVisibility(View.VISIBLE);
             }
             showControlsInternal(false);
-            if (mShorts != null) {
-                mShorts.setInPip(false);
-            }
             logPip("enter-refused-restored");
         } else {
             // onPictureInPictureModeChanged(true) lands a frame or two later; until it does,
@@ -3168,9 +3074,8 @@ public class MobilePlaybackActivity extends MobileActivity
         // METUBE(lyrics): a sheet's window belongs to this activity, so it shrank into the pinned
         // window too (the lyrics panel left open over the launcher, issue #30).
         dismissPlayerSheets();
-        if (mShorts != null) {
-            mShorts.setInPip(true); // METUBE(shorts-pip): only the short, no side buttons
-        }
+        // METUBE(shorts-pip): the pinned window is all video. It used to stand the Shorts overlay's
+        // chrome down here (setInPip(true)); that chrome is gone with the overlay.
         // NEWTUBE(hold-speed): a hold does not follow the video into PiP (no touch ends it there).
         cancelHoldSpeed();
         // NEWTUBE(seek bar): the pills beside the controls go at once, not on a fade that the
@@ -3233,7 +3138,7 @@ public class MobilePlaybackActivity extends MobileActivity
             }
         }
 
-        if (mShorts != null && mShorts.isActive()) {
+        if (mShortsSession) {
             builder.setActions(java.util.Arrays.asList(
                     buildPipAction(ACTION_PIP_PREV, PIP_REQUEST_PREV, R.drawable.ic_player_previous,
                             R.string.mobile_player_previous),
@@ -3353,7 +3258,7 @@ public class MobilePlaybackActivity extends MobileActivity
             // 16:9 default then turned the portrait window landscape. Keep the last known shape.
             width = Math.round(mVideoAspect * 1000);
             height = 1000;
-        } else if (mShorts != null && mShorts.isActive()) {
+        } else if (mShortsSession) {
             width = 9;
             height = 16;
         }
@@ -3428,7 +3333,7 @@ public class MobilePlaybackActivity extends MobileActivity
         // pushed twice each. Only a new play/pause icon or shape is worth a push there.
         if (mIsInPip) {
             String shown = (mExoPlayerController != null && mExoPlayerController.getPlayWhenReady() && !mIsEnded)
-                    + "/" + getVideoAspectRatio() + "/" + (mShorts != null && mShorts.isActive());
+                    + "/" + getVideoAspectRatio() + "/" + mShortsSession;
             if (shown.equals(mPipParamsShown)) {
                 return;
             }
@@ -3595,9 +3500,6 @@ public class MobilePlaybackActivity extends MobileActivity
             logPip("exit-layout newConfig=" + (newConfig != null ? newConfig.orientation : -1)
                     + " resources=" + layoutOrientation()
                     + " chosen=" + orientation);
-            if (mShorts != null) {
-                mShorts.setInPip(false);
-            }
             applyWatchLayoutForOrientation(orientation);
             applySystemBarsForOrientation(orientation);
             updatePlayPauseIcon();
@@ -3794,21 +3696,10 @@ public class MobilePlaybackActivity extends MobileActivity
         if (mIsInPip || mPlayer == null || !(ok || vertical || horizontal)) {
             return false;
         }
-        if (mShorts != null && mShorts.isActive()) {
-            if (mShorts.holdsFocus() || horizontal) {
-                return false;
-            }
-            if (first && ok) {
-                togglePlayPause();
-            } else if (first && mPresenter != null) {
-                if (code == KeyEvent.KEYCODE_DPAD_DOWN) {
-                    mPresenter.onNextClicked();
-                } else {
-                    mPresenter.onPreviousClicked();
-                }
-            }
-            return true;
-        }
+        // METUBE(shorts) 8c: the deleted ShortsOverlay had its own D-pad handling (OK toggled the
+        // short, Up/Down paged the queue, and a focused overlay button let the view system have the
+        // key). A shorts session is drawn by the host screen, so its D-pad work happens there: the
+        // rail's buttons are focusable (8d) and Browse's own key handling walks the feed.
         if (mControlsVisible) {
             if (press) {
                 armAutoHide();
@@ -5389,20 +5280,19 @@ public class MobilePlaybackActivity extends MobileActivity
      * while playing (a short video's line glides instead of stepping), once a second otherwise.
      */
     private void onLineTick() {
-        boolean shorts = isShortsMode();
+        // METUBE(shorts): this loop used to also feed the ShortsOverlay's own scrub line, pixel-paced
+        // at 100 ms for that. The host keeps its own 500 ms tick off the player directly
+        // (MobileShortsHost#onTick), so the line is the watch page's seek bar and nothing else.
         if (mIsStopped || mControlsVisible || mPlayer == null || mExoPlayerController == null
-                || (!mTimeBar.isLineShownWhenHidden() && !shorts)) {
+                || !mTimeBar.isLineShownWhenHidden()) {
             return;
         }
         long duration = getDurationMs();
         long position = Math.max(mExoPlayerController.getPositionMs(), 0);
         mTimeBar.setDuration(Math.max(duration, 0));
         mTimeBar.setPosition(position);
-        if (shorts) {
-            mShorts.setProgress(position, Math.max(duration, 0)); // METUBE(shorts): its own scrub line
-        }
-        Utils.postDelayed(mLineUpdateRunnable, shorts && isPlaying() ? 100
-                : isPlaying() ? barUpdateDelayMs(100, 1_000) : 1_000);
+        Utils.postDelayed(mLineUpdateRunnable,
+                isPlaying() ? barUpdateDelayMs(100, 1_000) : 1_000);
     }
 
     private static void setTextIfChanged(@Nullable TextView view, CharSequence text) {
@@ -5431,9 +5321,6 @@ public class MobilePlaybackActivity extends MobileActivity
             mTimeBar.setDuration(duration);
             mTimeBar.setPosition(position);
             mTimeBar.setBufferedPosition(buffered);
-            if (mShorts != null) {
-                mShorts.setProgress(position, duration);
-            }
             setTextIfChanged(mPositionView, formatTime(position));
             setTextIfChanged(mDurationView, getString(R.string.mobile_player_duration, formatTime(duration)));
             updateLiveChip(position, duration);
@@ -5673,40 +5560,6 @@ public class MobilePlaybackActivity extends MobileActivity
         mVideoStill.setVisibility(View.GONE);
         contentFrame.addView(mVideoStill, 1, new FrameLayout.LayoutParams(
                 ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.MATCH_PARENT));
-    }
-
-    /** METUBE(shorts): the paged-away short's last frame, over the video while the next one opens. */
-    private ImageView mShortFreeze;
-
-    /**
-     * METUBE(shorts): a swipe opens the next short as the finger lifts, while the old one is still
-     * sliding away. The old one keeps its last frame (half size is plenty for 200 ms of motion) over
-     * whatever the new open draws - its still, its first frames - until the slide ends.
-     */
-    private void setShortFreeze(boolean freeze) {
-        if (!freeze) {
-            if (mShortFreeze != null) {
-                mShortFreeze.setVisibility(View.GONE);
-                mShortFreeze.setImageDrawable(null);
-            }
-            return;
-        }
-        if (mVideoTexture == null || !mVideoTexture.isAvailable()) {
-            return;
-        }
-        Bitmap frame = mVideoTexture.getBitmap(Math.max(1, mVideoTexture.getWidth() / 2),
-                Math.max(1, mVideoTexture.getHeight() / 2));
-        if (frame == null) {
-            return;
-        }
-        if (mShortFreeze == null) {
-            mShortFreeze = new ImageView(this);
-            mShortFreeze.setScaleType(ImageView.ScaleType.FIT_XY);
-            mPlayerView.getContentFrame().addView(mShortFreeze, new FrameLayout.LayoutParams(
-                    ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.MATCH_PARENT));
-        }
-        mShortFreeze.setImageBitmap(frame);
-        mShortFreeze.setVisibility(View.VISIBLE);
     }
 
     private final TextureView.SurfaceTextureListener mVideoTextureListener = new TextureView.SurfaceTextureListener() {
@@ -5998,11 +5851,12 @@ public class MobilePlaybackActivity extends MobileActivity
         // fresh ~114 KB download in the critical path for half of all opens. Ask for the wide one
         // FROM CACHE ONLY and let the narrow one (also cached, by the related row) serve the miss.
         // METUBE(shorts): a short fills the screen - its portrait still, from the network if need be
-        // (the Shorts overlay has usually preloaded it into memory for its swipe peek already).
+        // (the in-place host has usually preloaded it into memory for its swipe peek already, and
+        // asks for the same oar2 through the same MobileShortsHost.portrait request).
         mVideoStill.setScaleType(!item.belongsToShorts() ? ImageView.ScaleType.FIT_XY
-                : ShortsOverlay.fillsScreen(this) ? ImageView.ScaleType.CENTER_CROP : ImageView.ScaleType.FIT_CENTER);
+                : MobileShortsHost.fillsScreen(this) ? ImageView.ScaleType.CENTER_CROP : ImageView.ScaleType.FIT_CENTER);
         if (item.belongsToShorts() && !isFinishing() && !isDestroyed()) {
-            ShortsOverlay.portrait(this, item.videoId).placeholder(seed).error(seed).into(mVideoStill);
+            MobileShortsHost.portrait(this, item.videoId).placeholder(seed).error(seed).into(mVideoStill);
             return;
         }
         String thumb = ClickbaitRemover.updateThumbnail(item, MainUIData.instance(this).getThumbQuality());
@@ -6206,124 +6060,6 @@ public class MobilePlaybackActivity extends MobileActivity
     private static final int SWIPE_BRIGHTNESS = 4;
     private static final int SWIPE_VOLUME = 5;
     private static final int SWIPE_SEEK = 6;
-    /** METUBE(shorts): a vertical drag that pages to the next / previous short. */
-    private static final int SWIPE_SHORTS = 7;
-
-    private ShortsOverlay.Watch shortsWatchViews() {
-        ShortsOverlay.Watch watch = new ShortsOverlay.Watch();
-        watch.like = mWatchLike;
-        watch.dislike = mWatchDislike;
-        watch.share = mWatchShare;
-        watch.subscribe = mWatchSubscribe;
-        watch.subscribeLabel = mWatchSubscribe;
-        watch.channel = findViewById(R.id.mobile_watch_channel_row);
-        watch.likeCount = mWatchLikeCount;
-        watch.commentsCount = findViewById(R.id.mobile_watch_comments_count);
-        watch.meta = mWatchMeta;
-        watch.description = mWatchDescription; // METUBE(shorts): all of it, not one line
-        watch.avatar = mWatchAvatar;
-        return watch;
-    }
-
-    /** METUBE(shorts): how far a short's open comments are off the screen (0 open, 1 gone); -1 none. */
-    private float mShortsCommentsGone = -1f;
-    private final int[] mShortsBoxAt = new int[2];
-
-    /**
-     * METUBE(shorts): the short above its comments grows and shrinks with the sheet a frame at a
-     * time, like YouTube's (#27). Scaled from its top centre and lifted, the box reaches down to
-     * the sheet's top edge; with the sheet gone it covers the whole window, where the full-screen
-     * layout then puts it, so the switch at the end does not show. Re-applied after each layout
-     * (the box shrinks to its third one frame after the sheet starts up).
-     */
-    private void followShortsComments(float gone) {
-        if (mVideoArea == null || mShorts == null || !mShorts.isCommentsOpen() || isLandscape()) {
-            return;
-        }
-        mShortsCommentsGone = gone;
-        int height = mVideoArea.getHeight();
-        int window = getWindow().getDecorView().getHeight();
-        if (height <= 0 || window <= height) {
-            return; // still the full-screen box
-        }
-        mVideoArea.getLocationInWindow(mShortsBoxAt);
-        float top = mShortsBoxAt[1] - mVideoArea.getTranslationY();
-        float scale = 1f + (window / (float) height - 1f) * gone;
-        mVideoArea.animate().cancel();
-        mVideoArea.setPivotX(mVideoArea.getWidth() / 2f);
-        mVideoArea.setPivotY(0f);
-        mVideoArea.setScaleX(scale);
-        mVideoArea.setScaleY(scale);
-        mVideoArea.setTranslationY(-top * gone);
-    }
-
-    /** METUBE(shorts): a short's comments are gone - the short takes the full screen again. */
-    private void onShortsCommentsClosed() {
-        boolean followed = mShortsCommentsGone >= 0.99f;
-        mShortsCommentsGone = -1f;
-        if (!followed) { // the sheet left without telling (predictive back): swell back
-            resetShortsBox();
-            growShortBack(220);
-            return;
-        }
-        // Already drawn full size: swap in the full-screen layout under the same picture.
-        mShorts.setCommentsOpen(false);
-        applyShortsLayout();
-        if (mVideoArea != null) {
-            OneShotPreDrawListener.add(mVideoArea, this::resetShortsBox);
-        }
-    }
-
-    private void resetShortsBox() {
-        if (mVideoArea != null) {
-            mVideoArea.setScaleX(1f);
-            mVideoArea.setScaleY(1f);
-            mVideoArea.setTranslationY(0f);
-        }
-    }
-
-    /**
-     * METUBE(shorts): leave the comments - the box takes the full screen at once and is scaled
-     * down to where the short was, then grows into place (top-centre pivot), so the short swells
-     * back instead of jumping.
-     */
-    private void growShortBack(long durationMs) {
-        int from = mVideoArea != null ? mVideoArea.getHeight() : 0;
-        mShorts.setCommentsOpen(false);
-        applyShortsLayout();
-        if (mVideoArea == null || from <= 0) {
-            return;
-        }
-        OneShotPreDrawListener.add(mVideoArea, () -> {
-            int to = mVideoArea.getHeight();
-            if (to <= from) {
-                return;
-            }
-            float start = (float) from / to;
-            mVideoArea.animate().cancel();
-            mVideoArea.setPivotX(mVideoArea.getWidth() / 2f);
-            mVideoArea.setPivotY(0f);
-            mVideoArea.setScaleX(start);
-            mVideoArea.setScaleY(start);
-            mVideoArea.animate().scaleX(1f).scaleY(1f).setDuration(Math.max(220, durationMs + 80))
-                    .setInterpolator(new android.view.animation.DecelerateInterpolator(1.5f)).start();
-        });
-    }
-
-    /** METUBE(shorts): a tap waits out a possible second tap - one pauses, two like. */
-    private final Runnable mShortsSingleTap = () -> {
-        togglePlayPause();
-        if (mShorts != null && mPlayer != null) {
-            mShorts.flashPlayState(mPlayer.getPlayWhenReady());
-        }
-    };
-
-    private void likeShort() {
-        if (getButtonState(R.id.action_thumbs_up) != BUTTON_ON && mWatchLike != null) {
-            mWatchLike.performClick();
-        }
-        mShorts.popHeart();
-    }
 
     /** Shorts filling the portrait screen (not while its comments are open, nor in landscape). */
     /**
@@ -6511,36 +6247,57 @@ public class MobilePlaybackActivity extends MobileActivity
                 && y >= at[1] && y < at[1] + mWatchScroll.getHeight();
     }
 
+    /**
+     * METUBE(shorts): a short filling this window's portrait screen. With the full-screen overlay
+     * deleted it means the hand-off states only: the session's picture belongs to a host screen, so
+     * this window keeps its own chrome off (no controls, no seek line, no double-tap ripple), the
+     * video box runs edge to edge, and a short's shape is a fill rather than an inline box.
+     */
     private boolean isShortsMode() {
-        return mShorts != null && mShorts.isFullscreen() && !isLandscape();
+        return mShortsSession && !isLandscape();
     }
 
     /**
-     * METUBE(shorts): keep the overlay's buttons and text clear of the system bars while its
-     * scrims run on under them - padding the whole overlay cut each scrim off in a hard line at
-     * the status bar and the navigation bar. The XML values are kept in each child's tag.
+     * METUBE(shorts) 8c: the shorts-mode switch the deleted {@code ShortsOverlay} used to drive from
+     * inside its own {@code bind()}. Everything it did to THIS window on a flip stays; everything it
+     * did to its own views is gone, because {@link MobileShortsHost} on the browse page is the only
+     * Shorts surface (a short opened from search, a channel tab or a link is an ordinary watch-page
+     * video, exactly as it already was for those screens).
      */
-    private static void insetShortsOverlay(ViewGroup overlay, int top, int bottom) {
-        for (int i = 0; i < overlay.getChildCount(); i++) {
-            View child = overlay.getChildAt(i);
-            FrameLayout.LayoutParams lp = (FrameLayout.LayoutParams) child.getLayoutParams();
-            int vertical = lp.gravity & Gravity.VERTICAL_GRAVITY_MASK;
-            if (vertical != Gravity.TOP && vertical != Gravity.BOTTOM) {
-                continue; // the peek fills the box; the flash and the heart sit in its middle
+    private void setShortsSession(boolean on) {
+        if (on == mShortsSession) {
+            return;
+        }
+        mShortsSession = on;
+        // No double-tap seek ripple over a short: the host answers a double tap with a like.
+        if (mPlayerView != null) {
+            mPlayerView.controller(on ? null : mYouTubeOverlay);
+        }
+        applyShortsLayout();
+        if (on) {
+            hideControls();
+            // METUBE(shorts): a short tapped on the browse page does NOT open this window: the browse
+            // screen plays it in place and this Activity goes behind it. Pending mode keeps every
+            // pixel of the watch page off screen from here until the hand-off (the translucent window
+            // shows Browse through it, so the page never changes).
+            maybeStartShortsHandoff();
+            if (mShortsHandoffPending) {
+                return; // the host paints this one; no pill, no still, no chrome
             }
-            if (!(child.getTag() instanceof int[])) {
-                child.setTag(new int[] {lp.height, lp.topMargin, lp.bottomMargin});
+        } else if (mShortsHosted) {
+            // METUBE(shorts): the in-place player is for shorts only. The queue's next item being an
+            // ordinary video means the watch page has to come back - it owns all the controls a
+            // landscape or 16:9 video needs.
+            MiniPlayerBridge.clearFullscreenRequest();
+            expandFromShortsHost();
+        }
+        // METUBE(shorts): the pill comes and goes with shorts mode; rebuilt each time it opens so a
+        // tab the user enabled/disabled in the meantime is reflected.
+        if (mShortsNavGlass != null) {
+            if (on && !mShortsNavBuilt) {
+                buildShortsNav();
             }
-            int[] base = (int[]) child.getTag();
-            int inset = vertical == Gravity.TOP ? top : bottom;
-            if (child.getClass() == View.class) { // a scrim: taller by the bar it runs under
-                lp.height = base[0] + inset;
-            } else if (vertical == Gravity.TOP) {
-                lp.topMargin = base[1] + inset;
-            } else {
-                lp.bottomMargin = base[2] + inset;
-            }
-            child.setLayoutParams(lp);
+            mShortsNavGlass.setVisibility(on && mShortsNavBuilt ? View.VISIBLE : View.GONE);
         }
     }
 
@@ -6633,10 +6390,10 @@ public class MobilePlaybackActivity extends MobileActivity
         if (!vertical) {
             return beginSeekSwipe(downRawX + dx);
         }
-        if (isShortsMode()) {
-            hideControls();
-            return SWIPE_SHORTS;
-        }
+        // METUBE(shorts) 8c: a vertical drag on the watch page no longer pages shorts. The pager is
+        // the host's own touch handling (MobileShortsHost#drag/#release), and this window shows no
+        // short while that lasts; back here a swipe does what it does for any other video (minimize
+        // down, fullscreen up).
         if (!isLandscape()) {
             if (mPortraitFull) {
                 // METUBE(fullscreen): up or down, a swipe on the vertical fullscreen goes back to the page.
@@ -6664,9 +6421,6 @@ public class MobilePlaybackActivity extends MobileActivity
     @Override
     public void onSwipeMove(int swipe, float dx, float dy) {
         switch (swipe) {
-            case SWIPE_SHORTS:
-                mShorts.drag(dy);
-                break;
             case SWIPE_MINIMIZE:
                 onDismissDrag(Math.max(0f, dy));
                 break;
@@ -6691,9 +6445,6 @@ public class MobilePlaybackActivity extends MobileActivity
     @Override
     public void onSwipeReleased(int swipe, float dx, float dy, float xVelocity, float yVelocity) {
         switch (swipe) {
-            case SWIPE_SHORTS:
-                mShorts.release(dy, yVelocity);
-                break;
             case SWIPE_MINIMIZE:
                 onDismissDragReleased(Math.max(0f, dy), yVelocity);
                 break;
@@ -6722,9 +6473,6 @@ public class MobilePlaybackActivity extends MobileActivity
     @Override
     public void onSwipeCancelled(int swipe) {
         switch (swipe) {
-            case SWIPE_SHORTS:
-                mShorts.release(0f, 0f);
-                break;
             case SWIPE_MINIMIZE:
                 onDismissDragCancelled();
                 break;
@@ -7314,7 +7062,7 @@ public class MobilePlaybackActivity extends MobileActivity
 
     private boolean canStartDismissDrag() {
         return !mScrubbing && mPlayer != null && mMorphAnimator == null
-                && !(mShorts != null && mShorts.isActive()); // METUBE(shorts): no mini card
+                && !mShortsSession; // METUBE(shorts): no mini card
     }
 
     private void onDismissDrag(float dy) {
@@ -7641,7 +7389,7 @@ public class MobilePlaybackActivity extends MobileActivity
      */
     private void maybeStartShortsHandoff() {
         if (mShortsHandoffPending || mShortsHosted || mIsInPip || mPipEnterPending
-                || mClosing || isLandscape() || mShorts == null || !mShorts.isActive()) {
+                || mClosing || isLandscape() || !mShortsSession) {
             return;
         }
         if (MiniPlayerBridge.consumeFullscreenRequest() && MiniPlayerBridge.getShortsHost() != null) {
@@ -7663,9 +7411,9 @@ public class MobilePlaybackActivity extends MobileActivity
         if (mVideoArea != null) {
             mVideoArea.setBackgroundColor(Color.TRANSPARENT);
         }
-        if (mShorts != null) {
-            mShorts.setChromeSuppressed(true);
-        }
+        // METUBE(shorts) 8c: this stood the overlay's chrome down. The chrome of a hosted short is
+        // the host's, and this window paints nothing while pending anyway (transparent window, no
+        // still, no pill, controls hidden above).
         if (mShortsNavGlass != null) {
             mShortsNavGlass.setVisibility(View.GONE);
         }
@@ -7683,15 +7431,12 @@ public class MobilePlaybackActivity extends MobileActivity
         if (mVideoArea != null) {
             mVideoArea.setBackgroundColor(Color.BLACK);
         }
-        if (mShorts != null) {
-            mShorts.setChromeSuppressed(false);
-        }
-        if (mShortsNavGlass != null && mShorts != null && mShorts.isActive()) {
-            if (!mShortsNavBuilt) {
-                buildShortsNav();
-            }
-            mShortsNavGlass.setVisibility(View.VISIBLE);
-        }
+        // METUBE(shorts) 8c: the hand-off did not land, so this window owns the video again. Ending
+        // shorts mode puts the watch page back - the double-tap seek layer, the layout, the pill -
+        // and its controls come up the way a normal open shows them. The deleted overlay was the
+        // thing that used to take this picture over instead.
+        setShortsSession(false);
+        showControlsInternal(true);
         mStillVideoId = null; // the pending path recorded it and painted nothing: re-arm for real
         maybeShowLoadingStill(mWatchVideo); // the picture is this window's job again
     }
@@ -7947,7 +7692,7 @@ public class MobilePlaybackActivity extends MobileActivity
      */
     @Override
     public boolean showNextCountdown(Video next, Runnable playNext) {
-        if (mNextCountdown == null || isInPictureInPictureMode() || (mShorts != null && mShorts.isActive())
+        if (mNextCountdown == null || isInPictureInPictureMode() || mShortsSession
                 || !getLifecycle().getCurrentState().isAtLeast(androidx.lifecycle.Lifecycle.State.RESUMED)) {
             return false;
         }
@@ -9350,20 +9095,11 @@ public class MobilePlaybackActivity extends MobileActivity
         }
 
         @Override
-        public void onCommentsPanelMoved(float gone) {
-            // METUBE(shorts): as the comments slide the short grows or shrinks with them.
-            followShortsComments(gone);
-        }
-
-        @Override
         public void onCommentsPanelShown(boolean shown) {
-            // METUBE(shorts): the comments of a short closed - it fills the screen again.
-            if (!shown && mShorts != null && mShorts.isCommentsOpen()) {
-                onShortsCommentsClosed();
-            } else if (!shown && mShortsCommentsGone >= 0f) { // Shorts left with the comments up
-                mShortsCommentsGone = -1f;
-                resetShortsBox();
-            }
+            // METUBE(shorts) 8c: the deleted overlay used to shrink a short into the top third above
+            // its own comments and grow it back when they closed. A short's comments are the browse
+            // page's sheet over the host now (ShortsCommentsSheet), so this panel is only ever the
+            // watch page's own, over an ordinary video box.
             // METUBE(fullscreen-actions): the landscape comments closed - the video takes the screen back.
             if (!shown && mCommentsSide && mCommentsPanel != null && !mCommentsPanel.isOpen()) {
                 setCommentsSide(false);
@@ -9456,17 +9192,19 @@ public class MobilePlaybackActivity extends MobileActivity
         if (item == null || mWatchTitle == null) {
             return;
         }
-        if (mShorts != null) {
-            // The old full-screen Shorts page is gone. Only the hand-off the Shorts tab asked for
-            // may put this player into shorts mode; a short opened from anywhere else is an
-            // ordinary watch-page video (the in-place host is the only Shorts surface).
-            boolean hostSession = MiniPlayerBridge.hasFullscreenRequest()
-                    || mShortsHosted || mShortsHandoffPending;
-            if (item != null && item.belongsToShorts() && !hostSession) {
-                mShorts.bind(null);
-            } else {
-                mShorts.bind(item);
-            }
+        // METUBE(shorts) 8c: this is the switch that used to be ShortsOverlay.bind(item / null).
+        // Only the hand-off the Shorts tab asked for may put this player into shorts mode; a short
+        // opened from anywhere else is an ordinary watch-page video (the in-place host is the only
+        // Shorts surface) - the same rule the deleted overlay was already held to.
+        setShortsSession(item.belongsToShorts()
+                && (MiniPlayerBridge.hasFullscreenRequest()
+                        || mShortsHosted || mShortsHandoffPending));
+        // METUBE(shorts): the queue's "do not serve this one twice" list. The deleted overlay was the
+        // only writer (its bind() marked the short it was showing), and the Shorts feed filters on it
+        // (MobileBrowseActivity#isFreshShort), so the mark moves to the one place every short passes
+        // through whatever ends up drawing it.
+        if (item.belongsToShorts()) {
+            com.newtube.mobile.ui.common.ShortsSeen.add(item.videoId);
         }
 
         mWatchVideo = item;
@@ -9831,7 +9569,9 @@ public class MobilePlaybackActivity extends MobileActivity
         // METUBE(burst): a like splashes - on the Shorts thumb or the fullscreen pill when the tap
         // came from there.
         boolean pill = mActionsRow != null && mActionsRow.isShown();
-        View likeIcon = mShorts != null && mShorts.isActive() ? mShorts.likeIcon() : pill ? mPlayerLike : mWatchLikeIcon;
+        // METUBE(shorts) 8d: a Shorts like splashes on the host's own rail (it plays the burst from
+        // the state push below); this window only ever bursts its fullscreen pill or its row.
+        View likeIcon = pill ? mPlayerLike : mWatchLikeIcon;
         if (like && stateAfter == BUTTON_ON) {
             Burst.play(likeIcon, getColorInt(R.color.mobile_color_primary));
         }
@@ -9893,7 +9633,7 @@ public class MobilePlaybackActivity extends MobileActivity
         if (after != before) {
             Haptics.click(mWatchSubscribe);
             if (after == BUTTON_ON) {
-                View button = mShorts != null && mShorts.isActive() ? mShorts.subscribeButton() : mWatchSubscribe;
+                View button = mWatchSubscribe;
                 Burst.play(button, getColorInt(R.color.mobile_color_on_surface));
                 Motion.pop(button);
             }
@@ -9917,9 +9657,6 @@ public class MobilePlaybackActivity extends MobileActivity
             }
             if (mWatchLike != null) {
                 mWatchLike.setSelected(on);
-                if (mShorts != null) {
-                    mShorts.setLiked(on);
-                }
             }
             pushShortsActions();
         } else if (buttonId == R.id.action_thumbs_down && mWatchDislikeIcon != null) {
@@ -9943,9 +9680,6 @@ public class MobilePlaybackActivity extends MobileActivity
             }
         } else if (buttonId == R.id.action_subscribe && mWatchSubscribe != null) {
             mWatchSubscribe.setText(on ? R.string.mobile_watch_subscribed : R.string.mobile_watch_subscribe);
-            if (mShorts != null) {
-                mShorts.setSubscribed(on);
-            }
             // NEWTUBE(theme): the main-action pill while not subscribed (white on the dark page,
             // near-black on the light one). METUBE(glass): once subscribed, a glass pill like the
             // action row's - bg_watch_subscribe's selected state.
@@ -10734,11 +10468,10 @@ public class MobilePlaybackActivity extends MobileActivity
     @Override
     public void setResizeMode(int mode) {
         if (isShortsMode()) {
-            if (ShortsOverlay.fillsScreen(this)) {
+            if (MobileShortsHost.fillsScreen(this)) {
                 mode = androidx.media3.ui.AspectRatioFrameLayout.RESIZE_MODE_ZOOM; // shorts fill a phone
             }
-        } else if (mPortraitFull && !isLandscape() || mCommentsSide
-                || mShorts != null && mShorts.isCommentsOpen()) {
+        } else if (mPortraitFull && !isLandscape() || mCommentsSide) {
             // METUBE(fullscreen): the whole picture, upright; ambient mode fills the bands. A pinch's
             // "fill" (landscape) would crop a 16:9 video to a sliver of its middle here - and to
             // its middle beside the landscape comments (METUBE(fullscreen-actions)), and a short

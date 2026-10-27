@@ -6,4 +6,10 @@
     <dimen name="metube_mini_height">192dp</dimen>
     <!-- METUBE(tablet): the nav pill centred and as wide as its five items need. -->
     <dimen name="metube_nav_max_width">480dp</dimen>
+    <!-- METUBE(shorts): the host's three Shorts metrics, sized up here the way the pill and the
+         mini player are (a tablet's screen is farther away and a thumb lands lower on it).
+         values-sw720dp / -sw800dp inherit this file. -->
+    <dimen name="metube_shorts_progress_inset">16dp</dimen>
+    <dimen name="metube_shorts_scrub_band">32dp</dimen>
+    <dimen name="metube_shorts_heart_size">140dp</dimen>
 </resources>

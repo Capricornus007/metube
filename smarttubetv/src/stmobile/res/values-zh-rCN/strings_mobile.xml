@@ -36,6 +36,8 @@
     <string name="mobile_playback_channel_desc">后台播放的媒体控制</string>
     <string name="mobile_watch_like">赞</string>
     <string name="mobile_watch_dislike">踩</string>
+    <string name="mobile_watch_liked">已赞</string>
+    <string name="mobile_watch_disliked">已踩</string>
     <string name="mobile_watch_share">分享</string>
     <string name="mobile_watch_save">保存</string>
     <string name="mobile_watch_saved">已保存</string>

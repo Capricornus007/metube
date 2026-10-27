@@ -14,14 +14,20 @@
     The video, its loading portrait and the info block are wrapped in one "page" FrameLayout: the
     vertical drag translates that whole page 1:1 with the finger while the neighbour's portrait
     (mobile_shorts_host_peek, a sibling) slides into the gap it opens, as the official pager does.
+
+    METUBE(shorts) 8d: the root stays clickable (a tap there is play/pause) but hands focus to its
+    descendants first, so a D-pad / remote / keyboard walks the action rail's buttons instead of
+    stopping on the full-screen rectangle that would swallow the whole page.
 -->
 <FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:id="@+id/mobile_shorts_host"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:background="@android:color/black"
     android:clickable="true"
+    android:descendantFocusability="afterDescendants"
     android:focusable="true"
     android:visibility="gone"
     tools:visibility="gone">
@@ -53,6 +59,23 @@
             android:scaleType="centerCrop"
             android:visibility="gone"
             tools:visibility="visible" />
+
+        <!-- METUBE(shorts): the top scrim. The floating brand pill and the cast / search pills sit
+             over the picture, and on a bright short they (and the peek's channel row) were
+             unreadable. This is the SAME themed drawable and dimen the watch page's top bar uses
+             (@drawable/mobile_player_top_scrim at @dimen/mobile_player_top_scrim_height), not a new
+             hardcoded color, and it mirrors the bottom scrim below.
+             A plain View with no background click handling: it is neither clickable nor focusable,
+             so a tap falls straight through to the pager, and the pills floating ABOVE this host
+             (they are siblings in activity_mobile_browse.xml, drawn later) keep their own taps and
+             D-pad focus. -->
+        <View
+            android:layout_width="match_parent"
+            android:layout_height="@dimen/mobile_player_top_scrim_height"
+            android:layout_gravity="top"
+            android:background="@drawable/mobile_player_top_scrim"
+            android:focusable="false"
+            android:importantForAccessibility="no" />
 
         <View
             android:layout_width="match_parent"
@@ -227,12 +250,31 @@
         android:importantForAccessibility="no"
         android:src="@drawable/ic_player_pause" />
 
+    <!-- METUBE(shorts): the double-tap heart. Paging the Shorts feed onto a like is the one gesture
+         that lived only in the old full-screen ShortsOverlay; with that class deleted (8c) the
+         in-place host answers the double tap itself, and this is what it pops. -->
+    <ImageView
+        android:id="@+id/mobile_shorts_host_heart"
+        android:layout_width="@dimen/metube_shorts_heart_size"
+        android:layout_height="@dimen/metube_shorts_heart_size"
+        android:layout_gravity="center"
+        android:alpha="0"
+        android:importantForAccessibility="no"
+        android:src="@drawable/ic_watch_thumb_up"
+        app:tint="@color/mobile_color_primary" />
+
+    <!-- METUBE(shorts): the progress line is pulled off the screen's bottom edge by
+         @dimen/metube_shorts_progress_inset. MobileShortsHost#syncInfoBottomInset adds the measured
+         room for the floating nav capsule / the picture's own bottom edge on top of this, so the
+         line never sits under a gesture bar (and #inScrubBand moves the scrub band with it, so the
+         inset does not hand that strip back to the vertical pager). -->
     <ProgressBar
         android:id="@+id/mobile_shorts_host_progress"
         style="?android:attr/progressBarStyleHorizontal"
         android:layout_width="match_parent"
         android:layout_height="2dp"
         android:layout_gravity="bottom"
+        android:layout_marginBottom="@dimen/metube_shorts_progress_inset"
         android:max="1000"
         android:progressBackgroundTint="@color/mobile_color_progress_track"
         android:progressTint="@color/mobile_color_progress"

@@ -36,6 +36,8 @@
     <string name="mobile_playback_channel_desc">Медиа-элементы управления для фонового воспроизведения</string>
     <string name="mobile_watch_like">Нравится</string>
     <string name="mobile_watch_dislike">Не нравится</string>
+    <string name="mobile_watch_liked">Понравилось</string>
+    <string name="mobile_watch_disliked">Не понравилось</string>
     <string name="mobile_watch_share">Поделиться</string>
     <string name="mobile_watch_save">Сохранить</string>
     <string name="mobile_watch_saved">Сохранено</string>

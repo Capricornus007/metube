@@ -44,6 +44,8 @@
     <!-- Watch page -->
     <string name="mobile_watch_like">讚</string>
     <string name="mobile_watch_dislike">倒讚</string>
+    <string name="mobile_watch_liked">已讚</string>
+    <string name="mobile_watch_disliked">已倒讚</string>
     <string name="mobile_watch_share">分享</string>
     <string name="mobile_watch_music">音樂</string>
     <string name="mobile_watch_music_missing">未連結音樂應用程式</string>

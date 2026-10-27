@@ -81,6 +81,8 @@
          card, "Up next" and the action row sit together on the first screen of every video. -->
     <string name="mobile_watch_like">Me gusta</string>
     <string name="mobile_watch_dislike">No me gusta</string>
+    <string name="mobile_watch_liked">Te gustó</string>
+    <string name="mobile_watch_disliked">No te gustó</string>
     <string name="mobile_watch_share">Compartir</string>
     <string name="mobile_lyrics">Letra</string>
     <string name="mobile_lyrics_none">La letra de esta canción no está disponible</string>

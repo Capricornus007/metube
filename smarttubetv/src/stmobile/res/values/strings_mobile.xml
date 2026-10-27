@@ -74,6 +74,10 @@
     <!-- Watch page (portrait content area under the video) -->
     <string name="mobile_watch_like">Like</string>
     <string name="mobile_watch_dislike">Dislike</string>
+    <!-- METUBE(shorts): the same two rail buttons while they are ON (the Shorts host swaps the glyph
+         to the filled one and says so here, so TalkBack reads the state and not just the action). -->
+    <string name="mobile_watch_liked">Liked</string>
+    <string name="mobile_watch_disliked">Disliked</string>
     <string name="mobile_watch_share">Share</string>
     <string name="mobile_watch_music">Music</string>
     <string name="mobile_watch_music_missing">No music app linked</string>

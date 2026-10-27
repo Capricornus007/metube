@@ -36,6 +36,8 @@
     <string name="mobile_playback_channel_desc">Comenzi media pentru redarea în fundal</string>
     <string name="mobile_watch_like">Apreciază</string>
     <string name="mobile_watch_dislike">Nu aprecia</string>
+    <string name="mobile_watch_liked">Apreciat</string>
+    <string name="mobile_watch_disliked">Neapreciat</string>
     <string name="mobile_watch_share">Distribuie</string>
     <string name="mobile_watch_save">Salvează</string>
     <string name="mobile_watch_saved">Salvat</string>

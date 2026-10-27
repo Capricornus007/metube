@@ -35,6 +35,15 @@
     <dimen name="mobile_player_bottom_row_margin">10dp</dimen>
     <dimen name="mobile_player_scrub_pill_margin">30dp</dimen>
 
+    <!-- METUBE(shorts): the in-place Shorts host. The progress line is lifted this much off the
+         screen's bottom edge on top of the measured nav-capsule / picture inset, so it is not read
+         as part of the system bar and not swallowed by the swipe area; the scrub band is how tall a
+         strip along that line a horizontal drag is read from (it must cover the line plus a finger's
+         slack, and it moves with the line). The heart is the double-tap's pop. -->
+    <dimen name="metube_shorts_progress_inset">8dp</dimen>
+    <dimen name="metube_shorts_scrub_band">28dp</dimen>
+    <dimen name="metube_shorts_heart_size">120dp</dimen>
+
     <!-- Watch page (portrait content under the video) -->
     <dimen name="mobile_watch_content_padding">12dp</dimen>
     <dimen name="mobile_watch_avatar_size">40dp</dimen>

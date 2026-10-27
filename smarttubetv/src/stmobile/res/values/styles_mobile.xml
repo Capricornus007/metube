@@ -529,13 +529,21 @@
         <item name="android:background">@drawable/bg_skeleton_block</item>
     </style>
 
-    <!-- METUBE(shorts): the vertical player's action column (mobile_shorts_overlay). -->
+    <!-- METUBE(shorts): the in-place Shorts host's action column (mobile_shorts_host.xml).
+         Sized like every other icon button on the phone (48dp touch target around a 24dp glyph,
+         see @dimen/mobile_player_icon_button) and given the theme's borderless ripple, so a rail
+         button answers a tap visually, is reachable with a D-pad, and is not a 34dp dot. Before
+         this it was a bare 42dp box with no background at all, and MobileShortsHost additionally
+         scaled the whole rail by 0.82 - a ~34dp target that read as "nothing happens". -->
     <style name="MeTubeShortsAction">
-        <item name="android:layout_width">42dp</item>
-        <item name="android:layout_height">42dp</item>
-        <item name="android:padding">10dp</item>
+        <item name="android:layout_width">@dimen/mobile_player_icon_button</item>
+        <item name="android:layout_height">@dimen/mobile_player_icon_button</item>
+        <item name="android:padding">12dp</item>
         <item name="android:scaleType">fitCenter</item>
-        <item name="android:tint">@android:color/white</item>
+        <item name="android:background">?attr/selectableItemBackgroundBorderless</item>
+        <item name="android:focusable">true</item>
+        <item name="android:clickable">true</item>
+        <item name="android:tint">@color/mobile_player_on_video</item>
     </style>
     <style name="MeTubeShortsActionLabel">
         <item name="android:layout_width">wrap_content</item>
@@ -545,7 +553,7 @@
         <item name="android:maxLines">1</item>
         <item name="android:shadowColor">#B3000000</item>
         <item name="android:shadowRadius">4</item>
-        <item name="android:textColor">@android:color/white</item>
+        <item name="android:textColor">@color/mobile_player_on_video</item>
         <item name="android:textSize">12sp</item>
     </style>
 
