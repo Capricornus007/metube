@@ -3,7 +3,7 @@
 **Last updated:** July 12, 2026
 
 This Privacy Policy applies to **MeTube**, an open-source YouTube client for
-Android phones (package ID `io.github.yashoncode.metube`). MeTube is an
+Android phones (package ID `io.github.capricornus007.metube`). MeTube is an
 independent, unofficial fork of NewTube and SmartTube. It is not affiliated with Google,
 YouTube, or SmartTube's developer.
 

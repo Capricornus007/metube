@@ -75,7 +75,6 @@
     <string name="player_only_ui">Doar interfață</string>
     <string name="player_ui_and_pause">Interfață și pauză</string>
     <string name="player_only_pause">Doar pauză</string>
-    <string name="check_for_updates">Verifică dacă sunt actualizări</string>
     <string name="update_not_found">Folosești ultima versiune</string>
     <string name="update_in_progress">Așteaptă…</string>
     <string name="player_ui_hide_behavior">Ascundere Interfață automată</string>
@@ -92,9 +91,7 @@
     <string name="color_scheme_red_grey">Roșu-gri</string>
     <string name="color_scheme_red">Roșu</string>
     <string name="color_scheme_dark_grey">Gri închis</string>
-    <string name="disable_update_check">Dezactivați verificarea actualizărilor</string>
     <string name="show_again">Arată din nou</string>
-    <string name="check_updates_auto">Notificați despre actualizări</string>
     <string name="select_account_on_boot">Afișați selecția contului la pornire</string>
     <string name="player_other">Diverse</string>
     <string name="player_full_date">Data exactă din descriere</string>
@@ -693,7 +690,6 @@
     <string name="context_menu_sorting">Sortare meniu contextual</string>
     <string name="msg_quality_pin_fallback">%1$s nu funcționează — calitatea este setată pe „Auto” pentru acest videoclip</string>
     <string name="msg_audio_pin_fallback">Eroare la pista audio — se utilizează sunetul implicit pentru acest videoclip</string>
-    <string name="update_check_failed">Nu s-au putut verifica actualizările. Încearcă din nou mai târziu.</string>
     <string name="hide_shorts_from_search">Ascunde „shorts” din Căutare</string>
     <string name="remove_playlist_fmt">Dorești să ștergi definitiv %s?</string>
     <string name="playlist_name_hint">Numele listei de redare</string>

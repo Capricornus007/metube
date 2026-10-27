@@ -77,7 +77,6 @@
     <string name="player_only_ui">仅用户界面</string>
     <string name="player_ui_and_pause">用户界面和暂停</string>
     <string name="player_only_pause">仅暂停</string>
-    <string name="check_for_updates">检查更新</string>
     <string name="update_not_found">已是最新版本</string>
     <string name="update_in_progress">请稍等……</string>
     <string name="option_never">从不</string>
@@ -91,9 +90,7 @@
     <string name="color_scheme_red_grey">红-灰</string>
     <string name="color_scheme_red">红色</string>
     <string name="color_scheme_dark_grey">深灰</string>
-    <string name="disable_update_check">禁用检查更新</string>
     <string name="show_again">再次显示</string>
-    <string name="check_updates_auto">通知更新</string>
     <string name="select_account_on_boot">启动时显示账号选择</string>
     <string name="player_ui_hide_behavior">用户界面自动隐藏</string>
     <string name="player_other">杂项</string>
@@ -770,7 +767,6 @@
     <string name="msg_player_no_connection_tap">无连接 — 点播放重试</string>
     <string name="msg_quality_pin_fallback">%1$s 出错 — 此视频画质设为自动</string>
     <string name="msg_audio_pin_fallback">音轨出错 — 此视频使用默认音频</string>
-    <string name="update_check_failed">无法检查更新。请稍后重试。</string>
     <string name="playlist_name_hint">播放列表名称</string>
     <string name="player_return_youtube_dislike">踩数（Return YouTube Dislike）</string>
     <string name="header_live">直播</string>

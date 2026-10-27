@@ -1,7 +1,7 @@
 # MeTube — Claude Code context
 
 MeTube is a **phone-only fork of SmartTube** ("SmartTube for phones"): package
-`io.github.yashoncode.metube` (Java sources still live under `com.newtube.*`), single product flavor `stmobile`,
+`io.github.capricornus007.metube` (Java sources still live under `com.newtube.*`), single product flavor `stmobile`,
 touch UI in
 `smarttubetv/src/stmobile/`, playback on **androidx.media3 1.10.1** (Cronet media
 path). The TV flavors and the vendored ExoPlayer fork were deleted in the
@@ -17,12 +17,12 @@ screen in `ui/settings/`: a new setting is a row there (design and per-row audit
 `docs/settings/`), never a row in the TV `*SettingsPresenter`s, which Settings no longer opens.
 
 ## Repos & commit order
-- Main: `origin` = github.com/yashoncode/metube, branch `main` (pushed from local `metube-root`).
+- Main: `origin` = github.com/Capricornus007/metube, branch `main` (pushed from local `metube-root`).
 - Submodules, branch `master`, `upstream` = yuliskov/<name>. `MediaServiceCore`:
-  `origin` = yashoncode/MediaServiceCore (our fork, made 2026-10-18), `newtube` =
+  `origin` = Capricornus007/MediaServiceCore (our fork, made 2026-10-18), `newtube` =
   aleixrodriala/MediaServiceCore (NewTube's, pull its fixes from there).
   `SharedModules`: `origin` = aleixrodriala/SharedModules (no push rights - fork it
-  under yashoncode the same way before changing it). HTTPS only. Commit INSIDE the
+  under Capricornus007 the same way before changing it). HTTPS only. Commit INSIDE the
   submodule first, push `origin master`, then commit the pointer bump in main.
 - Upstream (yuliskov) fixes are merged into the **submodule forks only**; the
   main repo never merges upstream (TV code is gone). Submodules have repo-local

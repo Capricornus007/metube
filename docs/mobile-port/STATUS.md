@@ -2301,8 +2301,7 @@ open:
   libs as unaligned (`libcronet.105.0.5195.68.so` LOAD segment, plus libj2v8,
   libconscrypt_jni, libglide-webp). Runs fine on 4 KB-page devices today, but
   16 KB-only devices are coming; needs updated .so dependencies or repack.
-- Unstripped native libs (needs NDK 21); `newtube.json` update manifest for
-  the in-app updater.
+- Unstripped native libs (needs NDK 21); 更新子系統已於 08b70b6 整組移除（改用手動 APK／自有 feed 出貨）
 - 77 of the 78 strings in `smarttubetv/src/main/res/values/strings.xml` are TV
   leftovers nothing references any more (only `search_hint` survives). Dead
   weight, and they make the translation delta look bigger than it is.
