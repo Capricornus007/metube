@@ -116,6 +116,8 @@ public class MobileBrowseActivity extends MobileActivity
      * {@link #ITEM_ID_OFFSET} + any real section id, so it can never collide with one.
      */
     private static final int YOU_ITEM_ID = com.newtube.mobile.ui.common.MobileNavModel.YOU_ITEM_ID;
+    /** METUBE(search place): the Search tab's item id in the bar, just above {@link #YOU_ITEM_ID}. */
+    private static final int SEARCH_ITEM_ID = com.newtube.mobile.ui.common.MobileNavModel.YOU_ITEM_ID + 1;
     private static final int REQUEST_POST_NOTIFICATIONS = 1;
     /** Intent action (download notifications) that lands on the Downloads tab. */
     public static final String ACTION_OPEN_DOWNLOADS = "com.newtube.mobile.OPEN_DOWNLOADS";
@@ -142,6 +144,8 @@ public class MobileBrowseActivity extends MobileActivity
     private FeedStrip mStrip;
     private RecyclerView mChipRow;
     private ChipBar mChipBar;
+    // METUBE(nav hide, issue #37): the floating nav pill slides away while a feed scrolls down.
+    private com.newtube.mobile.ui.common.NavHider mNavHider;
     // METUBE(home-rows): Home drawn as SmartTube's shelves (HomeLayout), mirroring mAdapter's list.
     private HomeRowsAdapter mRows;
     private androidx.recyclerview.widget.ConcatAdapter mFeedAdapter;
@@ -150,11 +154,29 @@ public class MobileBrowseActivity extends MobileActivity
     /** Home's chips (issue #4): the topic feeds SmartTube already has, shown as Home filters. */
     private static final int[] HOME_CHIPS = {MediaGroup.TYPE_HOME, MediaGroup.TYPE_MUSIC,
             MediaGroup.TYPE_GAMING, MediaGroup.TYPE_NEWS, MediaGroup.TYPE_SPORTS, MediaGroup.TYPE_LIVE};
-    /** Subscriptions narrowed to one channel (issue #2); null = every channel. */
+    /**
+     * Subscriptions narrowed to one channel (issue #2); null = every channel. METUBE(issue #79):
+     * also Home narrowed to one of its personal chips ({@link #mHomeChip}).
+     */
     @Nullable private Video mSubsChannel;
+    /**
+     * METUBE(issue #79): Home's personal chips, the channels the account watches most (its watch
+     * history). YouTube's own Home chips are WEB-only, and WEB refuses the TV sign-in (400, as does
+     * every non-TV client), so they are built here. Empty = none yet, null = ask.
+     */
+    @Nullable private List<Video> mHomeChips;
+    /** The personal chip whose channel feed is on Home now (the channel filter's feed). */
+    @Nullable private Video mHomeChip;
+    @Nullable private io.reactivex.rxjava3.disposables.Disposable mHomeChipsAction;
+    /** Personal chips' strip ids, clear of the section ids the topic chips use. */
+    private static final long HOME_CHIP_ID = 1_000_000;
+    private static final int HOME_CHIPS_MAX = 10;
     /** That channel's last page, for the next one. */
     @Nullable private MediaGroup mSubsChannelPage;
     @Nullable private io.reactivex.rxjava3.disposables.Disposable mSubsAction;
+    /** METUBE(you page): the You page's History row, fetched each time the page opens. */
+    @Nullable private io.reactivex.rxjava3.disposables.Disposable mYouHistoryAction;
+    private VideoCardAdapter mYouHistoryAdapter;
     @Nullable private List<Video> mSubsChannels;
     @Nullable private io.reactivex.rxjava3.disposables.Disposable mSubsChannelsAction;
     private BottomNavigationView mBottomNav;
@@ -187,7 +209,6 @@ public class MobileBrowseActivity extends MobileActivity
     private ImageView mMiniFreeze;
     private TextureView mMiniTexture;
     private ImageButton mMiniPlayPause;
-    private com.newtube.mobile.ui.playback.MiniControls mMiniControls;
     private ProgressBar mMiniProgress;
     /**
      * METUBE(shorts): the Shorts tab's player, played IN PLACE on this page: the playback Activity
@@ -218,6 +239,7 @@ public class MobileBrowseActivity extends MobileActivity
     private static final long MINI_FOLD_WAIT_MS = 50;
     /** NEWTUBE(motion): the card was pre-drawn for a minimize; its buttons fade in once it is ours. */
     private boolean mMiniButtonsFadePending;
+    private com.newtube.mobile.ui.playback.MiniControls mMiniControls;
     private final MiniPlayerBridge.CardFold mMiniCardFold = onFolded -> {
         foldMiniCard();
         if (onFolded != null) {
@@ -269,6 +291,7 @@ public class MobileBrowseActivity extends MobileActivity
         setContentView(R.layout.activity_mobile_browse);
 
         registerBackHandler(this::handleBack);
+        sLive = new java.lang.ref.WeakReference<>(this);
 
         bindViews();
         if (savedInstanceState == null) {
@@ -352,7 +375,9 @@ public class MobileBrowseActivity extends MobileActivity
         mMiniFreeze = findViewById(R.id.mobile_mini_freeze);
         mMiniPlayPause = findViewById(R.id.mobile_mini_play_pause);
         mMiniProgress = findViewById(R.id.mobile_mini_progress);
-        mMiniControls = new com.newtube.mobile.ui.playback.MiniControls(findViewById(R.id.mobile_mini_controls));
+        com.newtube.mobile.ui.playback.MobileMiniPlayerController.glassButtons(this);
+        mMiniControls = new com.newtube.mobile.ui.playback.MiniControls(mMiniPlayPause,
+                findViewById(R.id.mobile_mini_close), findViewById(R.id.mobile_mini_audio));
         setupMiniPlayerBar();
         mMiniPip = new com.newtube.mobile.ui.playback.MiniPip(this, mMiniPlayerBar, () -> {
             hideMiniPlayer();
@@ -377,6 +402,13 @@ public class MobileBrowseActivity extends MobileActivity
         padUnderTopBar(bar);
     }
 
+    /** A new page: the nav pill back if a scroll had slid it away. */
+    private void showNav() {
+        if (mNavHider != null) {
+            mNavHider.show();
+        }
+    }
+
     /** Home's chips float only over Home and its topics, never over the You panel. */
     private void updateChipRow() {
         if (mChipRow == null || mStrip == null) {
@@ -392,13 +424,12 @@ public class MobileBrowseActivity extends MobileActivity
     }
 
     private void padUnderTopBar(int barPx) {
-        for (View page : new View[] {mContentGrid, mYouPanel, mFeedSkeleton, mErrorContainer}) {
+        // The You rows, not their scroll view: its RGB glow runs up under the pills (METUBE(rgb glow)).
+        for (View page : new View[] {mContentGrid, findViewById(R.id.mobile_you_content), mFeedSkeleton,
+                mErrorContainer}) {
             if (page != null) {
                 page.setPadding(page.getPaddingLeft(), barPx, page.getPaddingRight(), page.getPaddingBottom());
             }
-        }
-        if (mYouPanel instanceof ViewGroup) {
-            ((ViewGroup) mYouPanel).setClipToPadding(false);
         }
         int spinner = Math.round(40 * getResources().getDisplayMetrics().density);
         mContentSwipe.setProgressViewOffset(false, barPx - spinner, barPx + spinner / 2);
@@ -414,6 +445,14 @@ public class MobileBrowseActivity extends MobileActivity
             if (mCurrentSectionId == MediaGroup.TYPE_SUBSCRIPTIONS) {
                 mSubsChannels = null; // new subscriptions show up in the strip too
                 updateStrip();
+            }
+            if (isHomeChip(mCurrentSectionId) && mHomeChip == null) {
+                mHomeChips = null; // METUBE(issue #79): the chips follow the watch history
+                updateStrip();
+            }
+            if (mHomeChip != null) {
+                loadHomeChip(mHomeChip);
+                return;
             }
             if (mSubsChannel != null) {
                 loadSubsChannel(mSubsChannel);
@@ -453,6 +492,7 @@ public class MobileBrowseActivity extends MobileActivity
     private void setSkeletonVisible(boolean visible) {
         if (visible) {
             mSkeletonShows++;
+            mFeedSkeleton.removeCallbacks(mSkeletonLeaveDeadline);
             mFeedSkeleton.animate().cancel();
             // The Shorts tab shows a spinner, never the skeleton (showShortsTab).
             mFeedSkeleton.setAlpha(mCurrentSectionId == MediaGroup.TYPE_SHORTS ? 0f : 1f);
@@ -481,6 +521,8 @@ public class MobileBrowseActivity extends MobileActivity
         }
         mSkeletonLeaving = mSkeletonShows;
         mFeedSkeleton.animate().cancel();
+        mFeedSkeleton.removeCallbacks(mSkeletonLeaveDeadline);
+        mFeedSkeleton.postDelayed(mSkeletonLeaveDeadline, SKELETON_LEAVE_MAX_MS);
         int shows = mSkeletonShows;
         SkeletonReveal.fadeOverCards(mFeedSkeleton, mContentGrid, () -> shows == mSkeletonShows, () -> {
             mFeedSkeleton.setVisibility(View.GONE);
@@ -492,20 +534,35 @@ public class MobileBrowseActivity extends MobileActivity
     private int mSkeletonShows;
     /** The show whose fade-out is under way (setSkeletonVisible(false) starts one per show). */
     private int mSkeletonLeaving = -1;
+    /**
+     * Issue #56: a leave waits up to 400 ms for the cards, then fades; this is well past both.
+     * On the reporter's phone (Galaxy A03 Core, Android 13 Go) the skeleton still sat over the
+     * loaded cards, and every later "hide" took the leave for under way and did nothing - so
+     * however that fade was lost, a leave now ends here at the latest, cut instead of faded.
+     */
+    private static final long SKELETON_LEAVE_MAX_MS = 1_500;
+    private final Runnable mSkeletonLeaveDeadline = () -> {
+        if (mSkeletonLeaving != mSkeletonShows || mFeedSkeleton.getVisibility() != View.VISIBLE) {
+            return; // gone already, or a newer load put it back (its own leave ends it)
+        }
+        com.liskovsoft.smartyoutubetv2.common.misc.NetPath.log("skeleton leave-deadline alpha="
+                + mFeedSkeleton.getAlpha() + " cards=" + mContentGrid.getChildCount());
+        mFeedSkeleton.animate().cancel();
+        mFeedSkeleton.setVisibility(View.GONE);
+        mFeedSkeleton.setAlpha(1f);
+    };
 
     // ---------------------------------------------------------------------------------
     // In-app mini-player bar
     // ---------------------------------------------------------------------------------
 
     private void setupMiniPlayerBar() {
-        // Tap the video = show the overlay buttons (METUBE(mini-controls), see MiniControls); tap
-        // it again while they show (anywhere but the buttons) = expand back to the watch screen.
+        // Tap the video (anywhere but the overlay buttons) = expand back to the watch screen.
         // The card keeps rendering until our onPause detaches it (hideMiniPlayer there) - the
         // player's onResume then re-parents the session texture back. Detaching HERE would blank
         // the card for the whole activity-switch latency.
         View.OnClickListener expand = v -> {
-            if (!mMiniClosing && MiniPlayerBridge.isActive() // not while a closed card leaves
-                    && !mMiniControls.onVideoTap()) {
+            if (!mMiniClosing && MiniPlayerBridge.isActive()) { // not while a closed card leaves
                 MiniPlayerBridge.expand(this);
             }
         };
@@ -534,6 +591,11 @@ public class MobileBrowseActivity extends MobileActivity
                     @Override
                     public void onSwipedAway(float toTranslationX, long durationMs) {
                         closeMiniPlayer(toTranslationX, durationMs);
+                    }
+
+                    @Override
+                    public void onTouched() {
+                        mMiniControls.show();
                     }
                 }, mMiniPlayerFrame, mMiniPlayerBar);
     }
@@ -658,7 +720,9 @@ public class MobileBrowseActivity extends MobileActivity
         mMiniPlayerBar.setScaleX(1f);
         mMiniPlayerBar.setScaleY(1f);
         mMiniPlayerBar.setTranslationX(0f);
+        mMiniPlayerBar.setTranslationY(0f); // METUBE(mini-float): back home from the corner it was dragged to
         mMiniPlayerBar.setVisibility(View.VISIBLE);
+        mMiniControls.show();
         updateMiniPlayPauseIcon(player);
 
         Utils.removeCallbacks(mMiniPlayerTick);
@@ -866,6 +930,9 @@ public class MobileBrowseActivity extends MobileActivity
             final TextureView textureView = new TextureView(this);
             textureView.setOpaque(false); // NEWTUBE(texture-opaque): see MobilePlaybackActivity
             textureView.setSurfaceTextureListener(new TextureView.SurfaceTextureListener() {
+                /** The session texture this view adopted: the player's, never released here. */
+                private SurfaceTexture mAdopted;
+
                 @Override
                 public void onSurfaceTextureAvailable(SurfaceTexture texture, int width, int height) {
                     SurfaceTexture session = MiniPlayerBridge.getSessionTexture();
@@ -883,6 +950,7 @@ public class MobileBrowseActivity extends MobileActivity
                             && !(Build.VERSION.SDK_INT >= 26 && session.isReleased())) {
                         try {
                             textureView.setSurfaceTexture(session);
+                            mAdopted = session;
                             texture.release(); // the view-created texture is never used
                         } catch (IllegalArgumentException released) {
                             // released after the check: keep the view's own texture
@@ -903,8 +971,11 @@ public class MobileBrowseActivity extends MobileActivity
                 @Override
                 public boolean onSurfaceTextureDestroyed(SurfaceTexture texture) {
                     // Never release the session texture - the playback activity owns it. Only a
-                    // view-created texture that was never swapped out may die here.
-                    return texture != MiniPlayerBridge.getSessionTexture();
+                    // view-created texture that was never swapped out may die here. METUBE(issue
+                    // #38): checked against the one adopted, not the bridge's - a card floated in
+                    // PiP is removed after the player took the session back, when the bridge
+                    // hands out nothing, and released the player's live texture (crash on expand).
+                    return texture != mAdopted && texture != MiniPlayerBridge.getSessionTexture();
                 }
 
                 @Override
@@ -976,15 +1047,16 @@ public class MobileBrowseActivity extends MobileActivity
         stopMiniSwipe();
         mMiniPlayerBar.animate().cancel();
         mMiniPlayerBar.setVisibility(View.GONE);
-        mMiniControls.reset();
         unwatchMiniScreenOn();
         setMiniKeepScreenOn(false); // no card, no video on this screen
         mMiniPlayerBar.setAlpha(1f);
         mMiniPlayerBar.setScaleX(1f);
         mMiniPlayerBar.setScaleY(1f);
         mMiniPlayerBar.setTranslationX(0f);
+        mMiniPlayerBar.setTranslationY(0f); // METUBE(mini-float): back home from the corner it was dragged to
         mMiniButtonsFadePending = false;
         setMiniButtonsAlpha(1f);
+        mMiniControls.reset();
         if (mMiniPip != null) {
             mMiniPip.update(); // no card, nothing to float
         }
@@ -1017,7 +1089,14 @@ public class MobileBrowseActivity extends MobileActivity
         ExoPlayer player = MiniPlayerBridge.getPlayer();
         if (player == null) {
             // The hidden playback activity died (system kill / finished elsewhere): fold the bar.
+            boolean pinned = mMiniPip != null && mMiniPip.isPinned();
             hideMiniPlayer();
+            if (pinned) {
+                // METUBE(issue #38): or it took the video back while this copy of Home floated
+                // (the app reopened from the launcher): the window goes, as when it is closed.
+                // Left up, it showed Home's bars in PiP and a second Home opened under it.
+                finishAndRemoveTask();
+            }
             return;
         }
         long duration = player.getDuration();
@@ -1087,6 +1166,11 @@ public class MobileBrowseActivity extends MobileActivity
         };
         mAdapter.showAvatars(); // METUBE(card avatars, issue #6)
         mStrip = new FeedStrip(this::onStripPicked, findViewById(R.id.mobile_blur_target));
+        mStrip.setOnAllLongPressed(() -> {
+            if (mSubsChannels != null && !mSubsChannels.isEmpty()) {
+                SubsChannelsSheet.show(this, mSubsChannels);
+            }
+        });
         mChipRow = findViewById(R.id.mobile_chip_row);
         mChipRow.setLayoutManager(new LinearLayoutManager(this, RecyclerView.HORIZONTAL, false));
         mChipRow.setItemAnimator(null);
@@ -1140,6 +1224,10 @@ public class MobileBrowseActivity extends MobileActivity
                 maybeTriggerPagination();
             }
         });
+        if (!com.newtube.mobile.ui.common.FocusRing.isTv(this)) { // a remote needs the tabs in reach
+            mNavHider = new com.newtube.mobile.ui.common.NavHider(findViewById(R.id.mobile_nav_glass));
+            mContentGrid.addOnScrollListener(mNavHider);
+        }
         if (com.newtube.mobile.ui.common.FocusRing.isTv(this)) {
             // METUBE(tv): the remote's way to the chips is up from the first row, so there the feed
             // goes back to its top and the chips come out (a touch gets them by scrolling up).
@@ -1273,9 +1361,24 @@ public class MobileBrowseActivity extends MobileActivity
                 return true;
             }
             if (!mSuppressNavCallback) {
-                closeShortsHostForNavigation();
-                Motion.nudge(findViewById(R.id.mobile_nav_glass)); // METUBE(motion): the bar acknowledges the switch
-                onNavItemChosen(item.getItemId());
+                closeShortsHostForNavigation(); // METUBE(shorts): any other tab ends the in-place session
+                int itemId = item.getItemId();
+                if (itemId == toMenuItemId(MediaGroup.TYPE_SHORTS) && playNavLens(itemId)) {
+                    // METUBE(shorts): the lens and the bar's wiggle play alone, then the player rises in.
+                    // The Shorts tab's layout and the player's start take ~250 ms of the main thread
+                    // (gfxinfo: 56 + 162 ms frames), which froze the wiggle's last stretch.
+                    mBottomNav.postDelayed(() -> {
+                        if (mBottomNav.getSelectedItemId() == itemId) { // not left for another tab meanwhile
+                            onNavItemChosen(itemId);
+                        }
+                    }, com.newtube.mobile.ui.common.NavLens.JIGGLE_MS);
+                } else if (playNavLens(itemId)) {
+                    // The page swaps a frame later: its heaviest frames land while the lens swells in place.
+                    mBottomNav.postOnAnimation(() -> onNavItemChosen(itemId));
+                } else {
+                    Motion.nudge(findViewById(R.id.mobile_nav_glass)); // METUBE(motion): the bar acknowledges the switch
+                    onNavItemChosen(itemId);
+                }
             }
             return true;
         });
@@ -1298,6 +1401,47 @@ public class MobileBrowseActivity extends MobileActivity
         });
     }
 
+    /**
+     * METUBE(shorts): the lens is gliding to a tab. The Shorts player waits for it to settle: its
+     * start took the glide's frames and only the switch to Shorts stuttered.
+     */
+    private boolean mNavLensGliding;
+
+    /** The lit-tab pill (bg_nav_item), off the bar while the lens is it. */
+    @Nullable
+    private android.graphics.drawable.Drawable mNavPill;
+
+    /**
+     * METUBE(nav lens, issue #46): the bar wiggles toward the picked tab and the lit pill becomes a
+     * liquid glass lens that glides there and settles back into the pill. False with the setting off
+     * (or no switch to show): then the bar only nudges.
+     */
+    private boolean playNavLens(int toItemId) {
+        com.newtube.mobile.ui.common.NavLens lens = findViewById(R.id.mobile_nav_lens);
+        View from = mBottomNav.findViewById(mBottomNav.getSelectedItemId());
+        View to = mBottomNav.findViewById(toItemId);
+        View bar = findViewById(R.id.mobile_nav_glass);
+        if (!com.newtube.mobile.ui.common.NavLens.enabled(this) || from == null || to == null || from == to
+                || to.getWidth() == 0 || !(bar instanceof com.newtube.mobile.ui.common.GlassView)) {
+            return false;
+        }
+        com.newtube.mobile.ui.common.NavLens.jiggle(bar, to.getLeft() > from.getLeft() ? 1 : -1);
+        if (lens == null || !com.newtube.mobile.ui.common.NavLens.supported(this)) {
+            return true;
+        }
+        if (mNavPill == null) {
+            mNavPill = mBottomNav.getItemBackground();
+        }
+        mBottomNav.setItemBackground(null);
+        mNavLensGliding = true;
+        lens.play((com.newtube.mobile.ui.common.GlassView) bar, from, to, () -> {
+            mBottomNav.setItemBackground(mNavPill);
+            mNavLensGliding = false;
+            mBottomNav.post(this::maybeLaunchShorts); // held while the lens glided
+        });
+        return true;
+    }
+
     private void onNavItemChosen(int itemId) {
         // METUBE(shorts): like YouTube, the Shorts tab IS the vertical player - no grid. The tab
         // loads the feed (spinner only) and opens its first unseen short; leaving the player comes
@@ -1309,10 +1453,15 @@ public class MobileBrowseActivity extends MobileActivity
         }
         if (itemId == YOU_ITEM_ID) {
             showYouPanel();
+            Motion.frostIn(mYouPanel); // METUBE(frost)
         } else {
+            boolean fromYou = mYouShowing;
             mSectionFromYou = false;
             hideYouPanel();
             onSectionChosen(itemId - ITEM_ID_OFFSET);
+            if (fromYou && !mSectionSwapPending && mContentGrid.getVisibility() == View.VISIBLE) {
+                Motion.frostIn(mContentGrid); // METUBE(frost): back to the tab under You - same page, same arrival
+            }
         }
         maybeLaunchShorts();
     }
@@ -1333,7 +1482,7 @@ public class MobileBrowseActivity extends MobileActivity
     private int mLastNonShortsNavItem = MediaGroup.TYPE_HOME + ITEM_ID_OFFSET;
 
     private void maybeLaunchShorts() {
-        if (!mShortsLaunchPending || mCurrentSectionId != MediaGroup.TYPE_SHORTS || mYouShowing
+        if (!mShortsLaunchPending || mCurrentSectionId != MediaGroup.TYPE_SHORTS || mYouShowing || mNavLensGliding
                 || !getLifecycle().getCurrentState().isAtLeast(androidx.lifecycle.Lifecycle.State.RESUMED)) {
             return;
         }
@@ -1352,6 +1501,7 @@ public class MobileBrowseActivity extends MobileActivity
                     loading.setVisibility(View.GONE);
                 }
                 onVideoClicked(video);
+                overridePendingTransition(R.anim.shorts_open_enter, R.anim.mobile_stay); // fades up from the bottom
                 return;
             }
         }
@@ -1360,6 +1510,13 @@ public class MobileBrowseActivity extends MobileActivity
             mPresenter.onScrollEnd(mCurrentVideos.get(mCurrentVideos.size() - 1)); // all seen: next page
         }
     }
+
+    private final Runnable mLeaveShortsTab = () -> {
+        if (mCurrentSectionId == MediaGroup.TYPE_SHORTS && !mShortsLaunchPending && !mYouShowing
+                && mBottomNav.getMenu().findItem(mLastNonShortsNavItem) != null) {
+            mBottomNav.setSelectedItemId(mLastNonShortsNavItem);
+        }
+    };
 
     /** Pages asked for while the Shorts tab looked for an unseen short. */
     private int mShortsLaunchPages;
@@ -1414,6 +1571,74 @@ public class MobileBrowseActivity extends MobileActivity
         // browsing signed-out with stored accounts, so they stay re-selectable).
         View accountRow = findViewById(R.id.mobile_you_account_row);
         accountRow.setOnClickListener(v -> AccountsSheet.show(this, this::updateAccountRow));
+        findViewById(R.id.mobile_you_accounts).setOnClickListener(v -> AccountsSheet.show(this, this::updateAccountRow));
+        findViewById(R.id.mobile_you_settings).setOnClickListener(v -> openSettings());
+        com.newtube.mobile.ui.common.Glass.blur((View) findViewById(R.id.mobile_you_accounts).getParent(), findViewById(R.id.mobile_you_glow_source));
+        com.newtube.mobile.ui.common.Glass.blur((View) findViewById(R.id.mobile_you_settings).getParent(), findViewById(R.id.mobile_you_glow_source));
+        findViewById(R.id.mobile_you_history_title).setOnClickListener(v -> openFromYou(MediaGroup.TYPE_HISTORY));
+
+        // METUBE(you page): History's latest videos, two and a bit across like YouTube's You page.
+        int cardWidth = Math.round(getResources().getDisplayMetrics().widthPixels / 2.4f);
+        mYouHistoryAdapter = new VideoCardAdapter(this::onVideoClicked, this::onVideoLongClicked) {
+            @NonNull
+            @Override
+            public RecyclerView.ViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
+                RecyclerView.ViewHolder holder = super.onCreateViewHolder(parent, viewType);
+                holder.itemView.getLayoutParams().width = cardWidth;
+                return holder;
+            }
+
+            @Override
+            public void onBindViewHolder(@NonNull RecyclerView.ViewHolder holder, int position) {
+                super.onBindViewHolder(holder, position);
+                View avatar = holder.itemView.findViewById(R.id.video_avatar);
+                if (avatar != null) {
+                    avatar.setVisibility(View.GONE); // a small card: the title takes the width
+                }
+            }
+        };
+        RecyclerView historyList = findViewById(R.id.mobile_you_history_list);
+        historyList.setLayoutManager(new LinearLayoutManager(this, RecyclerView.HORIZONTAL, false));
+        historyList.setAdapter(mYouHistoryAdapter);
+    }
+
+    /** METUBE(you page): History's videos for its row - the last ones seen at once, then fresh ones. */
+    private void loadYouHistory() {
+        BrowseSection history = null;
+        for (BrowseSection section : mSections) {
+            if (section.getId() == MediaGroup.TYPE_HISTORY && section.isEnabled()) {
+                history = section;
+            }
+        }
+        View block = findViewById(R.id.mobile_you_history);
+        block.setVisibility(history != null ? View.VISIBLE : View.GONE);
+        if (history == null) {
+            return;
+        }
+        ((TextView) findViewById(R.id.mobile_you_history_title)).setText(history.getTitle());
+        List<Video> cached = FeedCache.get(MediaGroup.TYPE_HISTORY);
+        showYouHistory(cached);
+        com.liskovsoft.sharedutils.rx.RxHelper.disposeActions(mYouHistoryAction);
+        mYouHistoryAction = com.liskovsoft.sharedutils.rx.RxHelper.execute(
+                com.liskovsoft.youtubeapi.service.YouTubeServiceManager.instance().getContentService().getHistoryObserve(),
+                group -> runOnUiThread(() -> showYouHistory(group != null ? VideoGroup.from(group).getVideos() : null)),
+                error -> android.util.Log.w("MobileBrowse", "You history: " + error));
+    }
+
+    private void showYouHistory(@Nullable List<Video> videos) {
+        if (isDestroyed()) {
+            return;
+        }
+        List<Video> shown = new ArrayList<>();
+        if (videos != null) {
+            for (Video video : videos) {
+                if (video.videoId != null && shown.size() < 20) {
+                    shown.add(video);
+                }
+            }
+        }
+        findViewById(R.id.mobile_you_history_list).setVisibility(shown.isEmpty() ? View.GONE : View.VISIBLE);
+        mYouHistoryAdapter.submitList(shown);
     }
 
     /** Show the You panel over the content area (the panel is opaque; the grid stays put). */
@@ -1422,6 +1647,7 @@ public class MobileBrowseActivity extends MobileActivity
         mSectionFromYou = false;
         rebuildYouRows();
         updateAccountRow();
+        loadYouHistory();
         mContentSwipe.setRefreshing(false);
         mYouPanel.setVisibility(View.VISIBLE);
         onYouPanelToggled();
@@ -1441,6 +1667,7 @@ public class MobileBrowseActivity extends MobileActivity
      * You sub-screen with a back arrow and its name.
      */
     private void onYouPanelToggled() {
+        showNav();
         int a11y = mYouShowing
                 ? View.IMPORTANT_FOR_ACCESSIBILITY_NO_HIDE_DESCENDANTS : View.IMPORTANT_FOR_ACCESSIBILITY_AUTO;
         mContentSwipe.setImportantForAccessibility(a11y);
@@ -1491,6 +1718,7 @@ public class MobileBrowseActivity extends MobileActivity
                     || navSections.contains(section)
                     || section.getId() == MediaGroup.TYPE_SETTINGS
                     || section.getId() == MediaGroup.TYPE_SHORTS
+                    || section.getId() == MediaGroup.TYPE_HISTORY // METUBE(you page): its own row up top
                     || section.getId() == MediaGroup.TYPE_TRENDING) { // METUBE: an empty feed now
                 continue;
             }
@@ -1503,8 +1731,11 @@ public class MobileBrowseActivity extends MobileActivity
             (isPersonalSection(section.getId()) ? personal : explore).add(section);
         }
 
-        for (BrowseSection section : personal) {
-            addYouSectionRow(section);
+        if (!personal.isEmpty()) {
+            addYouGroupLabel(getString(R.string.mobile_you_library));
+            for (BrowseSection section : personal) {
+                addYouSectionRow(section);
+            }
         }
 
         if (!pinned.isEmpty()) {
@@ -1520,20 +1751,11 @@ public class MobileBrowseActivity extends MobileActivity
                 addYouSectionRow(section);
             }
         }
-
-        addYouDivider();
-        addYouRow(R.drawable.ic_mobile_settings, getString(R.string.header_settings),
-                this::openSettings);
     }
 
     private void addYouSectionRow(BrowseSection section) {
         int sectionId = section.getId();
-        View row = addYouRow(section.getResId(), section.getTitle(), () -> {
-            mSectionFromYou = true;
-            hideYouPanel();
-            onSectionChosen(sectionId);
-            onYouPanelToggled(); // now that the chosen section is current: its name in the top bar
-        });
+        View row = addYouRow(section.getResId(), section.getTitle(), () -> openFromYou(sectionId));
         row.setOnLongClickListener(v -> {
             if (mPresenter != null) {
                 mPresenter.onSectionLongPressed(sectionId);
@@ -1542,16 +1764,23 @@ public class MobileBrowseActivity extends MobileActivity
         });
     }
 
-    /** Small secondary-color group label, official-You-page style. */
+    private void openFromYou(int sectionId) {
+        mSectionFromYou = true;
+        hideYouPanel();
+        onSectionChosen(sectionId);
+        onYouPanelToggled(); // now that the chosen section is current: its name in the top bar
+    }
+
+    /** A group's heading, as YouTube's You page has them ("Library"). */
     private void addYouGroupLabel(CharSequence text) {
         TextView label = new TextView(this);
         label.setText(text);
-        label.setTextColor(getColorInt(R.color.mobile_color_on_surface_secondary));
-        label.setTextSize(14);
+        label.setTextColor(getColorInt(R.color.mobile_color_on_surface));
+        label.setTextSize(20);
         label.setTypeface(label.getTypeface(), android.graphics.Typeface.BOLD);
-        int pad = Math.round(20 * getResources().getDisplayMetrics().density);
-        int padV = Math.round(10 * getResources().getDisplayMetrics().density);
-        label.setPadding(pad, padV, pad, padV / 2);
+        float density = getResources().getDisplayMetrics().density;
+        label.setPadding(Math.round(16 * density), Math.round(20 * density), Math.round(16 * density),
+                Math.round(6 * density));
         mYouRows.addView(label);
     }
 
@@ -1603,6 +1832,7 @@ public class MobileBrowseActivity extends MobileActivity
             clearSubsChannel(); // METUBE(feed-strip): a filter belongs to the visit that set it
         }
         mCurrentSectionId = sectionId;
+        showNav();
         updateStrip();
         paintCachedSnapshot(sectionId, switched);
         syncNavHighlight(sectionId);
@@ -1648,6 +1878,7 @@ public class MobileBrowseActivity extends MobileActivity
 
         mLastPaginationTriggerCount = -1;
         mLastNearEndTriggerCount = -1;
+        markLiveChannels();
         mContentGrid.animate().cancel();
         mContentGrid.setAlpha(1f);
         if (switched) {
@@ -1868,14 +2099,26 @@ public class MobileBrowseActivity extends MobileActivity
         applyHomeLayout();
         if (isHomeChip(mCurrentSectionId)) {
             List<FeedStrip.Item> chips = new ArrayList<>();
+            if (mHomeChips == null) {
+                loadHomeChips();
+            }
+            long selected = mCurrentSectionId;
             for (int chip : HOME_CHIPS) {
                 BrowseSection section = findKnownSection(chip);
                 if (chip == MediaGroup.TYPE_HOME || section != null) {
                     chips.add(new FeedStrip.Item(chip, chip == MediaGroup.TYPE_HOME
                             ? getString(R.string.mobile_feed_all) : section.getTitle(), null, null));
                 }
+                // METUBE(issue #79): right after All, the account's own channels, then the topics
+                for (int i = 0; chip == MediaGroup.TYPE_HOME && mHomeChips != null && i < mHomeChips.size(); i++) {
+                    Video channel = mHomeChips.get(i);
+                    chips.add(new FeedStrip.Item(HOME_CHIP_ID + i, channel.getAuthor(), null, channel));
+                    if (channel == mHomeChip) {
+                        selected = HOME_CHIP_ID + i;
+                    }
+                }
             }
-            mStrip.show(chips.size() > 1 ? FeedStrip.MODE_CHIPS : FeedStrip.MODE_NONE, chips, mCurrentSectionId);
+            mStrip.show(chips.size() > 1 ? FeedStrip.MODE_CHIPS : FeedStrip.MODE_NONE, chips, selected);
             updateChipRow();
         } else if (mCurrentSectionId == MediaGroup.TYPE_SUBSCRIPTIONS) {
             if (mSubsChannels == null) {
@@ -1910,7 +2153,18 @@ public class MobileBrowseActivity extends MobileActivity
     }
 
     private void onStripPicked(FeedStrip.Item item) {
-        if (mStrip.mode() == FeedStrip.MODE_CHIPS) {
+        if (item.id >= HOME_CHIP_ID) { // METUBE(issue #79): a personal chip
+            mStrip.select(item.id);
+            loadHomeChip((Video) item.data);
+        } else if (mHomeChip != null && item.id == mCurrentSectionId) {
+            // the section's own chip from a personal one: its feed again, from its snapshot while the presenter refreshes
+            clearSubsChannel();
+            mStrip.select(item.id);
+            paintCachedSnapshot(mCurrentSectionId, true);
+            if (mPresenter != null) {
+                mPresenter.onSectionFocused(mCurrentSectionId);
+            }
+        } else if (mStrip.mode() == FeedStrip.MODE_CHIPS) {
             // A topic opens in Home's place: Home's tab stays lit (no tab of its own), Back = Home.
             mSectionFromYou = false;
             onSectionChosen((int) item.id);
@@ -1949,18 +2203,44 @@ public class MobileBrowseActivity extends MobileActivity
                 error -> android.util.Log.w("MobileBrowse", "Subscribed channels: " + error));
     }
 
+    private void loadHomeChips() {
+        mHomeChips = new ArrayList<>(); // asked once per visit (refresh asks again); none until it answers
+        com.liskovsoft.sharedutils.rx.RxHelper.disposeActions(mHomeChipsAction);
+        mHomeChipsAction = com.liskovsoft.sharedutils.rx.RxHelper.execute(
+                com.liskovsoft.youtubeapi.service.YouTubeServiceManager.instance().getContentService().getHistoryObserve(),
+                group -> runOnUiThread(() -> {
+                    mHomeChips = topChannels(VideoGroup.from(group).getVideos(), HOME_CHIPS_MAX);
+                    if (mHomeChip == null && isHomeChip(mCurrentSectionId) && !mYouShowing) {
+                        updateStrip();
+                    }
+                }),
+                error -> android.util.Log.w("MobileBrowse", "Home chips: " + error));
+    }
+
+    /** The {@code max} channels with the most videos in {@code history}; a tie goes to the newer one. */
+    static List<Video> topChannels(@Nullable List<Video> history, int max) {
+        java.util.Map<String, Video> newest = new java.util.LinkedHashMap<>(); // history comes newest first
+        java.util.Map<String, Integer> count = new java.util.HashMap<>();
+        for (Video video : history != null ? history : new ArrayList<Video>()) {
+            if (video.channelId != null && video.getAuthor() != null) {
+                newest.putIfAbsent(video.channelId, video);
+                count.merge(video.channelId, 1, Integer::sum);
+            }
+        }
+        List<Video> channels = new ArrayList<>(newest.values());
+        java.util.Collections.sort(channels, (a, b) -> count.get(b.channelId) - count.get(a.channelId)); // stable
+        return new ArrayList<>(channels.subList(0, Math.min(max, channels.size())));
+    }
+
+    /** METUBE(issue #79): Home narrowed to a personal chip: that channel's uploads replace Home's feed. */
+    private void loadHomeChip(Video chip) {
+        loadSubsChannel(chip);
+        mHomeChip = chip; // after: the filter's reset clears it
+    }
+
     /** Subscriptions narrowed to one channel: its uploads replace the feed, newest first. */
     private void loadSubsChannel(Video channel) {
-        com.liskovsoft.sharedutils.rx.RxHelper.disposeActions(mSubsAction);
-        mSubsChannel = channel;
-        mSubsChannelPage = null;
-        hideError();
-        mCurrentVideos.clear();
-        mAwaitingFreshContent = false;
-        cancelFeedSwap();
-        mAdapter.submitList(new ArrayList<>());
-        showReloadSkeleton();
-        mContentSwipe.setRefreshing(false);
+        resetFilteredFeed(channel);
         Video target = channel;
         mSubsAction = com.liskovsoft.sharedutils.rx.RxHelper.execute(
                 target.mediaItem != null
@@ -1975,6 +2255,21 @@ public class MobileBrowseActivity extends MobileActivity
                 }));
     }
 
+    /** An empty feed with its skeleton, waiting for {@code target}'s first page. */
+    private void resetFilteredFeed(Video target) {
+        com.liskovsoft.sharedutils.rx.RxHelper.disposeActions(mSubsAction);
+        mSubsChannel = target;
+        mSubsChannelPage = null;
+        mHomeChip = null;
+        hideError();
+        mCurrentVideos.clear();
+        mAwaitingFreshContent = false;
+        cancelFeedSwap();
+        mAdapter.submitList(new ArrayList<>());
+        showReloadSkeleton();
+        mContentSwipe.setRefreshing(false);
+    }
+
     private void loadSubsChannelPage() {
         MediaGroup page = mSubsChannelPage;
         Video target = mSubsChannel;
@@ -1986,7 +2281,12 @@ public class MobileBrowseActivity extends MobileActivity
         mSubsAction = com.liskovsoft.sharedutils.rx.RxHelper.execute(
                 com.liskovsoft.youtubeapi.service.YouTubeServiceManager.instance().getContentService().continueGroupObserve(page),
                 group -> runOnUiThread(() -> onSubsChannelPage(target, group)),
-                error -> android.util.Log.w("MobileBrowse", "Channel feed page: " + error));
+                error -> runOnUiThread(() -> {
+                    if (mSubsChannel == target) {
+                        setSkeletonVisible(false);
+                    }
+                    android.util.Log.w("MobileBrowse", "Channel feed page: " + error);
+                }));
     }
 
     private void onSubsChannelPage(Video target, MediaGroup group) {
@@ -2004,6 +2304,7 @@ public class MobileBrowseActivity extends MobileActivity
         com.liskovsoft.sharedutils.rx.RxHelper.disposeActions(mSubsAction);
         mSubsChannel = null;
         mSubsChannelPage = null;
+        mHomeChip = null;
     }
 
     private void maybeTriggerPagination() {
@@ -2227,8 +2528,20 @@ public class MobileBrowseActivity extends MobileActivity
     private void rebuildBottomNav() {
         Menu menu = mBottomNav.getMenu();
         List<BrowseSection> navSections = selectNavSections();
+        // METUBE(nav tabs): Search goes after Home and as many of the two tabs as Settings put before it.
+        int searchPosition = NavTabs.searchPosition(this);
+        int first = NavTabs.get(this, NavTabs.FIRST);
+        int second = NavTabs.get(this, NavTabs.SECOND);
+        int searchOrder = 0;
+        for (BrowseSection section : navSections) {
+            int id = section.getId();
+            if (id == MediaGroup.TYPE_HOME || (id == first && searchPosition > 0) || (id == second && searchPosition > 1)) {
+                searchOrder++;
+            }
+        }
 
-        StringBuilder signature = new StringBuilder();
+        boolean searchOnTop = NavTabs.searchOnTop(this); // METUBE(search place): then the bar has no Search tab
+        StringBuilder signature = new StringBuilder().append(searchOnTop ? -1 : searchOrder).append('');
         for (BrowseSection section : navSections) {
             signature.append(toMenuItemId(section.getId())).append('\u0001')
                     .append(section.getTitle()).append('\u0001')
@@ -2236,7 +2549,7 @@ public class MobileBrowseActivity extends MobileActivity
         }
         String newSignature = signature.toString();
 
-        if (newSignature.equals(mNavSignature) && menu.size() == navSections.size() + 1) {
+        if (newSignature.equals(mNavSignature) && menu.size() == navSections.size() + (searchOnTop ? 1 : 2)) {
             // Same tabs as on screen: only re-assert the highlight (the section may have moved).
             mSuppressNavCallback = true;
             reassertNavHighlight(menu, false);
@@ -2252,7 +2565,11 @@ public class MobileBrowseActivity extends MobileActivity
         for (int i = 0; i < navSections.size(); i++) {
             BrowseSection section = navSections.get(i);
 
-            android.view.MenuItem item = menu.add(Menu.NONE, toMenuItemId(section.getId()), i, section.getTitle());
+            int order = i < searchOrder ? i : i + 1;
+            // METUBE(issue #81): "Subscriptions" wraps to two lines in a 5-tab bar; the bar says "Subs".
+            CharSequence title = section.getId() == MediaGroup.TYPE_SUBSCRIPTIONS
+                    ? getString(R.string.mobile_nav_subs) : section.getTitle();
+            android.view.MenuItem item = menu.add(Menu.NONE, toMenuItemId(section.getId()), order, title);
 
             int icon = navIconOrResFor(section);
             if (icon > 0) {
@@ -2260,6 +2577,10 @@ public class MobileBrowseActivity extends MobileActivity
             }
         }
 
+        if (!searchOnTop) {
+            menu.add(Menu.NONE, SEARCH_ITEM_ID, searchOrder,
+                    R.string.mobile_search_button).setIcon(R.drawable.ic_mobile_search);
+        }
         // The synthetic You tab always sits last (account + extra sections + settings).
         menu.add(Menu.NONE, YOU_ITEM_ID, navSections.size(), R.string.mobile_nav_you)
                 .setIcon(R.drawable.ic_nav_you);
@@ -2279,6 +2600,9 @@ public class MobileBrowseActivity extends MobileActivity
                 if (itemView != null) {
                     fitNavLabel(itemView);
                     int sectionId = section.getId();
+                    if (sectionId == MediaGroup.TYPE_HOME) {
+                        continue; // METUBE: Home has no menu on long-press, as the You tab
+                    }
                     itemView.setOnLongClickListener(v -> {
                         if (mPresenter != null) {
                             mPresenter.onSectionLongPressed(sectionId);
@@ -2363,6 +2687,12 @@ public class MobileBrowseActivity extends MobileActivity
         super.onResume();
         mBottomNav.setLabelVisibilityMode(NavTabs.showLabels(this) // METUBE(nav labels)
                 ? BottomNavigationView.LABEL_VISIBILITY_LABELED : BottomNavigationView.LABEL_VISIBILITY_UNLABELED);
+        // METUBE(search place): Search in the top bar or the bottom one, as Settings > Tabs says.
+        boolean searchOnTop = NavTabs.searchOnTop(this);
+        mSearchButton.setVisibility(searchOnTop ? View.VISIBLE : View.GONE);
+        if (searchOnTop == (mBottomNav.getMenu().findItem(SEARCH_ITEM_ID) != null)) {
+            rebuildNavigation();
+        }
         if (mMiniPip != null) {
             mMiniPip.onResume();
         }
@@ -2374,6 +2704,7 @@ public class MobileBrowseActivity extends MobileActivity
 
         // METUBE(shorts): the pill on the Shorts player lets you tap straight to another tab. That
         // request wins over the "come back where you were" default below.
+        mBottomNav.removeCallbacks(mLeaveShortsTab);
         if (openTabOnReturn >= 0) {
             int target = openTabOnReturn;
             openTabOnReturn = -1;
@@ -2384,14 +2715,19 @@ public class MobileBrowseActivity extends MobileActivity
             }
         } else if (mCurrentSectionId == MediaGroup.TYPE_SHORTS && !mShortsLaunchPending && !mYouShowing
                 && mBottomNav.getMenu().findItem(mLastNonShortsNavItem) != null) {
-            // METUBE(shorts): back from the Shorts player - return to the tab before Shorts.
-            mBottomNav.setSelectedItemId(mLastNonShortsNavItem);
+            // METUBE(shorts): back from the Shorts player - return to the tab before Shorts, once the
+            // player's close (player_close_exit, 200 ms) is over: the lens and the tab's load ran
+            // inside that window animation and stuttered.
+            mBottomNav.postDelayed(mLeaveShortsTab, 240);
         } else {
             maybeLaunchShorts();
         }
 
         updateAccountRow();
         applyHomeLayout(); // METUBE(home-rows): back from Settings with another Home layout
+        if (mAdapter != null) {
+            mAdapter.setListRows(HomeLayout.isVideoList(this)); // METUBE(list layout, issue #82)
+        }
         // METUBE(background): not over a live mini player - the dialog would push it into PiP.
         if (!MiniPlayerBridge.isActive()) {
             com.newtube.mobile.ui.playback.BackgroundPlay.askOnce(this);
@@ -2483,6 +2819,7 @@ public class MobileBrowseActivity extends MobileActivity
     @Override
     protected void onPause() {
         super.onPause();
+        mBottomNav.removeCallbacks(mLeaveShortsTab);
 
         if (mPresenter != null) {
             mPresenter.onViewPaused();
@@ -2563,6 +2900,64 @@ public class MobileBrowseActivity extends MobileActivity
         super.onNewIntent(intent);
         setIntent(intent);
         handleOpenDownloads(intent);
+        int tab = intent.getIntExtra(EXTRA_NAV_TAB, 0);
+        if (tab != 0 && mBottomNav.getMenu().findItem(tab) != null) {
+            mBottomNav.setSelectedItemId(tab);
+        }
+    }
+
+    /** METUBE(search nav): the open Browse, whose tabs another screen's bar copies. */
+    private static java.lang.ref.WeakReference<MobileBrowseActivity> sLive = new java.lang.ref.WeakReference<>(null);
+    private static final String EXTRA_NAV_TAB = "metube_nav_tab";
+
+    /**
+     * METUBE(search nav): fills {@code bar} with Browse's tabs (Search lit) and wires a tap on one
+     * to go back to Browse on that tab. False when no Browse is open: the screen keeps no bar.
+     */
+    public static boolean copyNavTabs(android.app.Activity screen, BottomNavigationView bar, Runnable onSearchReselected) {
+        return copyNavTabs(screen, bar, true, onSearchReselected);
+    }
+
+    /**
+     * {@code searchLit} false (a channel page): the tab Browse is on stays lit and Search is a tab
+     * like the others, opening Search back in Browse.
+     */
+    public static boolean copyNavTabs(android.app.Activity screen, BottomNavigationView bar, boolean searchLit,
+                                      Runnable onSearchReselected) {
+        MobileBrowseActivity browse = sLive.get();
+        if (browse == null || browse.isFinishing()) {
+            return false;
+        }
+        Menu source = browse.mBottomNav.getMenu();
+        Menu menu = bar.getMenu();
+        menu.clear();
+        for (int i = 0; i < source.size(); i++) {
+            android.view.MenuItem item = source.getItem(i);
+            android.graphics.drawable.Drawable icon = item.getIcon();
+            if (icon != null && icon.getConstantState() != null) {
+                icon = icon.getConstantState().newDrawable(screen.getResources()).mutate();
+            }
+            menu.add(Menu.NONE, item.getItemId(), item.getOrder(), item.getTitle()).setIcon(icon);
+        }
+        bar.setLabelVisibilityMode(browse.mBottomNav.getLabelVisibilityMode());
+        // Search in the top bar (METUBE(search place)): the tab Browse is on stays lit, and a tap on it goes back too.
+        boolean hasSearch = searchLit && source.findItem(SEARCH_ITEM_ID) != null;
+        bar.setSelectedItemId(hasSearch ? SEARCH_ITEM_ID : browse.mBottomNav.getSelectedItemId());
+        com.google.android.material.navigation.NavigationBarView.OnItemSelectedListener goBack = item -> {
+            screen.startActivity(new Intent(screen, MobileBrowseActivity.class)
+                    .addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP | Intent.FLAG_ACTIVITY_SINGLE_TOP)
+                    .putExtra(EXTRA_NAV_TAB, item.getItemId()));
+            return false; // Search stays lit while this screen closes
+        };
+        bar.setOnItemSelectedListener(goBack);
+        bar.setOnItemReselectedListener(item -> {
+            if (hasSearch) {
+                onSearchReselected.run();
+            } else {
+                goBack.onNavigationItemSelected(item);
+            }
+        });
+        return true;
     }
 
     @Override
@@ -2570,7 +2965,8 @@ public class MobileBrowseActivity extends MobileActivity
         unwatchMiniScreenOn(); // the shared player outlives this Activity
         mNavHandler.removeCallbacks(mNavRebuild);
         mNavHandler.removeCallbacks(mRunwayCheck);
-        com.liskovsoft.sharedutils.rx.RxHelper.disposeActions(mSubsAction, mSubsChannelsAction);
+        com.liskovsoft.sharedutils.rx.RxHelper.disposeActions(mSubsAction, mSubsChannelsAction, mYouHistoryAction,
+                mHomeChipsAction);
         cancelFeedSwap(); // NEWTUBE(feed-swap)
         mContentGrid.removeCallbacks(mRestoreItemAnimator);
         MiniPlayerBridge.unregisterMiniHost(this);
@@ -2673,6 +3069,17 @@ public class MobileBrowseActivity extends MobileActivity
         // parent surface), like YouTube's You-tab sub-screens.
         if (mSectionFromYou && !mYouShowing) {
             showYouPanel();
+            return;
+        }
+        // METUBE(issue #86): Subscriptions narrowed to one channel - Back widens it to All first.
+        if (!mYouShowing && mCurrentSectionId == MediaGroup.TYPE_SUBSCRIPTIONS && mSubsChannel != null
+                && mStrip != null && mStrip.mode() == FeedStrip.MODE_AVATARS) {
+            onStripPicked(new FeedStrip.Item(-1, getString(R.string.mobile_feed_all), null, null));
+            return;
+        }
+        // METUBE(issue #79): Home narrowed to a chip - Back goes to All first, like a channel filter.
+        if (!mYouShowing && mHomeChip != null && mStrip != null && mStrip.mode() == FeedStrip.MODE_CHIPS) {
+            onStripPicked(new FeedStrip.Item(mCurrentSectionId, getString(R.string.mobile_feed_all), null, null));
             return;
         }
 
@@ -3014,14 +3421,26 @@ public class MobileBrowseActivity extends MobileActivity
         // at its top.
         mLayoutManager.scrollToPositionWithOffset(0, 0);
         if (mAdapter.getItemCount() > 0) {
-            mContentGrid.setAlpha(0f);
-            mContentGrid.animate().alpha(1f).setDuration(Motion.FADE_IN_MS)
-                    .setInterpolator(Motion.STANDARD).withLayer().start();
+            Motion.frostIn(mContentGrid); // METUBE(frost): the new tab clears out of frosted glass
         }
         restoreItemAnimatorAfterLayout();
     }
 
+    /** METUBE(issue #73): the Subscriptions feed says which channels are live; their strip avatars glow. */
+    private void markLiveChannels() {
+        boolean added = false;
+        for (Video video : mCurrentVideos) {
+            if (video.isLive) {
+                added |= com.newtube.mobile.ui.common.LiveRingView.markLive(video.channelId);
+            }
+        }
+        if (added && mStrip != null && mStrip.mode() == FeedStrip.MODE_AVATARS) {
+            mStrip.select(mStrip.selected()); // rebinds the avatars
+        }
+    }
+
     private void submitGrid() {
+        markLiveChannels();
         List<Video> list = new ArrayList<>(mCurrentVideos);
         if (mParkedItemAnimator == null && !mSectionSwapPending) {
             mAdapter.submitList(list);

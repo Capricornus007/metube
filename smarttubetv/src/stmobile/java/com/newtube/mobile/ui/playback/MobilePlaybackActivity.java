@@ -215,13 +215,19 @@ public class MobilePlaybackActivity extends MobileActivity
     @Nullable private ImageButton mPlayerDislike;
     @Nullable private ImageButton mPlayerDownload;
     @Nullable private View mPlayerComments;
+    @Nullable private View mPlayerChat; // METUBE(live chat, issue #32): chat from the fullscreen pill
     private boolean mActionsShown;
     /** The pill's comments button left fullscreen: open the panel once the page is back. */
     private boolean mCommentsAfterFullscreen;
     /** Landscape comments: the panel in a column beside the video (layOutCommentsSide). */
     private boolean mCommentsSide;
+    private boolean mChatSide; // METUBE(live chat, issue #32): the landscape video beside the chat column
+    private int mChatMargin; // the room the video gives the chat column (its end margin, once slid)
+    @Nullable private android.animation.ValueAnimator mChatSlide;
     private static final String PLAYER_UI_PREFS = "metube_player_ui";
     private static final String KEY_ACTIONS_SHOWN = "fullscreen_actions";
+    private static final String KEY_TIME_REMAINING = "time_remaining";
+    private boolean mTimeRemaining; // METUBE(issue #67): the time pill counts down, toggled by a tap
     /** Previous / play-pause / next, and the top-right options: they step aside while scrubbing. */
     @Nullable private View mTransport;
     @Nullable private View mOptionsRow;
@@ -242,7 +248,7 @@ public class MobilePlaybackActivity extends MobileActivity
     private NextCountdown mNextCountdown;
     private ImageButton mSubtitlesButton;
     private ImageButton mMoreButton;
-    /** The controls on a frosted disc of the video (GlassDrawable). */
+    /** The controls on a frosted disc of the video (GlassDrawable), when Frosted player buttons is on. */
     private View[] mGlassControls = new View[0];
     private ImageButton mPrevButton;
     private ImageButton mNextButton;
@@ -810,7 +816,16 @@ public class MobilePlaybackActivity extends MobileActivity
         mPlayerDislike = findViewById(R.id.mobile_player_dislike);
         mPlayerDownload = findViewById(R.id.mobile_player_download);
         mPlayerComments = findViewById(R.id.mobile_player_comments);
+        mPlayerChat = findViewById(R.id.mobile_player_chat);
         mActionsShown = getSharedPreferences(PLAYER_UI_PREFS, MODE_PRIVATE).getBoolean(KEY_ACTIONS_SHOWN, true);
+        mTimeRemaining = getSharedPreferences(PLAYER_UI_PREFS, MODE_PRIVATE).getBoolean(KEY_TIME_REMAINING, false);
+        findViewById(R.id.mobile_player_time).setOnClickListener(v -> {
+            mTimeRemaining = !mTimeRemaining;
+            getSharedPreferences(PLAYER_UI_PREFS, MODE_PRIVATE).edit().putBoolean(KEY_TIME_REMAINING, mTimeRemaining).apply();
+            if (mExoPlayerController != null) {
+                setTextIfChanged(mPositionView, positionText(mExoPlayerController.getPositionMs(), getDurationMs()));
+            }
+        });
         mTransport = findViewById(R.id.mobile_player_transport);
         mOptionsRow = findViewById(R.id.mobile_player_options);
         mTopPill = findViewById(R.id.mobile_player_top_pill);
@@ -827,6 +842,7 @@ public class MobilePlaybackActivity extends MobileActivity
             setPlayWhenReady(true);
         }, () -> showControls(true));
         mCastButton = findViewById(R.id.mobile_player_cast);
+        mMoreVideos = new MoreVideosPanel(findViewById(R.id.mobile_more_videos), this::onRelatedClicked);
         mCastOverlay = findViewById(R.id.mobile_cast_overlay);
         mCastOverlayTitle = findViewById(R.id.mobile_cast_overlay_title);
         mCastPlayPause = findViewById(R.id.mobile_cast_play_pause);
@@ -839,8 +855,11 @@ public class MobilePlaybackActivity extends MobileActivity
         mMoreButton = findViewById(R.id.mobile_player_more);
         mPrevButton = findViewById(R.id.mobile_player_previous);
         mNextButton = findViewById(R.id.mobile_player_next);
-        // METUBE(glass): every control over the video sits on a frosted disc of it (time: a pill).
-        com.newtube.mobile.ui.common.GlassSource videoGlass = findViewById(R.id.mobile_player_glass);
+        // METUBE(glass): every control over the video sits on a see-through tinted disc (time: a
+        // pill); with Frosted player buttons on, a frosted disc of the video instead. Over HDR's
+        // SurfaceView (#35) there is nothing to frost, so the tint alone.
+        com.newtube.mobile.ui.common.GlassSource videoGlass =
+                com.newtube.mobile.ui.common.Glass.isPlayerFrost(this) ? findViewById(R.id.mobile_player_glass) : null;
         for (View control : new View[] {mBackButton, mAudioButton, mCastButton, mSubtitlesButton, mMoreButton,
                 mPrevButton, mNextButton, mFullscreenButton, mActionsToggle}) {
             com.newtube.mobile.ui.common.GlassDrawable.apply(control, videoGlass, dp(4));
@@ -849,8 +868,10 @@ public class MobilePlaybackActivity extends MobileActivity
         for (View control : new View[] {mPlayPauseButton, time, mActionsRow}) {
             com.newtube.mobile.ui.common.GlassDrawable.apply(control, videoGlass, 0);
         }
-        mGlassControls = new View[] {mBackButton, mAudioButton, mCastButton, mSubtitlesButton, mMoreButton,
-                mPrevButton, mNextButton, mFullscreenButton, mActionsToggle, mPlayPauseButton, time, mActionsRow};
+        if (videoGlass != null) {
+            mGlassControls = new View[] {mBackButton, mAudioButton, mCastButton, mSubtitlesButton, mMoreButton,
+                    mPrevButton, mNextButton, mFullscreenButton, mActionsToggle, mPlayPauseButton, time, mActionsRow};
+        }
         mDebugViewGroup = findViewById(R.id.mobile_player_debug);
 
         // Watch page content column.
@@ -976,9 +997,23 @@ public class MobilePlaybackActivity extends MobileActivity
             }
         });
 
-        // Pinch on the video = YouTube's zoom-to-fill toggle. Enabled in landscape/fullscreen only
-        // (applyWatchLayoutForOrientation), like the official app.
-        mVideoArea.setPinchListener(this::onPinchZoom);
+        // Pinch on the video = YouTube's zoom-to-fill toggle in landscape/fullscreen
+        // (applyWatchLayoutForOrientation), like the official app; past it, and everywhere else
+        // (the portrait player, Shorts), a free zoom of the picture (issue #55).
+        mVideoArea.setPinchListener(new PinchZoomLayout.PinchListener() {
+            @Override
+            public boolean onPinchZoom(boolean zoomIn) {
+                return MobilePlaybackActivity.this.onPinchZoom(zoomIn);
+            }
+
+            @Override
+            public void onZoomChanged(float zoom) {
+                showZoomHint(zoom == 1f ? getString(R.string.mobile_player_zoom_original)
+                        : String.format(Locale.US, "%.1fx", zoom));
+            }
+        });
+        mVideoArea.setZoomTarget(mPlayerView.getContentFrame());
+        mVideoArea.setPinchEnabled(true);
 
         // PLAYER LAYOUT POLISH. The controls overlay fills the video box.
         //  * LANDSCAPE/fullscreen: the video is full-bleed to the screen edges, so inset the whole
@@ -1025,6 +1060,10 @@ public class MobilePlaybackActivity extends MobileActivity
             // owns its taps in the host (play/pause, and the double tap that likes); this window is
             // not showing a short at all while that lasts - and after the host ends, the watch page's
             // own controls are the right answer.
+            if (mMoreVideos != null && mMoreVideos.isShown()) {
+                mMoreVideos.close(); // METUBE(more videos): a tap on the video above it puts it away
+                return;
+            }
             boolean reveal = !mControlsVisible;
             toggleControls();
             mInstantRevealAt = reveal ? android.os.SystemClock.uptimeMillis() : 0L;
@@ -1106,6 +1145,7 @@ public class MobilePlaybackActivity extends MobileActivity
         mTimeBar.setTouchRouted(true);
         if (mWatchRoot instanceof WatchRootLayout) {
             ((WatchRootLayout) mWatchRoot).setTouchRouter(new SeekBandRouter());
+            ((WatchRootLayout) mWatchRoot).setPageScroll(this::collapseTallBox);
         }
 
         mBackButton.setOnClickListener(v -> getOnBackPressedDispatcher().onBackPressed());
@@ -1175,7 +1215,7 @@ public class MobilePlaybackActivity extends MobileActivity
                 mScrubbing = false;
                 setScrubChrome(false);
                 if (!canceled) {
-                    setTextIfChanged(mPositionView, formatTime(position));
+                    setTextIfChanged(mPositionView, positionText(position, getDurationMs()));
                     updateChapterButton(position);
                 }
                 if (!canceled && mExoPlayerController != null) {
@@ -1243,7 +1283,8 @@ public class MobilePlaybackActivity extends MobileActivity
             }
         });
         mWatchSubscribe.setOnClickListener(v -> onSubscribeTapped());
-        mWatchShare.setOnClickListener(v -> shareCurrentVideo());
+        mWatchShare.setOnClickListener(v -> shareCurrentVideo(false));
+        mWatchShare.setOnLongClickListener(v -> shareCurrentVideo(true)); // from this second (#68)
         // Save opens the same add/remove-from-playlist sheet as gear -> More -> Save to playlist.
         mWatchSave.setOnClickListener(v -> {
             if (!WatchActionFeedback.blockIfSignedOut(this, R.string.msg_sign_in_to_save)) {
@@ -1258,7 +1299,9 @@ public class MobilePlaybackActivity extends MobileActivity
         mPlayerLike.setOnClickListener(v -> mWatchLike.performClick());
         mPlayerDislike.setOnClickListener(v -> mWatchDislike.performClick());
         mPlayerDownload.setOnClickListener(v -> onDownloadTapped());
-        findViewById(R.id.mobile_player_share).setOnClickListener(v -> shareCurrentVideo());
+        View playerShare = findViewById(R.id.mobile_player_share);
+        playerShare.setOnClickListener(v -> shareCurrentVideo(false));
+        playerShare.setOnLongClickListener(v -> shareCurrentVideo(true));
         mPlayerComments.setOnClickListener(v -> {
             if (isLandscape()) { // beside the video, YouTube's
                 hideControls();
@@ -1269,6 +1312,10 @@ public class MobilePlaybackActivity extends MobileActivity
                 mCommentsAfterFullscreen = true;
                 setPortraitFull(false);
             }
+        });
+        mPlayerChat.setOnClickListener(v -> {
+            hideControls();
+            onChatEntryClicked();
         });
         mActionsToggle.setOnClickListener(v -> {
             mActionsShown = !mActionsShown;
@@ -1316,6 +1363,28 @@ public class MobilePlaybackActivity extends MobileActivity
     }
 
     /**
+     * METUBE(player): the page's small portrait player gets smaller buttons (40dp; the play / pause
+     * keeps its size) so they cover less of its picture; fullscreen keeps the full-size ones.
+     */
+    private void sizePlayerControls(boolean compact) {
+        int icon = compact ? dp(40) : getResources().getDimensionPixelSize(R.dimen.mobile_player_icon_button);
+        int pad = compact ? dp(10) : dp(12);
+        for (View button : new View[] {mBackButton, mAudioButton, mCastButton, mSubtitlesButton, mMoreButton,
+                mPrevButton, mNextButton, mFullscreenButton}) {
+            if (button != null) {
+                ViewGroup.MarginLayoutParams lp = (ViewGroup.MarginLayoutParams) button.getLayoutParams();
+                lp.width = icon;
+                lp.height = icon;
+                if (button == mAudioButton) {
+                    lp.setMarginStart(dp(4) + icon); // beside the back button
+                }
+                button.setLayoutParams(lp);
+                button.setPadding(pad, pad, pad, pad);
+            }
+        }
+    }
+
+    /**
      * Portrait: 16:9 video box pinned at the top, scrollable watch content filling the rest.
      * Landscape: hide the content and let the video fill the whole screen (PLAYER POLISH immersive).
      */
@@ -1326,9 +1395,11 @@ public class MobilePlaybackActivity extends MobileActivity
 
         LinearLayout.LayoutParams lp = (LinearLayout.LayoutParams) mVideoArea.getLayoutParams();
 
-        // Pinch-zoom is a fullscreen gesture (the portrait 16:9 box keeps its two-finger touches
-        // for nothing - matching YouTube, which only zooms in fullscreen).
-        mVideoArea.setPinchEnabled(orientation == Configuration.ORIENTATION_LANDSCAPE);
+        // The fill / original snap is a fullscreen gesture, as YouTube's; the free zoom (#55) is
+        // everywhere, and starts over at 1x when the phone turns.
+        mVideoArea.setSnapEnabled(orientation == Configuration.ORIENTATION_LANDSCAPE);
+        mVideoArea.resetZoom();
+        sizePlayerControls(orientation != Configuration.ORIENTATION_LANDSCAPE && !mPortraitFull);
 
         if (orientation == Configuration.ORIENTATION_LANDSCAPE) {
             if (mPortraitFull) { // the landscape fullscreen takes over; upright again is the page
@@ -1369,6 +1440,15 @@ public class MobilePlaybackActivity extends MobileActivity
                 setResizeMode(PlayerData.instance(this).getResizeMode());
             }
             layOutCommentsSide(lp, false);
+            if (mChatSide) { // upright, the chat goes back under the video
+                mChatSide = false;
+                mChatMargin = 0;
+                if (mChatSlide != null) {
+                    mChatSlide.cancel();
+                }
+                lp.setMarginEnd(0);
+                setResizeMode(PlayerData.instance(this).getResizeMode());
+            }
             if (width > 0) {
                 // METUBE(shorts): a short fills the portrait screen; the watch page steps aside.
                 // So does any video in the vertical fullscreen (setPortraitFull).
@@ -1420,7 +1500,12 @@ public class MobilePlaybackActivity extends MobileActivity
         lp.width = side ? Math.round(width * 0.4f) : LinearLayout.LayoutParams.MATCH_PARENT;
         lp.height = side ? LinearLayout.LayoutParams.MATCH_PARENT : 0;
         lp.weight = side ? 0 : 1;
+        // METUBE(live chat, issue #32): beside the video the comments float as a rounded card, like
+        // the live chat's, a margin in from the edges and the video.
+        int margin = side ? LiveChatSheet.cardMarginPx(area) : 0;
+        lp.setMargins(margin, margin, margin, margin);
         area.setLayoutParams(lp);
+        LiveChatSheet.roundCard(area, side);
     }
 
     /** The comments column beside the fullscreen video, or the video alone again. */
@@ -1438,17 +1523,19 @@ public class MobilePlaybackActivity extends MobileActivity
      * (AppDialogUtil.createVideoZoomCategory), so the gesture, the dialog selection and the
      * PlayerUIController restore-on-init all stay one setting.
      */
-    private void onPinchZoom(boolean zoomIn) {
+    private boolean onPinchZoom(boolean zoomIn) {
         int mode = zoomIn ? RESIZE_MODE_FIT_BOTH : RESIZE_MODE_DEFAULT;
-        if (mode != getResizeMode()) {
-            // NEWTUBE(haptics): the pinch snapped into the other zoom - a tick as it crosses over.
-            Haptics.tick(mVideoArea);
+        if (mode == getResizeMode()) {
+            return false; // already there: a pinch out zooms on (issue #55)
         }
+        // NEWTUBE(haptics): the pinch snapped into the other zoom - a tick as it crosses over.
+        Haptics.tick(mVideoArea);
         PlayerData playerData = PlayerData.instance(this);
         playerData.setResizeMode(mode);
         playerData.setZoomPercents(-1);
         animateResizeMode(mode);
-        showZoomHint(zoomIn ? R.string.mobile_player_zoom_fill : R.string.mobile_player_zoom_original);
+        showZoomHint(getString(zoomIn ? R.string.mobile_player_zoom_fill : R.string.mobile_player_zoom_original));
+        return true;
     }
 
     /**
@@ -1459,6 +1546,7 @@ public class MobilePlaybackActivity extends MobileActivity
      */
     private void animateResizeMode(int mode) {
         ViewGroup contentFrame = mPlayerView != null ? mPlayerView.getContentFrame() : null;
+        mVideoArea.resetZoom(); // a new mode starts unzoomed (issue #55)
         if (contentFrame == null || contentFrame.getWidth() == 0 || getResizeMode() == mode) {
             setResizeMode(mode);
             return;
@@ -1487,13 +1575,13 @@ public class MobilePlaybackActivity extends MobileActivity
     };
 
     /** Show the YouTube-style zoom chip, re-arming the fade-out if a pinch fires again mid-show. */
-    private void showZoomHint(int textRes) {
+    private void showZoomHint(CharSequence text) {
         if (mZoomHintView == null) {
             return;
         }
         mZoomHintView.removeCallbacks(mHideZoomHint);
         mZoomHintView.animate().cancel();
-        mZoomHintView.setText(textRes);
+        mZoomHintView.setText(text);
         if (mZoomHintView.getVisibility() != View.VISIBLE) {
             mZoomHintView.setAlpha(0f);
             mZoomHintView.setVisibility(View.VISIBLE);
@@ -1590,6 +1678,8 @@ public class MobilePlaybackActivity extends MobileActivity
         if (mSessionSurface != null) {
             mPlayer.setVideoSurface(mSessionSurface);
         }
+        mHdrOutput = false; // a new player starts on the texture; its tracks switch it (#35)
+        finishHdrSwap();
         // The stock black shutter only lifts on a "rendered first frame" event tied to
         // PlayerView-owned surfaces; with the external surface it would sit over the loading
         // still forever. The still + black video area do its job now.
@@ -1846,6 +1936,7 @@ public class MobilePlaybackActivity extends MobileActivity
             reattachVideoTexture();
         }
         MiniPlayerBridge.deactivate();
+        updateHdrOutput(); // back from the card (#35)
 
         if (launch != null) {
             // A normal feed/search/channel tap: cover the video with the exact tapped thumbnail,
@@ -2198,6 +2289,9 @@ public class MobilePlaybackActivity extends MobileActivity
             dismissPlayerSheets();
         }
         applyWatchLayoutForOrientation(orientation);
+        if (mShortsSession) {
+            applyShortsLayout(); // METUBE(issue #57): the short's zoom and glow for the new shape
+        }
         applySystemBarsForOrientation(orientation);
         updateFullscreenIcon(orientation);
         onFullscreenSwipeConfigured();
@@ -2266,6 +2360,10 @@ public class MobilePlaybackActivity extends MobileActivity
 
     private void handleBack() {
         if (mClosing) {
+            return;
+        }
+        if (mMoreVideos != null && mMoreVideos.isShown()) {
+            mMoreVideos.close();
             return;
         }
         if (mControlsVisible && com.newtube.mobile.ui.common.FocusRing.isTv(this)) {
@@ -2639,6 +2737,7 @@ public class MobilePlaybackActivity extends MobileActivity
             mActionsToggle.setContentDescription(getString(actions
                     ? R.string.mobile_player_hide_actions : R.string.mobile_player_show_actions));
         }
+        updateMoreVideosHint();
         if (actions) {
             lift += dp(44);
         }
@@ -2944,7 +3043,8 @@ public class MobilePlaybackActivity extends MobileActivity
                 return Math.min(height, Math.round(windowHeight * 0.6f));
             }
             if (mInlineAspect > 0f && mInlineAspect < 16f / 9f) {
-                height = Math.min(Math.round(width / mInlineAspect), windowHeight * 2 / 3);
+                int tall = Math.min(Math.round(width / mInlineAspect), windowHeight * 2 / 3);
+                height = Math.max(height, tall - mTallBoxCollapse); // the page scrolled it away (#36)
             }
         }
         return height;
@@ -2964,6 +3064,7 @@ public class MobilePlaybackActivity extends MobileActivity
             return;
         }
         mInlineAspect = aspect;
+        mTallBoxCollapse = 0;
         if (mWatchRoot == null || mWatchRoot.getWidth() <= 0 || mIsInPip || mPipEnterPending
                 || layoutOrientation() != Configuration.ORIENTATION_PORTRAIT) {
             return;
@@ -2973,6 +3074,36 @@ public class MobilePlaybackActivity extends MobileActivity
                     new android.transition.ChangeBounds().setDuration(PORTRAIT_FULL_MS).setInterpolator(Motion.EMPHASIZED));
         }
         applyPortraitVideoHeight(mWatchRoot.getWidth());
+    }
+
+    /** METUBE(issue #36): how much of a tall video's box the page has scrolled away, px. */
+    private int mTallBoxCollapse;
+
+    /**
+     * METUBE(issue #36): YouTube's page under a tall video - scrolled up, the page first shrinks
+     * the box down to 16:9, then moves; back at its top, pulled down, it grows the box again
+     * before anything else. Returns the part of {@code dy} the box took.
+     */
+    private int collapseTallBox(View page, int dy) {
+        if (page != mWatchScroll || mWatchRoot == null || mVideoArea == null || isTallMode()
+                || mIsInPip || mPipEnterPending || mMorphFraction != 0f
+                || layoutOrientation() != Configuration.ORIENTATION_PORTRAIT
+                || (dy < 0 && page.canScrollVertically(-1))) {
+            return 0;
+        }
+        int width = mWatchRoot.getWidth();
+        int height = mVideoArea.getLayoutParams().height;
+        if (width <= 0 || height <= 0) {
+            return 0;
+        }
+        int spare = height + mTallBoxCollapse - Math.round(width * 9f / 16f);
+        int collapse = Math.max(0, Math.min(spare, mTallBoxCollapse + dy));
+        int taken = collapse - mTallBoxCollapse;
+        if (taken != 0) {
+            mTallBoxCollapse = collapse;
+            applyPortraitVideoHeight(width);
+        }
+        return taken;
     }
 
     /** METUBE(issue #13): the shape of the biggest video track, 0 without one. */
@@ -3412,6 +3543,9 @@ public class MobilePlaybackActivity extends MobileActivity
         super.onPictureInPictureModeChanged(isInPictureInPictureMode, newConfig);
 
         mIsInPip = isInPictureInPictureMode;
+        if (isInPictureInPictureMode && mMoreVideos != null) {
+            mMoreVideos.hide(); // the PiP window shows only the video
+        }
         mPipStateStale = false;
         mPipLayoutHold = true; // entering, or on the way out until onResume
         mPipEnterPending = false;
@@ -4740,9 +4874,11 @@ public class MobilePlaybackActivity extends MobileActivity
         if (ambient && mAmbient == null && mVideoTexture != null && mWatchContent != null) {
             mAmbient = new AmbientGlow(mWatchContent, mVideoTexture,
                     androidx.core.content.ContextCompat.getColor(this, R.color.mobile_color_background));
+            mAmbient.setBar(findViewById(android.R.id.content)); // the status bar glows too
         } else if (!ambient && mAmbient != null) {
             mAmbient.stop();
             mAmbient.setFill(null);
+            mAmbient.setBar(null);
             mAmbient = null;
             mWatchContent.setBackground(null);
         }
@@ -5321,7 +5457,7 @@ public class MobilePlaybackActivity extends MobileActivity
             mTimeBar.setDuration(duration);
             mTimeBar.setPosition(position);
             mTimeBar.setBufferedPosition(buffered);
-            setTextIfChanged(mPositionView, formatTime(position));
+            setTextIfChanged(mPositionView, positionText(position, duration));
             setTextIfChanged(mDurationView, getString(R.string.mobile_player_duration, formatTime(duration)));
             updateLiveChip(position, duration);
             updateChapterButton(position);
@@ -5347,6 +5483,12 @@ public class MobilePlaybackActivity extends MobileActivity
 
         boolean isLive = getVideo() != null && getVideo().isLive;
         mLiveChip.setVisibility(isLive ? View.VISIBLE : View.GONE);
+        if (isLive) {
+            com.newtube.mobile.ui.common.LiveRingView.markLive(getVideo().channelId);
+        }
+        if (mWatchAvatar != null) { // METUBE(issue #73): the channel's glowing live ring
+            com.newtube.mobile.ui.common.LiveRingView.bind(findViewById(R.id.mobile_watch_avatar_live), mWatchAvatar, isLive, 0);
+        }
         updateSeekBarLine();
 
         if (isLive) {
@@ -5369,6 +5511,12 @@ public class MobilePlaybackActivity extends MobileActivity
         }
     }
 
+    /** The pill's first half: elapsed, or "-" and the time left (issue #67); a live stream stays elapsed. */
+    private String positionText(long positionMs, long durationMs) {
+        boolean live = getVideo() != null && getVideo().isLive;
+        return mTimeRemaining && !live ? "-" + formatTime(durationMs - positionMs) : formatTime(positionMs);
+    }
+
     private String formatTime(long timeMs) {
         if (timeMs < 0) {
             timeMs = 0;
@@ -5383,6 +5531,9 @@ public class MobilePlaybackActivity extends MobileActivity
             // An unknown size keeps the last one, as the content frame does (DoubleTapPlayerViewImpl).
             if (videoSize.width > 0 && videoSize.height > 0) {
                 mVideoAspect = videoSize.width * videoSize.pixelWidthHeightRatio / videoSize.height;
+                if (isShortsMode()) {
+                    setResizeMode(PlayerData.instance(MobilePlaybackActivity.this).getResizeMode()); // fill or whole, by shape
+                }
                 applyControlsInsets();
                 updatePipActions(); // a new shape reshapes the PiP window
                 setInlineAspect(mVideoAspect);
@@ -5394,6 +5545,8 @@ public class MobilePlaybackActivity extends MobileActivity
             // METUBE(issue #13): the new video's shape before its first frame, so the box is
             // ready when the picture arrives instead of jumping under it.
             setInlineAspect(tracksAspect(tracks));
+            mHdrTrack = isHdrSelected(tracks);
+            updateHdrOutput();
         }
 
         @Override
@@ -5495,6 +5648,18 @@ public class MobilePlaybackActivity extends MobileActivity
         public void onRenderedFirstFrame() {
             // NEWTUBE(still-lift): the controller's AnalyticsListener saw this event first, so
             // OpenFirstFrame already knows whether it was this open's; the texture may have it.
+            if (mHdrSwapPending) {
+                finishHdrSwap();
+            }
+            if (mHdrOutput) {
+                // METUBE(issue #35): the frame went to the HDR SurfaceView, which the still-lift
+                // can't watch: count it as the texture's, and lift a hand-off still here.
+                mLastTextureFrameRealtimeMs = android.os.SystemClock.elapsedRealtime();
+                if (mStillAwaitFrame && !mStillAwaitReady) {
+                    mStillAwaitFrame = false;
+                    liftLoadingStill("hdr");
+                }
+            }
             maybeLiftStillAtFrame();
             mVideoShapePending = false; // NEWTUBE(issue #69): this video's shape is known now
         }
@@ -5541,6 +5706,103 @@ public class MobilePlaybackActivity extends MobileActivity
         mStillArmedRealtimeMs = android.os.SystemClock.elapsedRealtime();
     }
 
+    // ---------------------------------------------------------------------------------
+    // METUBE(issue #35): HDR output. Android shows HDR only from a SurfaceView; the session
+    // TextureView above tone-maps it to SDR (measured on a vivo V2404: SurfaceFlinger composites
+    // the SurfaceView layer as BT2020_ITU_PQ, the window as sRGB/P3 even in COLOR_MODE_HDR). So
+    // while an HDR track plays in the resting watch page or fullscreen, the codec draws into a
+    // SurfaceView under the texture instead; every morph and the mini card keep the texture (a
+    // SurfaceView can't be clipped to the morph's corners or read back for the hand-off stills).
+    // A switch is MediaCodec#setOutputSurface (no re-init), and the old output stays on screen
+    // until the first frame reaches the new one, so neither direction flashes black.
+    // ---------------------------------------------------------------------------------
+
+    @Nullable
+    private android.view.SurfaceView mHdrSurface;
+    /** The selected video track is HDR (only in the manifest with the HDR setting on). */
+    private boolean mHdrTrack;
+    /** The codec draws into {@link #mHdrSurface}. */
+    private boolean mHdrOutput;
+    /** Switched output, waiting for its first frame to retire the old one. */
+    private boolean mHdrSwapPending;
+
+    private void updateHdrOutput() {
+        boolean want = mPlayer != null && mHdrTrack && mMorphFraction == 0f && !MiniPlayerBridge.isActive();
+        if (want == mHdrOutput) {
+            return;
+        }
+        mHdrOutput = want;
+        mHdrSwapPending = true;
+        if (want) {
+            ViewGroup contentFrame = mPlayerView.getContentFrame();
+            if (mHdrSurface == null) {
+                mHdrSurface = new android.view.SurfaceView(this);
+            }
+            if (contentFrame.indexOfChild(mHdrSurface) != 0) { // under the texture, which covers it until the swap
+                contentFrame.removeView(mHdrSurface);
+                contentFrame.addView(mHdrSurface, 0, new FrameLayout.LayoutParams(
+                        ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.MATCH_PARENT));
+            }
+            mHdrSurface.setVisibility(View.VISIBLE);
+            mPlayer.setVideoSurfaceView(mHdrSurface);
+        } else if (mPlayer != null && mSessionSurface != null) {
+            mPlayer.setVideoSurface(mSessionSurface);
+        } else {
+            finishHdrSwap(); // no player to draw a frame: just put the texture back
+        }
+    }
+
+    /** The first frame reached the new output: show it, retire the old one. */
+    private void finishHdrSwap() {
+        mHdrSwapPending = false;
+        if (mVideoTexture != null) {
+            mVideoTexture.setAlpha(mHdrOutput ? 0f : 1f);
+        }
+        if (!mHdrOutput && mHdrSurface != null) {
+            mHdrSurface.setVisibility(View.GONE);
+        }
+    }
+
+    /** The HDR SurfaceView's frame for a hand-off still (PixelCopy, waited for; a few ms), or null. */
+    @Nullable
+    private Bitmap copyHdrFrame(int width, int height) {
+        if (mHdrSurface == null || !mHdrSurface.getHolder().getSurface().isValid()) {
+            return null;
+        }
+        Bitmap frame = Bitmap.createBitmap(width, height, Bitmap.Config.ARGB_8888);
+        android.os.HandlerThread thread = new android.os.HandlerThread("hdr-still");
+        thread.start();
+        java.util.concurrent.CountDownLatch done = new java.util.concurrent.CountDownLatch(1);
+        int[] result = {-1};
+        android.view.PixelCopy.request(mHdrSurface, frame, copyResult -> {
+            result[0] = copyResult;
+            done.countDown();
+        }, new android.os.Handler(thread.getLooper()));
+        try {
+            done.await(200, java.util.concurrent.TimeUnit.MILLISECONDS);
+        } catch (InterruptedException ignored) {
+            Thread.currentThread().interrupt();
+        }
+        thread.quitSafely();
+        return result[0] == android.view.PixelCopy.SUCCESS ? frame : null;
+    }
+
+    private static boolean isHdrSelected(androidx.media3.common.Tracks tracks) {
+        for (androidx.media3.common.Tracks.Group group : tracks.getGroups()) {
+            if (group.getType() != androidx.media3.common.C.TRACK_TYPE_VIDEO) {
+                continue;
+            }
+            for (int i = 0; i < group.length; i++) {
+                androidx.media3.common.Format format = group.getTrackFormat(i);
+                if (group.isTrackSelected(i) && com.liskovsoft.smartyoutubetv2.common.exoplayer.selector
+                        .TrackSelectorUtil.isHdrFormat(format.id, format.codecs)) {
+                    return true;
+                }
+            }
+        }
+        return false;
+    }
+
     /** Build the code-managed video texture + still inside the PlayerView's content frame. */
     private void setupVideoSurface() {
         ViewGroup contentFrame = mPlayerView.getContentFrame();
@@ -5569,7 +5831,7 @@ public class MobilePlaybackActivity extends MobileActivity
                 // Very first availability: adopt this texture for the whole session.
                 mSessionTexture = texture;
                 mSessionSurface = new Surface(texture);
-                if (mPlayer != null) {
+                if (mPlayer != null && !mHdrOutput) {
                     mPlayer.setVideoSurface(mSessionSurface);
                 }
             } else if (texture != mSessionTexture) {
@@ -6060,6 +6322,28 @@ public class MobilePlaybackActivity extends MobileActivity
     private static final int SWIPE_BRIGHTNESS = 4;
     private static final int SWIPE_VOLUME = 5;
     private static final int SWIPE_SEEK = 6;
+    /** METUBE(more videos, issue #24): the landscape panel of Up next cards, under the finger. */
+    private static final int SWIPE_MORE_VIDEOS = 8;
+
+    @Nullable
+    private MoreVideosPanel mMoreVideos;
+
+    /**
+     * The up chevron at the bottom of the landscape controls: shown in the band beside the actions
+     * pill (hidden with the pill, whose band the seek bar then takes) while there are videos to raise.
+     */
+    private void updateMoreVideosHint() {
+        View hint = findViewById(R.id.mobile_player_more_hint);
+        if (hint == null) {
+            return;
+        }
+        boolean show = isLandscape() && mActionsRow != null && mActionsRow.getVisibility() == View.VISIBLE
+                && !mRelatedVideos.isEmpty();
+        hint.setVisibility(show ? View.VISIBLE : View.GONE);
+        if (show) {
+            setMargins(hint, 0, 0, 0, ((ViewGroup.MarginLayoutParams) mActionsRow.getLayoutParams()).bottomMargin);
+        }
+    }
 
     /** Shorts filling the portrait screen (not while its comments are open, nor in landscape). */
     /**
@@ -6235,6 +6519,7 @@ public class MobilePlaybackActivity extends MobileActivity
     /** A touch on the watch page while it rests at its top (the title row is in view). */
     private boolean canPullToPortraitFull(android.view.MotionEvent event) {
         if (mWatchScroll == null || mWatchScroll.getVisibility() != View.VISIBLE || mWatchScroll.getScrollY() != 0
+                || mTallBoxCollapse > 0 // the pull grows the box first (#36)
                 || isLandscape() || isTallMode() || mIsInPip || mClosing || mMorphFraction != 0f
                 || (mCommentsPanel != null && mCommentsPanel.isOpen())) {
             return false;
@@ -6387,6 +6672,10 @@ public class MobilePlaybackActivity extends MobileActivity
         }
         mSwipeDownRawX = downRawX;
         boolean vertical = direction == PlayerContainerLayout.UP || direction == PlayerContainerLayout.DOWN;
+        if (mMoreVideos != null && mMoreVideos.isShown()) {
+            // Up or down moves the panel; sideways is its row's own scroll, not a seek.
+            return vertical && mMoreVideos.begin() ? SWIPE_MORE_VIDEOS : PlayerContainerLayout.SWIPE_NONE;
+        }
         if (!vertical) {
             return beginSeekSwipe(downRawX + dx);
         }
@@ -6414,13 +6703,23 @@ public class MobilePlaybackActivity extends MobileActivity
                     mVideoArea.getHeight());
             return level;
         }
-        return direction == PlayerContainerLayout.DOWN
-                ? beginFullscreenSwipe(SWIPE_EXIT_FULLSCREEN) : PlayerContainerLayout.SWIPE_NONE;
+        if (direction == PlayerContainerLayout.DOWN) {
+            return beginFullscreenSwipe(SWIPE_EXIT_FULLSCREEN);
+        }
+        // METUBE(more videos): up, between the level zones, raises the Up next cards over the video.
+        if (mMoreVideos != null && !isCastOverlayShown() && mMoreVideos.begin()) {
+            hideControls();
+            return SWIPE_MORE_VIDEOS;
+        }
+        return PlayerContainerLayout.SWIPE_NONE;
     }
 
     @Override
     public void onSwipeMove(int swipe, float dx, float dy) {
         switch (swipe) {
+            case SWIPE_MORE_VIDEOS:
+                mMoreVideos.drag(dy);
+                break;
             case SWIPE_MINIMIZE:
                 onDismissDrag(Math.max(0f, dy));
                 break;
@@ -6445,6 +6744,9 @@ public class MobilePlaybackActivity extends MobileActivity
     @Override
     public void onSwipeReleased(int swipe, float dx, float dy, float xVelocity, float yVelocity) {
         switch (swipe) {
+            case SWIPE_MORE_VIDEOS:
+                mMoreVideos.release(dy, yVelocity);
+                break;
             case SWIPE_MINIMIZE:
                 onDismissDragReleased(Math.max(0f, dy), yVelocity);
                 break;
@@ -6473,6 +6775,9 @@ public class MobilePlaybackActivity extends MobileActivity
     @Override
     public void onSwipeCancelled(int swipe) {
         switch (swipe) {
+            case SWIPE_MORE_VIDEOS:
+                mMoreVideos.release(0f, 0f);
+                break;
             case SWIPE_MINIMIZE:
                 onDismissDragCancelled();
                 break;
@@ -6709,6 +7014,9 @@ public class MobilePlaybackActivity extends MobileActivity
      */
     private void onFullscreenSwipeConfigured() {
         resetFullscreenPull();
+        if (mMoreVideos != null) {
+            mMoreVideos.hide();
+        }
         updateSwipeBrightness();
     }
 
@@ -6879,6 +7187,7 @@ public class MobilePlaybackActivity extends MobileActivity
     /** Apply the morph at fraction f (0 = fullscreen player, 1 = sitting on the mini card). */
     private void applyMorph(float f) {
         mMorphFraction = f;
+        updateHdrOutput(); // a morphing box shows the texture (#35)
         mVideoArea.setPivotX(0f);
         mVideoArea.setPivotY(0f);
         float sx = 1f + (mMorphScaleX - 1f) * f;
@@ -6904,6 +7213,11 @@ public class MobilePlaybackActivity extends MobileActivity
             mWatchContent.setAlpha(contentAlpha);
         }
         float backdrop = morphBackdropAlpha(settled, mMorphOverOwnBackdrop); // NEWTUBE(no-host-minimize)
+        if (setMorphBlur(settled)) {
+            // METUBE(minimize blur): Home shows through blurred, not under a black sheet - the black
+            // goes in the first quarter, a light dim stays and clears with the blur.
+            backdrop = Math.max(0f, 1f - 4f * settled) * 0.65f + 0.35f * (1f - settled);
+        }
         if (mWatchScroll != null && mWatchScroll.getBackground() != null) {
             int backdropAlpha = Math.round(255f * backdrop);
             mWatchScroll.getBackground().mutate().setAlpha(backdropAlpha);
@@ -6938,11 +7252,43 @@ public class MobilePlaybackActivity extends MobileActivity
      * decor drawable also paints the manually inset status/navigation-bar bands, so leaving it
      * opaque would hide the Activity below even after all watch-page children became transparent.
      */
+    private static final float MORPH_BLUR_DP = 24f;
+
+    /**
+     * METUBE(minimize blur): blur what is behind the window (Home) by the morph's progress, full at
+     * the start, none on the card; off (and false) at rest, over our own backdrop, or where the
+     * system has no cross-window blur (before Android 12, battery saver, some devices).
+     *
+     * <p>The window's background blur, not FLAG_BLUR_BEHIND: a blur-behind radius is a window
+     * attribute, so changing it every frame re-laid out the window every frame, and the screen
+     * showed the shrinking video a frame late now and then - it jumped back and forth (recorded on
+     * a vivo V2404). The background blur is drawn with the window's own frames.</p>
+     */
+    private boolean setMorphBlur(float f) {
+        if (Build.VERSION.SDK_INT < Build.VERSION_CODES.S) {
+            return false;
+        }
+        boolean on = f > 0f && f < 1f && !mMorphOverOwnBackdrop && getWindowManager().isCrossWindowBlurEnabled();
+        getWindow().setBackgroundBlurRadius(on
+                ? Math.round(MORPH_BLUR_DP * getResources().getDisplayMetrics().density * (1f - f)) : 0);
+        return on;
+    }
+
     private void setWindowBackdropAlpha(float alpha) {
         Drawable backdrop = getWindow().getDecorView().getBackground();
+        if (backdrop instanceof android.graphics.drawable.LayerDrawable) {
+            // the decor's background blur (setMorphBlur) under the window's own background: only
+            // the background fades, the blur goes by its radius
+            android.graphics.drawable.LayerDrawable layers = (android.graphics.drawable.LayerDrawable) backdrop;
+            backdrop = layers.getDrawable(layers.getNumberOfLayers() - 1);
+        }
         if (backdrop != null) {
             int drawableAlpha = Math.round(255f * Math.max(0f, Math.min(1f, alpha)));
             backdrop.mutate().setAlpha(drawableAlpha);
+        }
+        View content = findViewById(android.R.id.content);
+        if (content != null && content.getBackground() != null) { // METUBE(ambient): the status bar glow
+            content.getBackground().setAlpha(Math.round(255f * Math.max(0f, Math.min(1f, alpha))));
         }
     }
 
@@ -6991,6 +7337,7 @@ public class MobilePlaybackActivity extends MobileActivity
             updatePipActions();
         }
         mMorphFraction = 0f;
+        updateHdrOutput();
         mMorphOverOwnBackdrop = false;
         mVideoArea.setScaleX(1f);
         mVideoArea.setScaleY(1f);
@@ -7005,6 +7352,7 @@ public class MobilePlaybackActivity extends MobileActivity
             mWatchScroll.getBackground().mutate().setAlpha(255);
         }
         setWindowBackdropAlpha(1f);
+        setMorphBlur(0f);
         if (mControlsRoot != null) {
             mControlsRoot.setAlpha(mControlsVisible ? 1f : 0f);
         }
@@ -7323,11 +7671,15 @@ public class MobilePlaybackActivity extends MobileActivity
             // navigation still starts its destination animation at full width, so retain the
             // full-size capture for that path.
             Bitmap frame;
-            if (captureFullSizeStill) {
+            int width = Math.max(1, getResources().getDimensionPixelSize(R.dimen.metube_mini_width));
+            int height = Math.max(1, getResources().getDimensionPixelSize(R.dimen.metube_mini_height));
+            if (mHdrOutput && mHdrSurface != null) { // the texture holds an old frame (#35)
+                frame = captureFullSizeStill
+                        ? copyHdrFrame(Math.max(1, mHdrSurface.getWidth()), Math.max(1, mHdrSurface.getHeight()))
+                        : copyHdrFrame(width, height);
+            } else if (captureFullSizeStill) {
                 frame = mVideoTexture.getBitmap();
             } else {
-                int width = Math.max(1, getResources().getDimensionPixelSize(R.dimen.metube_mini_width));
-                int height = Math.max(1, getResources().getDimensionPixelSize(R.dimen.metube_mini_height));
                 frame = mVideoTexture.getBitmap(width, height);
             }
             if (frame != null) {
@@ -7344,6 +7696,7 @@ public class MobilePlaybackActivity extends MobileActivity
                     "mini handoff detach t=" + android.os.SystemClock.uptimeMillis());
         }
         MiniPlayerBridge.activate(this);
+        updateHdrOutput(); // the card shows the session texture (#35)
         // The card shows this player's live frames at card size: cap NEW chunks to that window.
         // Card px use the app density on purpose - it is the density the card is laid out with.
         mExoPlayerController.setSmallWindowViewport("mini",
@@ -7910,6 +8263,10 @@ public class MobilePlaybackActivity extends MobileActivity
             if (mRelatedAdapter != null) {
                 mRelatedAdapter.submitList(new ArrayList<>());
             }
+            if (mMoreVideos != null) {
+                mMoreVideos.setVideos(mRelatedVideos);
+                updateMoreVideosHint();
+            }
             // Hide the queue card until the new video's rows say it's still in one. mQueueExpanded
             // is deliberately NOT reset: staying open across an in-queue advance is the point.
             if (mQueueCard != null) {
@@ -8154,9 +8511,7 @@ public class MobilePlaybackActivity extends MobileActivity
             chatReceiver.setCallback(this::onChatItemReceived);
 
             // Chat is now streaming; make sure the entry is reachable even if metadata was slow.
-            if (mWatchChatEntry != null) {
-                mWatchChatEntry.setVisibility(View.VISIBLE);
-            }
+            setChatEntryVisible(true);
         });
     }
 
@@ -8525,9 +8880,15 @@ public class MobilePlaybackActivity extends MobileActivity
     // Simple Quality and Audio track sheets (the gear sheet's everyday pickers)
     // ---------------------------------------------------------------------------------
 
-    /** Distinct resolution rung of the current video: "1080p" / "1080p60" style. */
+    /**
+     * Distinct resolution rung of the current video: "1080p" / "1080p60" style, "2160p60 HDR" for
+     * an HDR stream (issue #63), so an HDR rung and its SDR twin are separate rows, like YouTube.
+     */
     private static String qualityLabel(FormatItem item) {
-        return qualityLabel(item.getWidth(), item.getHeight(), item.getFrameRate());
+        String label = qualityLabel(item.getWidth(), item.getHeight(), item.getFrameRate());
+        com.liskovsoft.smartyoutubetv2.common.exoplayer.selector.track.MediaTrack track = item.getTrack();
+        return track != null && com.liskovsoft.smartyoutubetv2.common.exoplayer.selector.TrackSelectorUtil
+                .isHdrFormat(track.format) ? label + " HDR" : label;
     }
 
     /**
@@ -9072,6 +9433,12 @@ public class MobilePlaybackActivity extends MobileActivity
         // that resumed every queued watch-page image before the first frame. Avatars wait for the
         // hold's normal release like the rest of the page.
         Utils.removeCallbacks(mPrefetchComments);
+        // METUBE(issue #36): a tall video shrinks to 16:9, leaving the comments the room YouTube gives them.
+        if (mWatchRoot != null && mIsResumed) {
+            android.transition.TransitionManager.beginDelayedTransition((ViewGroup) mWatchRoot,
+                    new android.transition.ChangeBounds().setDuration(PORTRAIT_FULL_MS).setInterpolator(Motion.EMPHASIZED));
+        }
+        collapseTallBox(mWatchScroll, Integer.MAX_VALUE / 2);
         mCommentsPanel.open();
     }
 
@@ -9176,6 +9543,47 @@ public class MobilePlaybackActivity extends MobileActivity
         stopLiveChatStream();
     }
 
+    @Nullable
+    @Override
+    public View getChatVideoArea() {
+        return isLandscape() ? null : mVideoArea;
+    }
+
+    @Override
+    public void setChatColumn(int widthPx) {
+        int margin = isLandscape() ? widthPx : 0;
+        if (mChatMargin != margin) {
+            boolean wasSide = mChatSide;
+            mChatSide = margin > 0;
+            mChatMargin = margin;
+            // The video glides aside for the chat and back when it closes, the way the sheet slides.
+            LinearLayout.LayoutParams lp = (LinearLayout.LayoutParams) mVideoArea.getLayoutParams();
+            if (mChatSlide != null) {
+                mChatSlide.cancel();
+            }
+            mChatSlide = android.animation.ValueAnimator.ofInt(lp.getMarginEnd(), margin);
+            mChatSlide.setDuration(Motion.ENTER_MS);
+            mChatSlide.setInterpolator(Motion.STANDARD);
+            mChatSlide.addUpdateListener(a -> {
+                lp.setMarginEnd((int) a.getAnimatedValue());
+                mVideoArea.setLayoutParams(lp);
+            });
+            mChatSlide.start();
+            setResizeMode(PlayerData.instance(this).getResizeMode()); // the whole picture beside the chat
+        }
+    }
+
+    /** The page's live chat row and its button on the fullscreen pill (issue #32) show together. */
+    private void setChatEntryVisible(boolean visible) {
+        int visibility = visible ? View.VISIBLE : View.GONE;
+        if (mWatchChatEntry != null) {
+            mWatchChatEntry.setVisibility(visibility);
+        }
+        if (mPlayerChat != null) {
+            mPlayerChat.setVisibility(visibility);
+        }
+    }
+
     // ---------------------------------------------------------------------------------
     // Watch page - header binding, actions and related list.
     // ---------------------------------------------------------------------------------
@@ -9226,6 +9634,10 @@ public class MobilePlaybackActivity extends MobileActivity
             if (mWatchScroll != null) {
                 mWatchScroll.scrollTo(0, 0);
             }
+            if (mTallBoxCollapse > 0 && mWatchRoot != null) { // its box starts whole (#36)
+                mTallBoxCollapse = 0;
+                mWatchRoot.requestLayout(); // mWatchRootLayoutListener re-lays the box
+            }
         }
 
         // Never blank a previously shown title on a SAME-video rebind: error-reloads re-enter with
@@ -9258,7 +9670,8 @@ public class MobilePlaybackActivity extends MobileActivity
         }
 
         if (!TextUtils.isEmpty(item.likeCount)) {
-            mWatchLikeCount.setText(item.likeCount);
+            mLikeCountRaw = item.likeCount;
+            showLikeCount(false);
         }
         // NEWTUBE(ryd-opt-in): also on a same-video bind, so switching the option off hides the count
         // it showed, and a live /next refresh can't paint its estimate.
@@ -9291,6 +9704,8 @@ public class MobilePlaybackActivity extends MobileActivity
         mDescriptionDate = null;
         mWatchMeta.setText(null);
         mWatchLikeCount.setText(R.string.mobile_watch_count_placeholder);
+        mLikeCountRaw = null;
+        mLikedInRaw = -1;
         mWatchDislikeCount.setText(R.string.mobile_watch_count_placeholder);
         mWatchSubs.setText(null);
         // NEWTUBE(watch-jump): INVISIBLE, not GONE - the subscriber line, the Comments row and the
@@ -9313,9 +9728,7 @@ public class MobilePlaybackActivity extends MobileActivity
         if (mWatchCommentsCount != null) {
             mWatchCommentsCount.setText(null);
         }
-        if (mWatchChatEntry != null) {
-            mWatchChatEntry.setVisibility(View.GONE);
-        }
+        setChatEntryVisible(false);
         mChatItems.clear();
         RxHelper.disposeActions(mLiveChatAction);
         mLiveChatAction = null;
@@ -9443,7 +9856,7 @@ public class MobilePlaybackActivity extends MobileActivity
 
             // Counts: prefer the real values already synced onto the Video; fall back to metadata.
             if (isCountUnset(mWatchLikeCount) && !TextUtils.isEmpty(metadata.getLikeCount())) {
-                setWatchTextFaded(mWatchLikeCount, metadata.getLikeCount());
+                mLikeCountRaw = metadata.getLikeCount();
             }
             // NEWTUBE(ryd-opt-in): metadata's dislike count is only an estimate from the likes.
             if (showsDislikeCount() && isCountUnset(mWatchDislikeCount)
@@ -9457,6 +9870,9 @@ public class MobilePlaybackActivity extends MobileActivity
             setButtonState(R.id.action_thumbs_down,
                     metadata.getLikeStatus() == MediaItemMetadata.LIKE_STATUS_DISLIKE ? BUTTON_ON : BUTTON_OFF);
             setButtonState(R.id.action_subscribe, metadata.isSubscribed() ? BUTTON_ON : BUTTON_OFF);
+            // METUBE(issue #45): YouTube's count holds the like it reports; a tap moves it from there.
+            mLikedInRaw = metadata.getLikeStatus() == MediaItemMetadata.LIKE_STATUS_LIKE ? 1 : 0;
+            showLikeCount(true);
 
             // Comments / live-chat availability. A non-null comments key = comments enabled; a
             // non-null live-chat key = live stream. Reuse the same keys the TV controllers use.
@@ -9480,8 +9896,8 @@ public class MobilePlaybackActivity extends MobileActivity
                     Utils.postDelayed(mPrefetchComments, COMMENTS_PREFETCH_DELAY_MS);
                 }
             }
-            if (mWatchChatEntry != null && mLiveChatKey != null) {
-                mWatchChatEntry.setVisibility(View.VISIBLE);
+            if (mLiveChatKey != null) {
+                setChatEntryVisible(true);
             }
             // METUBE(shorts): the counts / date / description are what made this re-bind; the
             // in-place host's info block has to see them too (see bindWatchVideo).
@@ -9530,7 +9946,9 @@ public class MobilePlaybackActivity extends MobileActivity
         }
         CharSequence likes = isCountUnset(mWatchLikeCount) ? null : mWatchLikeCount.getText();
         showPlayerSheet(DescriptionSheet.create(this, mWatchTitle.getText(), likes, mDescriptionViews,
-                mDescriptionDate, mWatchDescription.getText(), isLandscape() ? null : mVideoArea));
+                mDescriptionDate, mWatchDescription.getText(),
+                // A short fills the screen: a plain sheet over it, not one sized to under the video.
+                isLandscape() || isShortsMode() ? null : mVideoArea));
     }
 
     /** Route Like / Dislike / Subscribe through the presenter's onButtonClicked vocabulary. */
@@ -9578,6 +9996,26 @@ public class MobilePlaybackActivity extends MobileActivity
         Motion.pop(like ? likeIcon : pill ? mPlayerDislike : mWatchDislikeIcon);
         WatchActionFeedback.confirmRating(this, like, stateAfter == BUTTON_ON,
                 undoRating(ratingBefore, ratingAfter));
+    }
+
+    /** METUBE(issue #45): the like count as YouTube gave it, for {@link #showLikeCount}. */
+    @Nullable
+    private CharSequence mLikeCountRaw;
+    /** Whether {@link #mLikeCountRaw} holds this account's like: 1/0, -1 until metadata says. */
+    private int mLikedInRaw = -1;
+
+    /** YouTube's like count, moved by one when the thumb's state differs from the one it counted. */
+    private void showLikeCount(boolean faded) {
+        if (mLikeCountRaw == null || mWatchLikeCount == null) {
+            return;
+        }
+        CharSequence text = mLikedInRaw == -1 ? mLikeCountRaw : RatingUndo.likeCount(mLikeCountRaw,
+                mLikedInRaw == 1, getButtonState(R.id.action_thumbs_up) == BUTTON_ON);
+        if (faded) {
+            setWatchTextFaded(mWatchLikeCount, text);
+        } else {
+            mWatchLikeCount.setText(text);
+        }
     }
 
     private int currentRating() {
@@ -9659,6 +10097,7 @@ public class MobilePlaybackActivity extends MobileActivity
                 mWatchLike.setSelected(on);
             }
             pushShortsActions();
+            showLikeCount(false); // Shorts mirrors it
         } else if (buttonId == R.id.action_thumbs_down && mWatchDislikeIcon != null) {
             int icon = on ? R.drawable.ic_watch_thumb_down : R.drawable.ic_watch_thumb_down_outline;
             mWatchDislikeIcon.setImageResource(icon);
@@ -9773,18 +10212,29 @@ public class MobilePlaybackActivity extends MobileActivity
         });
     }
 
-    private void shareCurrentVideo() {
+    /**
+     * METUBE(share-at-time, issue #68): a tap shares the plain link, a long press shares it from
+     * the second playing now ({@code ?t=}); a live stream or the very start shares plain.
+     */
+    private boolean shareCurrentVideo(boolean atPosition) {
         Video video = getVideo();
         if (video == null || TextUtils.isEmpty(video.videoId)) {
-            return;
+            return false;
         }
 
         String url = "https://youtu.be/" + video.videoId;
+        long seconds = atPosition && mPlayer != null && !video.isLive ? mPlayer.getCurrentPosition() / 1000 : 0;
+        if (seconds > 0) {
+            url += "?t=" + seconds;
+            android.widget.Toast.makeText(this, getString(R.string.mobile_watch_share_at, formatTime(seconds * 1000)),
+                    android.widget.Toast.LENGTH_SHORT).show();
+        }
         Intent intent = new Intent(Intent.ACTION_SEND);
         intent.setType("text/plain");
         intent.putExtra(Intent.EXTRA_SUBJECT, getString(R.string.mobile_watch_share_subject));
         intent.putExtra(Intent.EXTRA_TEXT, url);
         startActivity(Intent.createChooser(intent, getString(R.string.mobile_watch_share)));
+        return true;
     }
 
     /** METUBE(music): the Music pill shows for videos YouTube Music has, and only those. */
@@ -9964,6 +10414,10 @@ public class MobilePlaybackActivity extends MobileActivity
         Video current = getVideo();
         String currentId = current != null ? current.videoId : null;
         bindQueueCard(current, currentId, findQueueGroupId(current));
+        if (mMoreVideos != null) {
+            mMoreVideos.setVideos(mRelatedVideos);
+            updateMoreVideosHint();
+        }
 
         // Queue rows count as "content landed" too: a playlist whose suggestions are ALL queue
         // would otherwise leave the Up-next skeleton pulsing until its safety timeout.
@@ -10468,10 +10922,14 @@ public class MobilePlaybackActivity extends MobileActivity
     @Override
     public void setResizeMode(int mode) {
         if (isShortsMode()) {
-            if (MobileShortsHost.fillsScreen(this)) {
+            if (MobileShortsHost.fillsScreen(this) && mVideoAspect < SHORTS_FILL_MAX_ASPECT) {
                 mode = androidx.media3.ui.AspectRatioFrameLayout.RESIZE_MODE_ZOOM; // shorts fill a phone
+            } else if (MobileShortsHost.fillsScreen(this)) {
+                // A square or wide "short" zoomed to the screen kept a strip of its middle: whole,
+                // like YouTube, with the ambient glow in the bands.
+                mode = androidx.media3.ui.AspectRatioFrameLayout.RESIZE_MODE_FIT;
             }
-        } else if (mPortraitFull && !isLandscape() || mCommentsSide) {
+        } else if (mPortraitFull && !isLandscape() || mCommentsSide || mChatSide) {
             // METUBE(fullscreen): the whole picture, upright; ambient mode fills the bands. A pinch's
             // "fill" (landscape) would crop a 16:9 video to a sliver of its middle here - and to
             // its middle beside the landscape comments (METUBE(fullscreen-actions)), and a short
@@ -10483,6 +10941,13 @@ public class MobilePlaybackActivity extends MobileActivity
         }
         applyControlsInsets(); // fill/zoom: the controls span the width (controlsStrip)
     }
+
+    /**
+     * A short this narrow or narrower (width / height) fills a phone. 9:16 is 0.56, 3:4 is 0.75: a
+     * tall short loses a sliver of its sides, a 4:5, square or wide one would lose most of itself.
+     * 0 (size not known yet) fills, as every short did.
+     */
+    private static final float SHORTS_FILL_MAX_ASPECT = 0.7f;
 
     @Override
     public int getResizeMode() {
@@ -10543,6 +11008,9 @@ public class MobilePlaybackActivity extends MobileActivity
                 mNextCountdown.hide();
             }
             cancelHoldSpeed();
+            if (mVideoArea != null) {
+                mVideoArea.resetZoom(); // METUBE(issue #55): each video starts whole
+            }
             // NEWTUBE(gestures): a drag held across an autoplay would have seeked the new video to
             // the old one's spot (the bar's and a swipe's alike): it ends here, seeking nothing.
             if (mTimeBar != null) {

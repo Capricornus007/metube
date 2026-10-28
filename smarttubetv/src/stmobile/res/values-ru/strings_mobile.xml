@@ -44,12 +44,14 @@
     <string name="mobile_watch_subscribe">Подписаться</string>
     <string name="mobile_watch_subscribed">Вы подписаны</string>
     <string name="mobile_watch_related">Далее</string>
+    <string name="mobile_player_more_videos">Другие видео</string>
     <string name="mobile_watch_offline">Вы офлайн</string>
     <string name="mobile_watch_queue_from">Воспроизведение из %1$s</string>
     <string name="mobile_watch_queue_fallback">очередь</string>
     <string name="mobile_watch_queue_now_playing">Сейчас играет</string>
     <string name="mobile_watch_description">Описание</string>
     <string name="mobile_watch_share_subject">Посмотрите это видео</string>
+    <string name="mobile_watch_share_at">Ссылка с %1$s</string>
     <string name="mobile_comments_entry">Комментарии</string>
     <string name="mobile_comments_title">Комментарии</string>
     <string name="mobile_comments_replies_title">Ответы</string>
@@ -114,7 +116,9 @@
     <string name="mobile_channel_tab_videos">Видео</string>
     <string name="mobile_channel_tab_more">Ещё</string>
     <string name="mobile_nav_you">Вы</string>
+    <string name="mobile_nav_subs">Подписки</string>
     <string name="mobile_you_explore">Обзор</string>
+    <string name="mobile_you_library">Библиотека</string>
     <string name="mobile_no_browser">Не найдено приложение для открытия этой ссылки</string>
     <string name="mobile_add_device_title">Сопряжение устройства</string>
     <string name="mobile_add_device_done">Готово</string>
@@ -326,4 +330,8 @@
     <string name="mobile_about_share_text">MeTube — клиент YouTube для телефонов на базе SmartTube: %1$s</string>
     <string name="sabr_vod_option">Предпочитать SABR, даже когда ссылки работают (экспериментально; следующее VOD)</string>
     <string name="sabr_vod_stopped">Экспериментальное воспроизведение SABR остановлено. Нажмите воспроизведение для повтора или отключите SABR в настройках.</string>
+    <string name="mobile_shorts_mute">Выключить звук</string>
+    <string name="mobile_shorts_unmute">Включить звук</string>
+    <!-- METUBE 3.1.8: new mobile strings (ru) -->
+    <string name="mobile_subs_all_channels">Все подписки</string>
 </resources>

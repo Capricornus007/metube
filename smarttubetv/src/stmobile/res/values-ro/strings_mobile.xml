@@ -44,12 +44,14 @@
     <string name="mobile_watch_subscribe">Abonare</string>
     <string name="mobile_watch_subscribed">Abonat</string>
     <string name="mobile_watch_related">Urmează</string>
+    <string name="mobile_player_more_videos">Mai multe videoclipuri</string>
     <string name="mobile_watch_offline">Ești off-line</string>
     <string name="mobile_watch_queue_from">Redare de la %1$s</string>
     <string name="mobile_watch_queue_fallback">coadă</string>
     <string name="mobile_watch_queue_now_playing">Se redă acum</string>
     <string name="mobile_watch_description">Descriere</string>
     <string name="mobile_watch_share_subject">Urmărește acest videoclip</string>
+    <string name="mobile_watch_share_at">Se distribuie de la %1$s</string>
     <string name="mobile_comments_entry">Comentarii</string>
     <string name="mobile_comments_title">Comentarii</string>
     <string name="mobile_comments_replies_title">Răspunsuri</string>
@@ -113,7 +115,9 @@
     <string name="mobile_channel_tab_videos">Videoclipuri</string>
     <string name="mobile_channel_tab_more">Mai multe</string>
     <string name="mobile_nav_you">Tu</string>
+    <string name="mobile_nav_subs">Abonări</string>
     <string name="mobile_you_explore">Explorează</string>
+    <string name="mobile_you_library">Bibliotecă</string>
     <string name="mobile_no_browser">Nu s-a găsit nicio aplicație pentru a deschide acest link</string>
     <string name="mobile_add_device_title">Asociază un dispozitiv</string>
     <string name="mobile_add_device_done">Finalizat</string>
@@ -325,4 +329,8 @@
     <string name="unpinned_from_sidebar">A fost eliminat din secțiunea „Tu”</string>
     <string name="pin_unpin_from_sidebar">Fixează în secțiunea „Tu”</string>
     <string name="mobile_settings_gesture_seek_summary">Într-o parte pe videoclip</string>
+    <string name="mobile_shorts_mute">Dezactivează sunetul</string>
+    <string name="mobile_shorts_unmute">Activează sunetul</string>
+    <!-- METUBE 3.1.8: new mobile strings (ro) -->
+    <string name="mobile_subs_all_channels">Toate abonările</string>
 </resources>

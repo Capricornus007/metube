@@ -5,6 +5,7 @@ import android.animation.AnimatorListenerAdapter;
 import android.animation.ValueAnimator;
 import android.content.res.Configuration;
 import android.os.Bundle;
+import android.os.Parcelable;
 import android.view.MotionEvent;
 import android.view.VelocityTracker;
 import android.view.View;
@@ -82,6 +83,9 @@ public class MobileChannelActivity extends MobileActivity
         VideoGroup group;
         /** METUBE(shorts): the channel's Shorts tab - its shorts stay, as tall cards. */
         boolean shorts;
+        /** Issue #50: where the tab was left; picking it again goes back there. */
+        @Nullable
+        Parcelable scroll;
 
         Section(int id, String title) {
             this.id = id;
@@ -161,6 +165,7 @@ public class MobileChannelActivity extends MobileActivity
         setupTabs();
         setupSwipeRefresh();
         setupGlassBars();
+        setupNavPill();
 
         mBackButton.setOnClickListener(v -> getOnBackPressedDispatcher().onBackPressed());
         findViewById(R.id.mobile_channel_sort).setOnClickListener(v -> {
@@ -244,6 +249,16 @@ public class MobileChannelActivity extends MobileActivity
             com.newtube.mobile.ui.common.ChannelAvatars.put(this, channelId, info.title, info.avatarUrl);
             glide.load(info.avatarUrl).circleCrop().placeholder(avatar.getDrawable()).transition(fade).into(avatar);
         }
+        // METUBE(issue #73): live now - YouTube's red ring and badge; a tap on the avatar watches the stream.
+        boolean live = info.liveVideoId != null;
+        if (live) {
+            com.newtube.mobile.ui.common.LiveRingView.markLive(channelId);
+        }
+        com.newtube.mobile.ui.common.LiveRingView.bind(findViewById(R.id.mobile_channel_avatar_ring), avatar, live, 0);
+        setTextOrGone(R.id.mobile_channel_avatar_live, info.liveBadge);
+        avatar.setOnClickListener(live ? v -> com.liskovsoft.smartyoutubetv2.common.app.presenters.PlaybackPresenter
+                .instance(this).openVideo(info.liveVideoId) : null);
+        avatar.setClickable(live);
         findViewById(R.id.mobile_channel_banner_frame).setVisibility(info.bannerUrl != null ? View.VISIBLE : View.GONE);
         if (info.bannerUrl != null) {
             glide.load(info.bannerUrl).transition(fade).into((android.widget.ImageView) findViewById(R.id.mobile_channel_banner));
@@ -458,7 +473,8 @@ public class MobileChannelActivity extends MobileActivity
 
     private void setupGrid() {
         mLayoutManager = new GridLayoutManager(this, computeSpanCount());
-        mAdapter = new VideoCardAdapter(this::onVideoClicked, this::onVideoLongClicked).shortsTiles();
+        mAdapter = new VideoCardAdapter(this::onVideoClicked, this::onVideoLongClicked).shortsTiles()
+                .setListRows(com.newtube.mobile.ui.browse.HomeLayout.isVideoList(this));
         mLoadMoreFooter = new LoadMoreFailureAdapter(this::retryLoadMore);
 
         // Channel rows (rare here) span the whole grid width in multi-column layouts, and so does
@@ -494,6 +510,10 @@ public class MobileChannelActivity extends MobileActivity
                 if (mSuppressTabCallback || !(tab.getTag() instanceof Integer)) {
                     return;
                 }
+                Section leaving = mSections.get(mActiveSectionId);
+                if (leaving != null) {
+                    leaving.scroll = mLayoutManager.onSaveInstanceState();
+                }
                 mActiveSectionId = (Integer) tab.getTag();
                 mRestoreSectionTitle = null; // the user picked a tab; a refresh must not undo it
                 showActiveSection(true);
@@ -523,7 +543,7 @@ public class MobileChannelActivity extends MobileActivity
      * otherwise it springs back. A claimed swipe cancels the card's press, so it never plays.
      */
     private void setupTabSwipe() {
-        mPeekAdapter = new VideoCardAdapter(video -> { }).shortsTiles();
+        mPeekAdapter = new VideoCardAdapter(video -> { }).shortsTiles().setListRows(com.newtube.mobile.ui.browse.HomeLayout.isVideoList(this));
         GridLayoutManager peekLayout = new GridLayoutManager(this, computeSpanCount());
         peekLayout.setSpanSizeLookup(new GridLayoutManager.SpanSizeLookup() {
             @Override
@@ -615,7 +635,11 @@ public class MobileChannelActivity extends MobileActivity
             mPeek.setAlpha(1f);
             mPeekAdapter.submitList(null); // null first: the next list lands at once, no async diff
             mPeekAdapter.submitList(section != null ? new ArrayList<>(section.videos) : new ArrayList<>());
-            mPeek.scrollToPosition(0);
+            if (section != null && section.scroll != null) {
+                mPeek.getLayoutManager().onRestoreInstanceState(section.scroll); // as the grid will land
+            } else {
+                mPeek.scrollToPosition(0);
+            }
             mPeekTab = target;
         }
         mPeek.setVisibility(View.VISIBLE);
@@ -687,6 +711,26 @@ public class MobileChannelActivity extends MobileActivity
                 mSwipe.setRefreshing(false);
             }
         });
+    }
+
+    /** METUBE(channel nav): Browse's floating tab bar over the channel, as Search has it. None without a Browse. */
+    private void setupNavPill() {
+        View pill = findViewById(R.id.mobile_nav_glass);
+        com.google.android.material.bottomnavigation.BottomNavigationView bar = findViewById(R.id.mobile_bottom_nav);
+        if (!com.newtube.mobile.ui.browse.MobileBrowseActivity.copyNavTabs(this, bar, false, () -> { })) {
+            return;
+        }
+        Glass.blur(pill, findViewById(R.id.mobile_channel_glass_source));
+        // The pill floats above the system bar already: the bar must not pad itself by it too.
+        androidx.core.view.ViewCompat.setOnApplyWindowInsetsListener(bar, (v, insets) -> insets);
+        int clearance = getResources().getDimensionPixelSize(R.dimen.metube_nav_clearance);
+        for (RecyclerView list : new RecyclerView[] {mGrid, findViewById(R.id.mobile_channel_peek)}) {
+            list.setPadding(list.getPaddingLeft(), list.getPaddingTop(), list.getPaddingRight(), clearance);
+        }
+        ((android.view.ViewGroup.MarginLayoutParams) findViewById(R.id.mobile_mini_player).getLayoutParams())
+                .bottomMargin = clearance;
+        mGrid.addOnScrollListener(new com.newtube.mobile.ui.common.NavHider(pill));
+        pill.setVisibility(View.VISIBLE);
     }
 
     /**
@@ -934,12 +978,26 @@ public class MobileChannelActivity extends MobileActivity
         mSuppressTabCallback = false;
     }
 
-    /** Push the active section's videos into the grid. */
-    private void showActiveSection(boolean scrollToTop) {
+    /** Restored once the picked tab's cards are in the adapter (a layout before would drop it). */
+    @Nullable
+    private Parcelable mPendingScroll;
+
+    /**
+     * Push the active section's videos into the grid; {@code restore}: at the place the tab was
+     * left, the top if it never was.
+     */
+    private void showActiveSection(boolean restore) {
         Section active = mSections.get(mActiveSectionId);
         mLastPaginationTriggerCount = -1;
         syncLoadMoreFooter();
+        if (restore) {
+            mPendingScroll = active != null ? active.scroll : null;
+        }
         mAdapter.submitList(active != null ? new ArrayList<>(active.videos) : new ArrayList<>(), () -> {
+            if (mPendingScroll != null) {
+                mLayoutManager.onRestoreInstanceState(mPendingScroll);
+                mPendingScroll = null;
+            }
             if (mPeekSwapPending) {
                 mPeekSwapPending = false;
                 SkeletonReveal.fadeOverCards(mPeek, mGrid, () -> true, () -> {
@@ -948,7 +1006,7 @@ public class MobileChannelActivity extends MobileActivity
                 });
             }
         });
-        if (scrollToTop) {
+        if (restore && mPendingScroll == null) {
             mGrid.scrollToPosition(0);
         }
     }
@@ -1076,6 +1134,7 @@ public class MobileChannelActivity extends MobileActivity
                     target.videos.clear();
                     target.videos.addAll(shown);
                     target.group = group; // further pages continue the sorted list
+                    target.scroll = null; // a new order starts at the top
                     mActiveSectionId = target.id;
                     rebuildTabs();
                     showActiveSection(true);
@@ -1216,6 +1275,7 @@ public class MobileChannelActivity extends MobileActivity
     public void clear() {
         runOnUiThread(() -> {
             mSections.clear();
+            mPendingScroll = null;
             mShortsEmptied = false;
             mActiveSectionId = -1;
             mLastPaginationTriggerCount = -1;

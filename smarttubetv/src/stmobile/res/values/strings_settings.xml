@@ -81,10 +81,20 @@
     <string name="mobile_settings_nav_labels">Tab names</string>
     <string name="mobile_settings_nav_labels_summary">Show each tab\'s name under its icon in the bottom bar</string>
     <string name="mobile_settings_tabs_you">You</string>
-    <string name="mobile_settings_tabs_before_search">Tab before Search</string>
-    <string name="mobile_settings_tabs_after_search">Tab after Search</string>
     <string name="mobile_settings_tabs_none">None</string>
-    <string name="mobile_settings_tabs_bar_note">Home, Search and You always stay on the bar. Picking what the other tab shows swaps the two.</string>
+    <string name="mobile_settings_tabs_bar_note">Drag a tile by its grip, or hold it, to reorder the bar. Drag Search up to move it to the top bar. Tap a tab to change what it shows.</string>
+    <string name="mobile_settings_bar_top">Top bar</string>
+    <string name="mobile_settings_bar_tab">Tab</string>
+    <string name="mobile_settings_bar_tab_summary">Tap to change</string>
+    <string name="mobile_settings_bar_empty">Empty</string>
+    <string name="mobile_settings_bar_empty_summary">Tap to pick a tab</string>
+    <string name="mobile_settings_bar_first">Always first</string>
+    <string name="mobile_settings_bar_last">Always last</string>
+    <string name="mobile_settings_bar_search_up">Drag up to move it to the top bar</string>
+    <string name="mobile_settings_bar_search_down">Drag down to move it back to the bottom bar</string>
+    <string name="mobile_settings_search_place">Search</string>
+    <string name="mobile_settings_search_place_bottom">In the bottom bar</string>
+    <string name="mobile_settings_search_place_top">In the top bar</string>
     <string name="mobile_settings_tabs_note">You can also hold a tab or a row in You to move, rename or hide it.</string>
     <string name="mobile_settings_hidden">Hidden videos</string>
     <string name="mobile_settings_hidden_none">Nothing hidden</string>
@@ -179,6 +189,25 @@
     <string name="mobile_settings_home_layout_feed_desc">One list of videos, like YouTube</string>
     <string name="mobile_settings_home_layout_rows">Rows</string>
     <string name="mobile_settings_home_layout_rows_desc">A row you swipe sideways for each topic, like SmartTube</string>
+    <!-- METUBE(glass, issue #80) -->
+    <string name="mobile_settings_player_frost">Frosted player buttons</string>
+    <string name="mobile_settings_player_frost_summary">The buttons over a video and a short blur the picture under them. Uses more battery, and can stutter on slower phones</string>
+    <!-- METUBE(performance) -->
+    <string name="mobile_settings_performance">Performance</string>
+    <string name="mobile_settings_high_refresh">High performance mode</string>
+    <string name="mobile_settings_high_refresh_summary">Keeps the app at %1$d Hz for the smoothest motion. Uses more battery; Android may lower it when the phone is hot or the battery saver is on</string>
+    <!-- METUBE(nav lens, issue #46) -->
+    <string name="mobile_settings_tab_motion">Tab switch animation</string>
+    <string name="mobile_settings_tab_motion_summary">A glass lens glides to the tab and the bar wiggles. Off on slower phones until you turn it on</string>
+    <!-- METUBE(bar reset) -->
+    <string name="mobile_settings_tabs_reset">Reset bar to default</string>
+    <string name="mobile_settings_tabs_reset_summary">Home, Shorts, Search, Subs, You</string>
+    <!-- METUBE(list layout, issue #82) -->
+    <string name="mobile_settings_video_layout">Video layout</string>
+    <string name="mobile_settings_video_layout_cards">Cards</string>
+    <string name="mobile_settings_video_layout_cards_desc">A big thumbnail for each video</string>
+    <string name="mobile_settings_video_layout_list">List</string>
+    <string name="mobile_settings_video_layout_list_desc">A small thumbnail beside the title, more videos on screen</string>
 
     <!-- Playback -->
     <!-- METUBE(background): the battery-optimization exemption row (Playback). -->
@@ -243,6 +272,8 @@
     <string name="mobile_settings_quality_more_data">Uses more data</string>
     <string name="mobile_settings_quality_less_data">Uses less data</string>
     <string name="mobile_settings_quality_data_saver">Saves data</string>
+    <string name="mobile_settings_hdr">HDR video</string>
+    <string name="mobile_settings_hdr_summary">Plays HDR videos in HDR, brighter and with richer colour. Uses more data. Applies to the next video you open</string>
     <string name="mobile_settings_audio">Audio</string>
     <string name="mobile_settings_loudness">Even out loudness</string>
     <string name="mobile_settings_loudness_summary">Turns loud videos down to YouTube\'s normal level</string>
@@ -331,6 +362,20 @@
 
     <!-- About -->
     <string name="mobile_settings_version">Version</string>
+    <!-- METUBE(customize): the Customization page's groups and its tiles' short names -->
+    <string name="mobile_settings_customize_look">Look</string>
+    <string name="mobile_settings_customize_layout">Layout</string>
+    <string name="mobile_settings_customize_effects">Glass and motion</string>
+    <string name="mobile_settings_customize_tabs_menus">Tabs and menus</string>
+    <string name="mobile_settings_thumbnails_default_short">Original</string>
+    <string name="mobile_settings_thumbnails_start_short">Start</string>
+    <string name="mobile_settings_thumbnails_middle_short">Middle</string>
+    <string name="mobile_settings_thumbnails_end_short">End</string>
+    <string name="mobile_settings_playlists_style_grid_short">Playlists</string>
+    <string name="mobile_settings_playlists_style_rows_short">Videos</string>
+    <string name="mobile_settings_interface_size_sample">How a video title looks at this size</string>
+    <string name="mobile_settings_interface_size_sample_meta">MeTube · 1.2M views · 2 days ago</string>
+
     <string name="mobile_settings_shorts_player">Play Shorts in the tab</string>
     <string name="mobile_settings_shorts_player_summary">The Shorts tab opens the vertical player, so you swipe up and down through it like the official app. Turn this off to keep a list on the page instead.</string>
 </resources>

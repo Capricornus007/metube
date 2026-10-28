@@ -31,13 +31,14 @@ final class SearchFiltersDialog {
             {{R.string.mobile_search_filter_type},
                     {R.string.mobile_search_filter_all, 0},
                     {R.string.mobile_search_filter_videos, SearchOptions.TYPE_VIDEO},
+                    {R.string.mobile_search_filter_shorts, SearchOptions.TYPE_SHORTS},
                     {R.string.mobile_search_filter_channels, SearchOptions.TYPE_CHANNEL},
                     {R.string.mobile_search_filter_playlists, SearchOptions.TYPE_PLAYLIST},
                     {R.string.mobile_search_filter_movies, SearchOptions.TYPE_MOVIE}},
             {{R.string.mobile_search_filter_duration},
                     {R.string.mobile_search_filter_any, 0},
-                    {R.string.mobile_search_filter_under_4, SearchOptions.DURATION_UNDER_4},
-                    {R.string.mobile_search_filter_4_20, SearchOptions.DURATION_BETWEEN_4_20},
+                    {R.string.mobile_search_filter_under_3, SearchOptions.DURATION_UNDER_3},
+                    {R.string.mobile_search_filter_3_20, SearchOptions.DURATION_BETWEEN_3_20},
                     {R.string.mobile_search_filter_over_20, SearchOptions.DURATION_OVER_20}},
             {{R.string.mobile_search_filter_upload_date},
                     {R.string.mobile_search_filter_anytime, 0},
@@ -53,7 +54,15 @@ final class SearchFiltersDialog {
     private static final int[][] FEATURES = {
             {R.string.mobile_search_filter_live, SearchOptions.FEATURE_LIVE},
             {R.string.mobile_search_filter_4k, SearchOptions.FEATURE_4K},
+            {R.string.mobile_search_filter_hd, SearchOptions.FEATURE_HD},
+            {R.string.mobile_search_filter_subtitles, SearchOptions.FEATURE_SUBTITLES},
+            {R.string.mobile_search_filter_creative_commons, SearchOptions.FEATURE_CREATIVE_COMMONS},
+            {R.string.mobile_search_filter_360, SearchOptions.FEATURE_360},
+            {R.string.mobile_search_filter_vr180, SearchOptions.FEATURE_VR180},
+            {R.string.mobile_search_filter_3d, SearchOptions.FEATURE_3D},
             {R.string.mobile_search_filter_hdr, SearchOptions.FEATURE_HDR},
+            {R.string.mobile_search_filter_location, SearchOptions.FEATURE_LOCATION},
+            {R.string.mobile_search_filter_purchased, SearchOptions.FEATURE_PURCHASED},
     };
 
     private SearchFiltersDialog() {
@@ -92,7 +101,7 @@ final class SearchFiltersDialog {
             features.addView(chip);
         }
 
-        Haptics.watch(new MaterialAlertDialogBuilder(activity, R.style.MobileAlertDialog)
+        androidx.appcompat.app.AlertDialog filters = Haptics.watch(new MaterialAlertDialogBuilder(activity, R.style.MobileAlertDialog)
                 .setTitle(R.string.mobile_search_filters)
                 .setView(content)
                 .setNegativeButton(android.R.string.cancel, null)
@@ -110,6 +119,12 @@ final class SearchFiltersDialog {
                     onApply.accept(result);
                 })
                 .show());
+        // METUBE(glass): frosted with the results under it, like the sheets (the 28dp card's corners).
+        View panel = filters.findViewById(androidx.appcompat.R.id.parentPanel);
+        if (panel != null) {
+            panel.post(() -> com.newtube.mobile.ui.common.SheetGlass.frost(panel, activity.getWindow(),
+                    28 * activity.getResources().getDisplayMetrics().density));
+        }
     }
 
     private static void showChoices(Activity activity, TextView value, int[][] row, IntConsumer onPick) {

@@ -40,6 +40,8 @@ public class VideoCardAdapter extends ListAdapter<Video, RecyclerView.ViewHolder
     private static final int VIEW_TYPE_CHANNEL = 1;
     /** METUBE(shorts): a channel Shorts tab's tile (item_mobile_shorts_tile), see {@link #shortsTiles}. */
     private static final int VIEW_TYPE_SHORT_TILE = 2;
+    /** METUBE(list layout, issue #82): a video as a compact row (item_video_row), see {@link #setListRows}. */
+    private static final int VIEW_TYPE_VIDEO_ROW = 3;
 
     public interface OnVideoClickListener {
         void onVideoClick(Video video);
@@ -79,6 +81,17 @@ public class VideoCardAdapter extends ListAdapter<Video, RecyclerView.ViewHolder
         return this;
     }
 
+    private boolean mListRows;
+
+    /** METUBE(list layout, issue #82): videos as rows, not cards (Settings > Video layout); Shorts stay tiles. */
+    public VideoCardAdapter setListRows(boolean listRows) {
+        if (mListRows != listRows) {
+            mListRows = listRows;
+            notifyDataSetChanged();
+        }
+        return this;
+    }
+
     public VideoCardAdapter(OnVideoClickListener clickListener) {
         this(clickListener, null);
     }
@@ -114,7 +127,10 @@ public class VideoCardAdapter extends ListAdapter<Video, RecyclerView.ViewHolder
         if (mShortsTiles && item.belongsToShorts()) {
             return VIEW_TYPE_SHORT_TILE;
         }
-        return item.isChannel() && !item.isPlaylistAsChannel() ? VIEW_TYPE_CHANNEL : VIEW_TYPE_VIDEO;
+        if (item.isChannel() && !item.isPlaylistAsChannel()) {
+            return VIEW_TYPE_CHANNEL;
+        }
+        return mListRows && !item.belongsToShorts() ? VIEW_TYPE_VIDEO_ROW : VIEW_TYPE_VIDEO;
     }
 
     /** Full-span rows (channel results) for the grid's SpanSizeLookup in multi-column layouts. */
@@ -154,7 +170,8 @@ public class VideoCardAdapter extends ListAdapter<Video, RecyclerView.ViewHolder
             return new ShortTileHolder(inflater.inflate(R.layout.item_mobile_shorts_tile, parent, false),
                     mClickListener, mLongClickListener);
         }
-        VideoViewHolder holder = new VideoViewHolder(inflater.inflate(R.layout.item_video_card, parent, false), mClickListener);
+        VideoViewHolder holder = new VideoViewHolder(inflater.inflate(viewType == VIEW_TYPE_VIDEO_ROW
+                ? R.layout.item_video_row : R.layout.item_video_card, parent, false), mClickListener);
         holder.mShowAvatar = mShowAvatars;
         return holder;
     }
@@ -309,6 +326,7 @@ public class VideoCardAdapter extends ListAdapter<Video, RecyclerView.ViewHolder
         private final ImageView mAvatar;
         private final ImageView mAvatar2;
         private final TextView mShortTitle;
+        @Nullable private final com.newtube.mobile.ui.common.LiveRingView mLiveRing;
         private Video mVideo;
         private String mBoundThumbUrl;
         boolean mShowAvatar;
@@ -328,6 +346,7 @@ public class VideoCardAdapter extends ListAdapter<Video, RecyclerView.ViewHolder
             mAvatar = itemView.findViewById(R.id.video_avatar);
             mShortTitle = itemView.findViewById(R.id.video_short_title);
             mAvatar2 = itemView.findViewById(R.id.video_avatar_2);
+            mLiveRing = itemView.findViewById(R.id.video_avatar_live);
 
             if (mAvatar != null) {
                 mAvatar.setOnClickListener(v -> openChannel());
@@ -388,6 +407,11 @@ public class VideoCardAdapter extends ListAdapter<Video, RecyclerView.ViewHolder
             mAvatar.setVisibility(show ? View.VISIBLE : View.GONE);
             String[] collab = show ? collabNames(video.getAuthor()) : null;
             bindCollab(collab != null);
+            // METUBE(issue #73): live now - the glowing red ring around the channel.
+            if (video.isLive) {
+                com.newtube.mobile.ui.common.LiveRingView.markLive(video.channelId);
+            }
+            com.newtube.mobile.ui.common.LiveRingView.bind(mLiveRing, mAvatar, show && collab == null && video.isLive, 0);
             if (!show) {
                 return;
             }
@@ -411,20 +435,14 @@ public class VideoCardAdapter extends ListAdapter<Video, RecyclerView.ViewHolder
                         () -> mVideo == video, found -> {
                     if (mVideo == video && view.getVisibility() == View.VISIBLE) {
                         Glide.with(itemView.getContext()).load(found).circleCrop().placeholder(letter)
-                                .transition(AVATAR_FADE).into(view);
+                                .transition(com.newtube.mobile.ui.common.ChannelAvatars.FADE).into(view);
                     }
                 }, false);
             } else {
                 Glide.with(context).load(url).circleCrop().placeholder(letter).error(letter)
-                        .transition(AVATAR_FADE).into(view);
+                        .transition(com.newtube.mobile.ui.common.ChannelAvatars.FADE).into(view);
             }
         }
-
-        /** METUBE(card avatars): an avatar fades in over its placeholder orb instead of popping. */
-        private static final com.bumptech.glide.load.resource.drawable.DrawableTransitionOptions AVATAR_FADE =
-                com.bumptech.glide.load.resource.drawable.DrawableTransitionOptions.withCrossFade(
-                        new com.bumptech.glide.request.transition.DrawableCrossFadeFactory.Builder(280)
-                                .setCrossFadeEnabled(true).build());
 
         /**
          * METUBE(card avatars): look up and decode the avatar(s) of a card about to scroll in, so
@@ -489,6 +507,15 @@ public class VideoCardAdapter extends ListAdapter<Video, RecyclerView.ViewHolder
         public void bind(Video video, OnVideoLongClickListener longClickListener) {
             mVideo = video;
             Context context = itemView.getContext();
+            if (android.text.TextUtils.isEmpty(video.getTitle())) {
+                // METUBE(issue #41): a bare video id from the feed - its title and channel are asked for.
+                com.newtube.mobile.ui.common.MissingTitles.fill(video, () -> {
+                    if (mVideo == video) {
+                        bindAvatar(itemView.getContext(), video);
+                        bindPartial(video);
+                    }
+                });
+            }
             bindAvatar(context, video);
 
             itemView.setOnLongClickListener(v ->
@@ -751,6 +778,7 @@ public class VideoCardAdapter extends ListAdapter<Video, RecyclerView.ViewHolder
         private final ImageView mAvatar;
         private final TextView mName;
         private final TextView mMeta;
+        @Nullable private final com.newtube.mobile.ui.common.LiveRingView mLiveRing;
         private Video mVideo;
 
         ChannelViewHolder(@NonNull View itemView, OnVideoClickListener clickListener) {
@@ -759,6 +787,7 @@ public class VideoCardAdapter extends ListAdapter<Video, RecyclerView.ViewHolder
             mAvatar = itemView.findViewById(R.id.channel_avatar);
             mName = itemView.findViewById(R.id.channel_name);
             mMeta = itemView.findViewById(R.id.channel_meta);
+            mLiveRing = itemView.findViewById(R.id.channel_avatar_live);
 
             itemView.setOnClickListener(v -> {
                 if (mVideo != null && clickListener != null) {
@@ -800,6 +829,8 @@ public class VideoCardAdapter extends ListAdapter<Video, RecyclerView.ViewHolder
                     .placeholder(R.drawable.ic_watch_channel_placeholder)
                     .error(R.drawable.ic_watch_channel_placeholder)
                     .into(mAvatar);
+            com.newtube.mobile.ui.common.LiveRingView.bind(mLiveRing, mAvatar,
+                    com.newtube.mobile.ui.common.LiveRingView.isLive(video.channelId), 0); // METUBE(issue #73)
         }
 
         void unbind() {

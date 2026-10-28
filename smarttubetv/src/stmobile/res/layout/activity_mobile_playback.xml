@@ -440,6 +440,14 @@
                         android:contentDescription="@string/mobile_comments_entry"
                         android:src="@drawable/ic_watch_comment" />
 
+                    <!-- METUBE(live chat, issue #32): a live stream's chat, from fullscreen too. -->
+                    <ImageButton
+                        android:id="@+id/mobile_player_chat"
+                        style="@style/MobilePlayerAction"
+                        android:contentDescription="@string/mobile_live_chat_entry"
+                        android:src="@drawable/ic_watch_chat"
+                        android:visibility="gone" />
+
                     <ImageButton
                         android:id="@+id/mobile_player_download"
                         style="@style/MobilePlayerAction"
@@ -453,6 +461,20 @@
                         android:src="@drawable/ic_watch_share" />
 
                 </LinearLayout>
+
+                <!-- METUBE(more videos): a bare up chevron beside the actions pill, saying the
+                     video swipes up for More videos (no button: the swipe is the way in). -->
+                <ImageView
+                    android:id="@+id/mobile_player_more_hint"
+                    android:layout_width="38dp"
+                    android:layout_height="38dp"
+                    android:layout_gravity="bottom|center_horizontal"
+                    android:alpha="0.8"
+                    android:importantForAccessibility="no"
+                    android:padding="8dp"
+                    android:rotation="180"
+                    android:src="@drawable/ic_chips_expand"
+                    android:visibility="gone" />
 
             </FrameLayout>
 
@@ -744,6 +766,40 @@
                 tools:visibility="visible" />
 
             <include layout="@layout/mobile_next_countdown" />
+
+            <!-- METUBE(more videos, issue #24): swiped up over the fullscreen video (MoreVideosPanel).
+                 INVISIBLE, not GONE: measured from the start, so the first swipe knows its height. -->
+            <LinearLayout
+                android:id="@+id/mobile_more_videos"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_gravity="bottom"
+                android:background="@drawable/mobile_more_videos_scrim"
+                android:clickable="true"
+                android:orientation="vertical"
+                android:paddingTop="40dp"
+                android:paddingBottom="8dp"
+                android:visibility="invisible">
+
+                <TextView
+                    android:id="@+id/mobile_more_videos_title"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginStart="16dp"
+                    android:layout_marginBottom="4dp"
+                    android:text="@string/mobile_player_more_videos"
+                    android:textColor="@android:color/white"
+                    android:textSize="16sp"
+                    android:textStyle="bold" />
+
+                <androidx.recyclerview.widget.RecyclerView
+                    android:id="@+id/mobile_more_videos_list"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:clipToPadding="false"
+                    android:paddingHorizontal="4dp" />
+
+            </LinearLayout>
 
         </com.newtube.mobile.ui.playback.PinchZoomLayout>
 
@@ -1089,12 +1145,25 @@
                     android:paddingHorizontal="@dimen/mobile_watch_content_padding"
                     android:paddingVertical="8dp">
 
-                    <ImageView
-                        android:id="@+id/mobile_watch_avatar"
-                        android:layout_width="@dimen/mobile_watch_avatar_size"
-                        android:layout_height="@dimen/mobile_watch_avatar_size"
-                        android:contentDescription="@null"
-                        android:src="@drawable/ic_watch_channel_placeholder" />
+                    <!-- METUBE(issue #73): a live stream's channel gets the glowing red ring. -->
+                    <FrameLayout
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content">
+
+                        <ImageView
+                            android:id="@+id/mobile_watch_avatar"
+                            android:layout_width="@dimen/mobile_watch_avatar_size"
+                            android:layout_height="@dimen/mobile_watch_avatar_size"
+                            android:contentDescription="@null"
+                            android:src="@drawable/ic_watch_channel_placeholder" />
+
+                        <com.newtube.mobile.ui.common.LiveRingView
+                            android:id="@+id/mobile_watch_avatar_live"
+                            android:layout_width="@dimen/mobile_watch_avatar_size"
+                            android:layout_height="@dimen/mobile_watch_avatar_size"
+                            android:visibility="gone" />
+
+                    </FrameLayout>
 
                     <LinearLayout
                         android:layout_width="0dp"

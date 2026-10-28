@@ -269,4 +269,46 @@
   <string name="mobile_settings_version">版本</string>
     <string name="mobile_settings_shorts_player">Shorts 分頁直接滑動播放</string>
     <string name="mobile_settings_shorts_player_summary">點 Shorts 分頁就進入直向播放器，上下滑換下一支（跟官方 App 一樣）。關閉時改為在本頁顯示清單。</string>
+  <!-- METUBE 3.1.5-3.1.8: Customization/Tabs/Performance new strings (zh-TW) -->
+  <string name="mobile_settings_bar_top">上方列</string>
+  <string name="mobile_settings_bar_tab">分頁</string>
+  <string name="mobile_settings_bar_tab_summary">點一下以變更</string>
+  <string name="mobile_settings_bar_empty">空白</string>
+  <string name="mobile_settings_bar_empty_summary">點一下選擇分頁</string>
+  <string name="mobile_settings_bar_first">永遠排最前</string>
+  <string name="mobile_settings_bar_last">永遠排最後</string>
+  <string name="mobile_settings_bar_search_up">向上拖曳可移到上方列</string>
+  <string name="mobile_settings_bar_search_down">向下拖曳可移回底部列</string>
+  <string name="mobile_settings_search_place">搜尋</string>
+  <string name="mobile_settings_search_place_bottom">放在底部列</string>
+  <string name="mobile_settings_search_place_top">放在上方列</string>
+  <string name="mobile_settings_customize_look">外觀</string>
+  <string name="mobile_settings_customize_layout">版面配置</string>
+  <string name="mobile_settings_customize_effects">玻璃與動態</string>
+  <string name="mobile_settings_customize_tabs_menus">分頁與選單</string>
+  <string name="mobile_settings_thumbnails_default_short">原始</string>
+  <string name="mobile_settings_thumbnails_start_short">開頭</string>
+  <string name="mobile_settings_thumbnails_middle_short">中間</string>
+  <string name="mobile_settings_thumbnails_end_short">結尾</string>
+  <string name="mobile_settings_playlists_style_grid_short">播放清單</string>
+  <string name="mobile_settings_playlists_style_rows_short">影片</string>
+  <string name="mobile_settings_interface_size_sample">這個大小下的影片標題樣子</string>
+  <string name="mobile_settings_interface_size_sample_meta">MeTube · 120 萬次觀看 · 2 天前</string>
+  <string name="mobile_settings_player_frost">播放器按鈕霧面玻璃</string>
+  <string name="mobile_settings_player_frost_summary">影片與 Shorts 上方的按鈕會模糊其下的畫面。較耗電，在較慢的手機上可能卡頓</string>
+  <string name="mobile_settings_performance">效能</string>
+  <string name="mobile_settings_high_refresh">高效能模式</string>
+  <string name="mobile_settings_high_refresh_summary">讓 App 維持在 %1$d Hz 以求最流暢的動態。較耗電；手機過熱或開啟省電模式時 Android 可能自行降低</string>
+  <string name="mobile_settings_tab_motion">分頁切換動畫</string>
+  <string name="mobile_settings_tab_motion_summary">玻璃鏡片會滑到該分頁並讓底部列輕晃；較慢的手機預設關閉，需手動開啟</string>
+  <string name="mobile_settings_tabs_reset">將底部列重設為預設</string>
+  <string name="mobile_settings_tabs_reset_summary">首頁、Shorts、搜尋、訂閱、你的頻道</string>
+  <string name="mobile_settings_video_layout">影片版面</string>
+  <string name="mobile_settings_video_layout_cards">卡片</string>
+  <string name="mobile_settings_video_layout_cards_desc">每部影片顯示大張縮圖</string>
+  <string name="mobile_settings_video_layout_list">清單</string>
+  <string name="mobile_settings_video_layout_list_desc">標題旁顯示小張縮圖，一屏容納更多影片</string>
+  <!-- METUBE 3.1.5-3.1.8: 補上游新增字串繁中譯（zh-TW） -->
+  <string name="mobile_settings_hdr">HDR 影片</string>
+  <string name="mobile_settings_hdr_summary">以 HDR 播放 HDR 影片，更亮、色彩更飽和。較耗流量；套用於你接著開啟的下一部影片</string>
 </resources>

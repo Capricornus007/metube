@@ -35,6 +35,13 @@
         android:layout_width="match_parent"
         android:layout_height="match_parent">
 
+        <!-- METUBE(glass): the results alone, which the chips below frost (a glass may not sit
+             in the source it samples). -->
+        <com.newtube.mobile.ui.common.GlassSource
+            android:id="@+id/mobile_search_chips_source"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent">
+
         <androidx.recyclerview.widget.RecyclerView
             android:id="@+id/mobile_search_grid"
             android:layout_width="match_parent"
@@ -45,6 +52,8 @@
             android:paddingBottom="@dimen/mobile_card_spacing"
             android:scrollbars="vertical"
             tools:listitem="@layout/item_video_card" />
+
+        </com.newtube.mobile.ui.common.GlassSource>
 
         <!-- NEWTUBE(motion): results load under card ghosts (the feed's shimmering skeleton), not
              a centered spinner; only over an empty list (MobileSearchActivity.showProgressBar). -->
@@ -79,14 +88,12 @@
             android:visibility="gone"
             tools:visibility="visible">
 
-            <com.google.android.material.chip.ChipGroup
+            <LinearLayout
                 android:id="@+id/mobile_search_chips"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_gravity="center_vertical"
-                app:chipSpacingHorizontal="8dp"
-                app:singleLine="true"
-                app:singleSelection="true" />
+                android:orientation="horizontal" />
 
         </HorizontalScrollView>
 
@@ -202,6 +209,40 @@
             android:src="@drawable/ic_mobile_tune" />
 
     </LinearLayout>
+
+    <!-- METUBE(search nav): Browse's floating nav pill over the results, Search lit
+         (MobileBrowseActivity.copyNavTabs); hidden while the query is being typed. -->
+    <com.newtube.mobile.ui.common.GlassView
+        android:id="@+id/mobile_nav_glass"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_gravity="bottom"
+        android:layout_marginHorizontal="16dp"
+        android:layout_marginBottom="12dp"
+        android:elevation="6dp"
+        android:padding="6dp"
+        android:visibility="gone"
+        app:glassCornerRadius="34dp"
+        app:glassTint="@color/metube_glass_tint">
+
+        <com.google.android.material.bottomnavigation.BottomNavigationView
+            android:id="@+id/mobile_bottom_nav"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:background="@android:color/transparent"
+            app:elevation="0dp"
+            app:itemBackground="@drawable/bg_nav_item"
+            app:itemIconSize="24dp"
+            app:itemIconTint="@color/mobile_bottom_nav_item"
+            app:itemRippleColor="@android:color/transparent"
+            app:itemTextAppearanceActive="@style/MobileBottomNavText"
+            app:itemTextAppearanceActiveBoldEnabled="false"
+            app:itemTextAppearanceInactive="@style/MobileBottomNavText"
+            app:itemTextColor="@color/mobile_bottom_nav_item"
+            app:labelVisibilityMode="labeled"
+            app:paddingBottomSystemWindowInsets="false" />
+
+    </com.newtube.mobile.ui.common.GlassView>
 
     <!-- Minimizing a video opened from these results keeps playback alive in this overlay. -->
     <include layout="@layout/mobile_mini_player_overlay" />

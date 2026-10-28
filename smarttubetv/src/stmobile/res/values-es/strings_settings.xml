@@ -74,10 +74,7 @@
 
     <!-- Tabs and feeds -->
     <string name="mobile_settings_tabs">Pestañas</string>
-    <string name="mobile_settings_tabs_before_search">Pestaña antes de Buscar</string>
-    <string name="mobile_settings_tabs_after_search">Pestaña después de Buscar</string>
     <string name="mobile_settings_tabs_none">Ninguna</string>
-    <string name="mobile_settings_tabs_bar_note">Inicio, Buscar y Tú siempre están en la barra. Elige la opción de la otra pestaña para intercambiarlas.</string>
     <string name="mobile_settings_tabs_summary">Elige qué aparece en la barra inferior y en Tú</string>
     <string name="mobile_settings_nav_labels">Nombres de las pestañas</string>
     <string name="mobile_settings_nav_labels_summary">Mostrar el nombre de cada pestaña bajo su icono en la barra inferior</string>
@@ -218,6 +215,8 @@
     <string name="mobile_settings_quality_more_data">Usa más datos</string>
     <string name="mobile_settings_quality_less_data">Usa menos datos</string>
     <string name="mobile_settings_quality_data_saver">Ahorra datos</string>
+    <string name="mobile_settings_hdr">Vídeo HDR</string>
+    <string name="mobile_settings_hdr_summary">Reproduce los vídeos HDR en HDR, con más brillo y color. Usa más datos. Se aplica al siguiente vídeo que abras</string>
     <string name="mobile_settings_audio">Audio</string>
     <string name="mobile_settings_loudness">Igualar el volumen</string>
     <string name="mobile_settings_loudness_summary">Baja los vídeos muy altos al nivel normal de YouTube</string>
@@ -306,4 +305,43 @@
 
     <!-- About -->
     <string name="mobile_settings_version">Versión</string>
+    <!-- METUBE 3.1.5-3.1.8: Customization/Tabs/Performance new strings (es) -->
+    <string name="mobile_settings_bar_top">Barra superior</string>
+    <string name="mobile_settings_bar_tab">Pestaña</string>
+    <string name="mobile_settings_bar_tab_summary">Toca para cambiarla</string>
+    <string name="mobile_settings_bar_empty">Vacía</string>
+    <string name="mobile_settings_bar_empty_summary">Toca para elegir una pestaña</string>
+    <string name="mobile_settings_bar_first">Siempre el primero</string>
+    <string name="mobile_settings_bar_last">Siempre el último</string>
+    <string name="mobile_settings_bar_search_up">Arrástrala arriba para moverla a la barra superior</string>
+    <string name="mobile_settings_bar_search_down">Arrástrala abajo para devolverla a la barra inferior</string>
+    <string name="mobile_settings_search_place">Búsqueda</string>
+    <string name="mobile_settings_search_place_bottom">En la barra inferior</string>
+    <string name="mobile_settings_search_place_top">En la barra superior</string>
+    <string name="mobile_settings_customize_look">Aspecto</string>
+    <string name="mobile_settings_customize_layout">Distribución</string>
+    <string name="mobile_settings_customize_effects">Cristal y animación</string>
+    <string name="mobile_settings_customize_tabs_menus">Pestañas y menús</string>
+    <string name="mobile_settings_thumbnails_default_short">Original</string>
+    <string name="mobile_settings_thumbnails_start_short">Inicio</string>
+    <string name="mobile_settings_thumbnails_middle_short">Mitad</string>
+    <string name="mobile_settings_thumbnails_end_short">Final</string>
+    <string name="mobile_settings_playlists_style_grid_short">Listas</string>
+    <string name="mobile_settings_playlists_style_rows_short">Vídeos</string>
+    <string name="mobile_settings_interface_size_sample">Así se ve el título de un vídeo con este tamaño</string>
+    <string name="mobile_settings_interface_size_sample_meta">MeTube · 1,2 M de visitas · hace 2 días</string>
+    <string name="mobile_settings_player_frost">Botones del lector esmerilados</string>
+    <string name="mobile_settings_player_frost_summary">Los botones sobre un vídeo o un short difuminan la imagen que tienen debajo. Consume más batería y puede ir a tirones en móviles lentos</string>
+    <string name="mobile_settings_performance">Rendimiento</string>
+    <string name="mobile_settings_high_refresh">Modo de alto rendimiento</string>
+    <string name="mobile_settings_high_refresh_summary">Mantiene la app a %1$d Hz para que la animación sea lo más fluida posible. Consume más batería; Android puede bajarla si el móvil se calienta o si activas el ahorro de batería</string>
+    <string name="mobile_settings_tab_motion">Animación al cambiar de pestaña</string>
+    <string name="mobile_settings_tab_motion_summary">Una lente de cristal se desliza hasta la pestaña y la barra da un meneo. En móviles lentos está apagada hasta que la enciendas</string>
+    <string name="mobile_settings_tabs_reset">Restablecer la barra</string>
+    <string name="mobile_settings_tabs_reset_summary">Inicio, Shorts, Buscar, Suscrip., Tú</string>
+    <string name="mobile_settings_video_layout">Distribución de los vídeos</string>
+    <string name="mobile_settings_video_layout_cards">Tarjetas</string>
+    <string name="mobile_settings_video_layout_cards_desc">Una miniatura grande para cada vídeo</string>
+    <string name="mobile_settings_video_layout_list">Lista</string>
+    <string name="mobile_settings_video_layout_list_desc">Una miniatura pequeña junto al título; caben más vídeos en pantalla</string>
 </resources>

@@ -10,6 +10,9 @@ Every MeTube release, newest first.<br>
 
 | Version | Released | Highlights |
 | :-- | :-- | :-- |
+| [**3.1.8** Lora](#318-lora) | 2026-10-27 | Live rings, a playful Customization page, zoom anywhere |
+| [**3.1.7** Clozone](#317-clozone) | 2026-10-26 | Your bars your way, live chat beside the video, share from the second |
+| [**3.1.5** Orizon](#315-orizon) | 2026-10-25 | A new You page, More videos in fullscreen, HDR video |
 | [**3.1.1** Spectre](#311-spectre) | 2026-10-22 | MeTube on Android TV, Shorts quality, tablet fixes |
 | [**3.1.0** DoomsSlay](#310-doomsslay) | 2026-10-22 | Actions in fullscreen, a video box that fits, quicker Shorts |
 | [**3.0.5**](#305) | 2026-10-21 | MeTube in Traditional Chinese, Shorts on channels, search chips |
@@ -32,6 +35,160 @@ Every MeTube release, newest first.<br>
 | [**1.5.0**](#150) | 2026-10-07 | Shorts |
 | [**1.0.0**](#100) | 2026-10-07 | Floating Glass |
 
+
+## 3.1.8 Lora
+
+> **Live rings, a playful Customization page, zoom anywhere**<br>
+> 📅 2026-10-27 · closes #46, #55, #73, #78, #79, #80, #81, #82, #83 and #86
+
+### ✨ New
+
+- **See who is live at a glance.** A channel streaming right now gets a glowing red ring around its picture: on video cards, in your Subscriptions strip, on the watch page and on the channel page, where a LIVE badge sits under it and a tap on the picture opens the stream (#73).
+- **Home chips made for you.** Right after All, Home now shows chips for the channels you watch most, picked from your watch history. Tap one for that channel's latest videos; Back takes you to All again (#79).
+- **Videos as a list.** Settings > Customization > Video layout shows videos as compact rows with a small thumbnail beside the title, so more fit on screen. It works on Home, Subscriptions, channels, playlists and search. Shorts stay as tiles (#82).
+- **Pinch to zoom, anywhere.** Zoom into the video up to 5x on the small player, in Shorts and in fullscreen, and move around with two fingers. Each new video starts whole again (#55).
+- **Comments like on YouTube.** Tap a comment to open its replies, double tap it to like it (#78).
+- **A liquid glass lens on the bottom bar.** Pick a tab and a glass lens glides over to it while the bar wiggles. Turn it off under Settings > Customization > Tab switch animation (#46).
+- **Frosted player buttons are back, as a setting.** Turn on Settings > Customization > Frosted player buttons and the buttons over a video and a short blur the picture under them again. It is off by default because it costs battery on slower phones (#80).
+- **High performance mode.** Settings > General > High performance mode keeps the app at your screen's top refresh rate, 120 Hz on most newer phones, for the smoothest scrolling. Off by default.
+- **All subscriptions in one list.** Hold All on the Subscriptions strip to see every channel you follow, A to Z.
+- **Reset the bar.** Settings > Customization > Tabs has a button that puts the bar back to Home, Shorts, Search, Subs and You.
+
+### 🛠️ Changed
+
+- **A playful Customization page.** Theme, app icon, Home layout, video layout, thumbnails and playlists are now picture tiles you tap, and Interface size is a slider with a live preview. Everything sits in four groups: Look, Layout, Glass and motion, Tabs and menus.
+- **Frosted glass switches.** Every switch in the app is a simple frosted glass toggle now.
+- **Tabs arrive out of frosted glass.** Switching tabs, the new page clears in from a soft blur.
+- **Shorts open smoother.** The Shorts player rises in from the bottom once the bar has settled, and going back is smoother too.
+- **Hold a short to see it clean.** The buttons fade away while you hold, and stay away after you let go until you touch the screen again. For 2x speed, hold the top right corner instead.
+- **The bottom bar stays on channel pages,** with the tab you came from still lit.
+- **Smaller buttons on the small player,** so they cover less of the video. Fullscreen keeps the big ones.
+
+### 🐛 Fixed
+
+- **Streams that just ended play again.** A live stream that finished in the last few hours only showed Retry. It now plays from the start (#83).
+- **Back on a filtered Subscriptions feed** goes to All your channels first, not to Home (#86).
+- **Bottom bar names line up.** "Subscriptions" wrapped onto two lines; the bar now says "Subs" (#81).
+- **Home no longer opens a menu on a long press** of its tab.
+- **Minimizing the player no longer jumps** back and forth on some phones.
+
+### ✅ Issues resolved
+
+| Issue | Asked for | In 3.1.8 |
+| :-- | :-- | :-- |
+| [#46](https://github.com/yashoncode/metube/issues/46) | A liquid glass bottom bar with effect settings | A glass lens glides between tabs, with its own switch |
+| [#55](https://github.com/yashoncode/metube/issues/55) | Zoom in the video player | Pinch to zoom up to 5x, everywhere |
+| [#73](https://github.com/yashoncode/metube/issues/73) | A red ring on live channels | A glowing ring wherever the channel shows |
+| [#78](https://github.com/yashoncode/metube/issues/78) | YouTube style comment taps | Tap for replies, double tap to like |
+| [#79](https://github.com/yashoncode/metube/issues/79) | Personal Home chips | Chips for the channels you watch most |
+| [#80](https://github.com/yashoncode/metube/issues/80) | Glass player buttons are gone | Frosted player buttons setting |
+| [#81](https://github.com/yashoncode/metube/issues/81) | Bottom bar names out of line | "Subs" fits on one line |
+| [#82](https://github.com/yashoncode/metube/issues/82) | Videos as a list | Video layout: Cards or List |
+| [#83](https://github.com/yashoncode/metube/issues/83) | Recent live streams only show Retry | They play from the start |
+| [#86](https://github.com/yashoncode/metube/issues/86) | Back from a channel goes Home | Back goes to All first |
+
+## 3.1.7 Clozone
+
+> **Your bars your way, live chat beside the video, share from the second**<br>
+> 📅 2026-10-26 · closes #31, #32, #33, #37, #42, #54, #63, #65, #66, #67 and #68
+
+### 💌 Love MeTube? Your friends might too
+
+- **Know someone still sitting through ads?** If MeTube spared you even one unskippable ad this week, there is probably a friend, a cousin or a mum out there still watching all of them like it is 2015. Send them [the download link](https://github.com/yashoncode/metube/releases/latest). Or don't, and keep the ad free life to yourself. We will just be here, refreshing the download count every five minutes, totally fine about it.
+
+### ✨ New
+
+- **Arrange your bars by dragging.** Settings > Customization > Tabs now shows your bars as a stack of tiles with a small preview above them. Hold a tile, or grab its grip, and slide it: Search and your two tabs move between Home and You, and the preview follows along. Drag Search up and it moves to the top bar next to Cast, like on YouTube. Tap a tab to change what it shows (#31).
+- **Live chat beside the video.** Upright, the chat sits under the video instead of covering it. Sideways, a chat button on the fullscreen pill opens it as a card on the right, and the video slides over to make room. Comments in landscape open in the same card (#32).
+- **Share from the second you are on.** A tap on Share sends the link as before. Hold it to send the link from where you are now, so your friend lands right on the good part (#68).
+- **Tap the time to see what is left.** The time on the player flips to the time remaining and back, and MeTube remembers your pick (#67).
+- **Hold a video in Up next for its menu.** The same menu as on Home: queue, save to a playlist, share and the rest (#66).
+- **Swipe a video out of your own playlists.** Watch later too. Changed your mind? Undo puts it back (#65).
+- **Mute, search and download on Shorts,** small at the top right like YouTube's. Mute stays on from short to short until you tap it again.
+
+### 🛠️ Changed
+
+- **The bottom bar gets out of the way.** It hides while you scroll down and comes back when you scroll up, and Search results get the same floating bar (#37).
+- **Shorts show your own picks first.** The Shorts tab opens on the Shorts from your account's Home, not just your subscriptions' (#42).
+- **A short's description is one tap away.** Tap its title (#33).
+- **Only tall Shorts fill the screen.** A square or wide short now shows whole, with the glow around it, instead of losing its sides.
+- **The mini player goes where you put it.** Drag it anywhere and it springs to the nearest corner. Fling it sideways to close it.
+- **The status bar glows with the video,** and Home blurs behind the player as you swipe it down to the mini player (Android 12 and newer).
+- **HDR says so.** With HDR on, the Quality sheet labels HDR streams, like "2160p60 HDR" (#63).
+- **Glass Accounts and Settings buttons** on the You page, with the colour light showing through.
+- **Channel pictures on Shorts fade in** like the ones on Home, instead of popping in.
+- **The Explore compass on Home is gone.** Music, Live, Gaming, News and Sports are still under Explore on the You page.
+
+### 🐛 Fixed
+
+- **Your History shows the Shorts you watched.** If you mostly watched Shorts lately, History looked empty.
+- **A tab you put on the bar shows up.** Turning it off under You used to hide it from the bar too. Putting it on the bar now turns it back on (#54).
+- **One decoder hiccup no longer lowers your quality for good.** When the phone could not start a video, MeTube dropped to 1080p and kept it for every video after. Now only that one video falls back. Thanks to NewTube for this fix.
+- **Swiping the player down from Search** no longer slips under the bottom bar and jumps.
+
+### ✅ Issues resolved
+
+| Issue | Asked for | In 3.1.7 |
+| :-- | :-- | :-- |
+| [#31](https://github.com/yashoncode/metube/issues/31) | Search button in the top bar | Drag Search up into the top bar |
+| [#32](https://github.com/yashoncode/metube/issues/32) | Live chat is hard to see, and missing in landscape | Chat under the video, or a card beside it |
+| [#33](https://github.com/yashoncode/metube/issues/33) | A description for Shorts | Tap a short's title |
+| [#37](https://github.com/yashoncode/metube/issues/37) | A bottom bar that hides like YouTube's | It hides as you scroll down |
+| [#42](https://github.com/yashoncode/metube/issues/42) | Shorts don't match the YouTube app | Your account's Shorts come first |
+| [#54](https://github.com/yashoncode/metube/issues/54) | Subscriptions missing from the bar | A tab on the bar always shows |
+| [#63](https://github.com/yashoncode/metube/issues/63) | HDR next to the quality | HDR streams say HDR |
+| [#65](https://github.com/yashoncode/metube/issues/65) | Swipe to remove from a playlist | Swipe it out, with Undo |
+| [#66](https://github.com/yashoncode/metube/issues/66) | Hold a video for its menu | Hold any video in Up next |
+| [#67](https://github.com/yashoncode/metube/issues/67) | Show the time left | Tap the time to flip it |
+| [#68](https://github.com/yashoncode/metube/issues/68) | Share with a timestamp | Hold Share |
+
+## 3.1.5 Orizon
+
+> **A new You page, More videos in fullscreen, HDR video**<br>
+> 📅 2026-10-25 · closes #24, #34, #35, #36, #38, #41, #45, #50, #56, #57 and #58
+
+### 📣 A new name is coming
+
+- **MeTube will get a new name soon.** The app, its features and your settings stay the same, and updates keep arriving as they do now. We want to pick the name with you: share your ideas and vote in [GitHub Discussions](https://github.com/yashoncode/metube/discussions).
+
+### ✨ New
+
+- **A You page like YouTube's.** Your picture, name and email up top with Accounts and Settings buttons, your latest History in a row that scrolls sideways, then your Library and Explore. A soft light in the corner slowly drifts through the colours and fades into true black, so it stays easy on AMOLED screens.
+- **Swipe up in fullscreen for More videos.** In landscape, a swipe up on the middle of the video raises a row of Up next videos while the video keeps playing. Pick one to play it, or swipe down, tap the video or press Back to put the row away. A small arrow at the bottom shows it is there (#24).
+- **An Explore menu on Home.** A compass before the topic chips opens a side menu with Music, Live, Gaming, News and Sports, frosted over the page, with the same colour light and rounded corners.
+- **HDR video.** Turn on HDR video in Settings > Player and HDR videos play in HDR on a screen that can show it. It is off by default (#35).
+
+### 🛠️ Changed
+
+- **The mini player opens on the first tap.** Its buttons fade away three seconds after it shows and come back when you touch it, and a tap on the video always opens it again (#34).
+- **Under a tall video, swiping up shows the details.** The video box first shrinks to the usual size, as on YouTube, then the page scrolls. Pull down at the top to grow it back (#36).
+- **Shorts stay Shorts in landscape.** Turn the phone or tablet sideways and you still swipe from short to short, see the whole short, and get comments beside it (#57).
+- **A like moves the like count.** Liking a video or a short now adds one to the count, and taking the like back takes one off (#45).
+- **Each channel tab keeps its place.** Switching between Videos, Shorts, Popular and the rest returns you to where you left each one (#50).
+- **See-through glass everywhere.** The buttons over the video, the mini player's buttons, the Search filter chips and the Search filters dialog all use the same clear glass, so the video and results show through.
+
+### 🐛 Fixed
+
+- **The quality you pick is the quality you get.** On some videos, choosing 1080p played 240p while the button still said 1080p. Now the closest quality at or below your pick plays (#58).
+- **Video titles no longer go missing.** A card that arrived with only a picture now fills in its title and channel by itself (#41).
+- **Home no longer stays stuck on the loading placeholders** on some phones, such as the Galaxy A03 Core, after the videos have loaded (#56).
+- **Leaving picture-in-picture no longer crashes,** and picture-in-picture no longer shows the whole app instead of the video (#38).
+
+### ✅ Issues resolved
+
+| Issue | Asked for | In 3.1.5 |
+| :-- | :-- | :-- |
+| [#24](https://github.com/yashoncode/metube/issues/24) | A swipe-up More videos panel in fullscreen | Swipe up in landscape for a row of Up next videos |
+| [#34](https://github.com/yashoncode/metube/issues/34) | Fix the mini player | One tap opens it, its buttons fade away |
+| [#35](https://github.com/yashoncode/metube/issues/35) | HDR video | An HDR video switch in Settings > Player |
+| [#36](https://github.com/yashoncode/metube/issues/36) | Swipe up to see a tall video's details | The box shrinks first, then the page scrolls |
+| [#38](https://github.com/yashoncode/metube/issues/38) | Picture-in-picture shows the whole app | Only the video floats, and leaving it no longer crashes |
+| [#41](https://github.com/yashoncode/metube/issues/41) | Video titles sometimes missing | Missing titles fill themselves in |
+| [#45](https://github.com/yashoncode/metube/issues/45) | Liking Shorts doesn't update the like | The like count moves with your like |
+| [#50](https://github.com/yashoncode/metube/issues/50) | Channel tabs jump back to the top | Each tab keeps its scroll position |
+| [#56](https://github.com/yashoncode/metube/issues/56) | Home stuck on loading | The placeholders always make way for the videos |
+| [#57](https://github.com/yashoncode/metube/issues/57) | Shorts turn into a normal video in landscape | Shorts mode holds in any orientation |
+| [#58](https://github.com/yashoncode/metube/issues/58) | 1080p picked, 240p played | The nearest quality to your pick plays |
 
 ## 3.1.1 Spectre
 

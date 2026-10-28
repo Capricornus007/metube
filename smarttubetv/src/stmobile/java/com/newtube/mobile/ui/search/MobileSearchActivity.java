@@ -188,6 +188,7 @@ public class MobileSearchActivity extends MobileActivity
         mMicButton = findViewById(R.id.mobile_search_mic);
         mSuggestions = findViewById(R.id.mobile_search_suggestions);
         mGrid = findViewById(R.id.mobile_search_grid);
+        setupNavPill(); // before the mini inset, which keeps the grid's bottom padding as its base
         // NEWTUBE(mini-inset): the last row can scroll clear of the docked mini-player card.
         com.newtube.mobile.ui.playback.MiniPlayerListInset.attach(findViewById(R.id.mobile_mini_player), mGrid);
         mSkeleton = findViewById(R.id.mobile_feed_skeleton);
@@ -199,6 +200,39 @@ public class MobileSearchActivity extends MobileActivity
             }
         });
     }
+
+    /**
+     * METUBE(search nav): Browse's floating tab bar over the results (Search lit), sliding away as
+     * they scroll down like Browse's. None when no Browse is open to copy the tabs from.
+     */
+    private void setupNavPill() {
+        View pill = findViewById(R.id.mobile_nav_glass);
+        View bar = findViewById(R.id.mobile_bottom_nav);
+        if (!com.newtube.mobile.ui.browse.MobileBrowseActivity.copyNavTabs(this,
+                (com.google.android.material.bottomnavigation.BottomNavigationView) bar,
+                () -> mGrid.smoothScrollToPosition(0))) {
+            return;
+        }
+        mNavPill = pill;
+        com.newtube.mobile.ui.common.Glass.blur(pill, findViewById(R.id.mobile_search_glass_source));
+        // The pill floats above the system bar already: the bar must not pad itself by it too.
+        ViewCompat.setOnApplyWindowInsetsListener(bar, (v, insets) -> insets);
+        int clearance = getResources().getDimensionPixelSize(R.dimen.metube_nav_clearance);
+        mGrid.setPadding(mGrid.getPaddingLeft(), mGrid.getPaddingTop(), mGrid.getPaddingRight(), clearance);
+        ((android.view.ViewGroup.MarginLayoutParams) findViewById(R.id.mobile_mini_player).getLayoutParams())
+                .bottomMargin = clearance;
+        mGrid.addOnScrollListener(new com.newtube.mobile.ui.common.NavHider(pill));
+        showNavPill();
+    }
+
+    /** The bar is the results' only: typing has the suggestions and the keyboard there. */
+    private void showNavPill() {
+        if (mNavPill != null) {
+            mNavPill.setVisibility(mSearchInput.hasFocus() ? View.GONE : View.VISIBLE);
+        }
+    }
+
+    private View mNavPill;
 
     /**
      * NEWTUBE(motion): the results area ends at the keyboard's top edge and follows it frame by
@@ -266,7 +300,7 @@ public class MobileSearchActivity extends MobileActivity
             | SearchOptions.TYPE_CHANNEL | SearchOptions.TYPE_PLAYLIST | SearchOptions.TYPE_MOVIE
             | SearchOptions.FEATURE_LIVE | SearchOptions.UPLOAD_DATE_TODAY | SearchOptions.UPLOAD_DATE_THIS_WEEK
             | SearchOptions.UPLOAD_DATE_THIS_MONTH | SearchOptions.UPLOAD_DATE_THIS_YEAR;
-    private com.google.android.material.chip.ChipGroup mChips;
+    private android.widget.LinearLayout mChips;
 
     /**
      * METUBE(search chips): YouTube's chip row over the results. A chip is a one-tap filter: it
@@ -275,10 +309,13 @@ public class MobileSearchActivity extends MobileActivity
      */
     private void setupChips() {
         mChips = findViewById(R.id.mobile_search_chips);
+        com.newtube.mobile.ui.common.GlassSource results = findViewById(R.id.mobile_search_chips_source);
         for (int[] entry : CHIPS) {
-            com.google.android.material.chip.Chip chip = (com.google.android.material.chip.Chip)
-                    getLayoutInflater().inflate(R.layout.mobile_search_chip, mChips, false);
+            TextView chip = (TextView) getLayoutInflater().inflate(R.layout.mobile_search_chip, mChips, false);
             chip.setText(entry[0]);
+            // METUBE(glass): frosted results under each chip, as the Home feed strip's pills.
+            com.newtube.mobile.ui.common.GlassDrawable.apply(chip, results, 0);
+            chip.setTag(R.id.mobile_search_chips, chip.getBackground());
             int flag = entry[1];
             chip.setOnClickListener(v -> {
                 int options = (mPresenter.getSearchOptions() & ~CHIP_FLAGS) | flag;
@@ -294,7 +331,18 @@ public class MobileSearchActivity extends MobileActivity
     private void syncChips() {
         int picked = mPresenter.getSearchOptions() & CHIP_FLAGS;
         for (int i = 0; i < CHIPS.length; i++) {
-            ((com.google.android.material.chip.Chip) mChips.getChildAt(i)).setChecked(CHIPS[i][1] == picked);
+            // The picked chip is a solid light pill (FeedStrip's), the rest are glass.
+            TextView chip = (TextView) mChips.getChildAt(i);
+            boolean selected = CHIPS[i][1] == picked;
+            if (selected) {
+                android.graphics.drawable.GradientDrawable bg = new android.graphics.drawable.GradientDrawable();
+                bg.setCornerRadius(18 * getResources().getDisplayMetrics().density);
+                bg.setColor(0xF2FFFFFF);
+                chip.setBackground(bg);
+            } else {
+                chip.setBackground((android.graphics.drawable.Drawable) chip.getTag(R.id.mobile_search_chips));
+            }
+            chip.setTextColor(selected ? 0xFF000000 : 0xFFFFFFFF);
         }
     }
 
@@ -305,7 +353,8 @@ public class MobileSearchActivity extends MobileActivity
 
     private void setupGrid() {
         mLayoutManager = new GridLayoutManager(this, computeSpanCount());
-        mAdapter = new VideoCardAdapter(this::onVideoClicked, this::onVideoLongClicked).showAvatars();
+        mAdapter = new VideoCardAdapter(this::onVideoClicked, this::onVideoLongClicked).showAvatars()
+                .setListRows(com.newtube.mobile.ui.browse.HomeLayout.isVideoList(this));
 
         // Channel results render as full-width rows even when landscape/tablet uses 2+ columns.
         // METUBE(shorts): every column is two spans wide, so Shorts sit two to a column.
@@ -390,6 +439,7 @@ public class MobileSearchActivity extends MobileActivity
             if (hasFocus) {
                 loadSearchTags(getSearchText());
             }
+            showNavPill();
         });
     }
 
@@ -762,8 +812,12 @@ public class MobileSearchActivity extends MobileActivity
 
     @Override
     public int getMiniCardBottomOffsetPx() {
-        // Overlay card (mobile_mini_player_overlay.xml) sits flush at the content bottom.
-        return 0;
+        // Overlay card (mobile_mini_player_overlay.xml): its 12dp margin, the morph's own, or clear of
+        // the nav pill (setupNavPill). Flush, the swipe-down aimed the video under the pill and it
+        // jumped up on landing.
+        View card = findViewById(R.id.mobile_mini_player);
+        int margin = ((android.view.ViewGroup.MarginLayoutParams) card.getLayoutParams()).bottomMargin;
+        return Math.max(0, margin - Math.round(12 * getResources().getDisplayMetrics().density));
     }
 
     // NOTE: back normally flows OnBackPressedDispatcher -> MobileActivity.finish() ->

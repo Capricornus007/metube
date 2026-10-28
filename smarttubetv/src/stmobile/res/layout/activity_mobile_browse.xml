@@ -126,15 +126,35 @@
             app:layout_constraintTop_toTopOf="parent"
             tools:visibility="visible">
 
+            <FrameLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content">
+
+            <!-- METUBE(rgb glow): the RGB light in the top left, behind the header and the top pills
+                 (the rows below are padded by padUnderTopBar). Its own glass source: the Accounts and
+                 Settings pills frost it (they sit inside mobile_blur_target, so can't sample that). -->
+            <com.newtube.mobile.ui.common.GlassSource
+                android:id="@+id/mobile_you_glow_source"
+                android:layout_width="match_parent"
+                android:layout_height="360dp"
+                android:background="@color/mobile_color_background">
+
+                <com.newtube.mobile.ui.common.RgbGlow
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent" />
+
+            </com.newtube.mobile.ui.common.GlassSource>
+
             <LinearLayout
+                android:id="@+id/mobile_you_content"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:orientation="vertical"
                 android:paddingBottom="@dimen/metube_nav_clearance">
 
-                <!-- Account header, official-app style: circular avatar (real account image via
-                     Glide when signed in), name + email, chevron. Tap = sign in when signed out,
-                     manage/switch accounts when signed in. -->
+                <!-- Account header, as YouTube's You page has it: a big avatar, the name and the
+                     email, then the Accounts and Settings pills. A tap on the header or on Accounts
+                     signs in when signed out and switches accounts when signed in. -->
                 <LinearLayout
                     android:id="@+id/mobile_you_account_row"
                     android:layout_width="match_parent"
@@ -144,13 +164,14 @@
                     android:focusable="true"
                     android:gravity="center_vertical"
                     android:orientation="horizontal"
-                    android:paddingHorizontal="20dp"
-                    android:paddingVertical="20dp">
+                    android:paddingHorizontal="16dp"
+                    android:paddingTop="16dp"
+                    android:paddingBottom="12dp">
 
                     <ImageView
                         android:id="@+id/mobile_you_avatar"
-                        android:layout_width="56dp"
-                        android:layout_height="56dp"
+                        android:layout_width="80dp"
+                        android:layout_height="80dp"
                         android:contentDescription="@null"
                         android:src="@drawable/ic_mobile_account" />
 
@@ -169,7 +190,7 @@
                             android:maxLines="1"
                             android:text="@string/dialog_add_account"
                             android:textColor="@color/mobile_color_on_surface"
-                            android:textSize="20sp"
+                            android:textSize="26sp"
                             android:textStyle="bold" />
 
                         <TextView
@@ -185,20 +206,101 @@
 
                     </LinearLayout>
 
-                    <ImageView
-                        android:layout_width="20dp"
-                        android:layout_height="20dp"
-                        android:contentDescription="@null"
-                        android:src="@drawable/ic_chevron_right" />
+                </LinearLayout>
+
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:orientation="horizontal"
+                    android:paddingHorizontal="16dp">
+
+                    <com.newtube.mobile.ui.common.GlassView
+                        android:layout_width="0dp"
+                        android:layout_height="44dp"
+                        android:layout_marginEnd="6dp"
+                        android:layout_weight="1"
+                        app:glassCornerRadius="22dp"
+                        app:glassTint="@color/metube_glass_tint">
+
+                        <com.google.android.material.button.MaterialButton
+                            android:id="@+id/mobile_you_accounts"
+                            style="@style/Widget.MaterialComponents.Button.TextButton"
+                            android:layout_width="match_parent"
+                            android:layout_height="match_parent"
+                            android:fontFamily="sans-serif-medium"
+                            android:insetTop="0dp"
+                            android:insetBottom="0dp"
+                            android:letterSpacing="0"
+                            android:text="@string/settings_accounts"
+                            android:textAllCaps="false"
+                            android:textColor="@color/mobile_color_on_surface"
+                            android:textSize="14sp"
+                            app:cornerRadius="22dp"
+                            app:rippleColor="@color/mobile_color_divider" />
+
+                    </com.newtube.mobile.ui.common.GlassView>
+
+                    <com.newtube.mobile.ui.common.GlassView
+                        android:layout_width="0dp"
+                        android:layout_height="44dp"
+                        android:layout_marginStart="6dp"
+                        android:layout_weight="1"
+                        app:glassCornerRadius="22dp"
+                        app:glassTint="@color/metube_glass_tint">
+
+                        <com.google.android.material.button.MaterialButton
+                            android:id="@+id/mobile_you_settings"
+                            style="@style/Widget.MaterialComponents.Button.TextButton"
+                            android:layout_width="match_parent"
+                            android:layout_height="match_parent"
+                            android:fontFamily="sans-serif-medium"
+                            android:insetTop="0dp"
+                            android:insetBottom="0dp"
+                            android:letterSpacing="0"
+                            android:text="@string/header_settings"
+                            android:textAllCaps="false"
+                            android:textColor="@color/mobile_color_on_surface"
+                            android:textSize="14sp"
+                            app:cornerRadius="22dp"
+                            app:rippleColor="@color/mobile_color_divider" />
+
+                    </com.newtube.mobile.ui.common.GlassView>
 
                 </LinearLayout>
 
-                <View
+                <!-- History, YouTube style: a heading that opens it, then its latest videos in a
+                     row that scrolls sideways (MobileBrowseActivity.loadYouHistory). -->
+                <LinearLayout
+                    android:id="@+id/mobile_you_history"
                     android:layout_width="match_parent"
-                    android:layout_height="1dp"
-                    android:layout_marginHorizontal="20dp"
-                    android:layout_marginBottom="8dp"
-                    android:background="@color/mobile_color_divider" />
+                    android:layout_height="wrap_content"
+                    android:orientation="vertical"
+                    android:visibility="gone">
+
+                    <TextView
+                        android:id="@+id/mobile_you_history_title"
+                        android:layout_width="wrap_content"
+                        android:layout_height="48dp"
+                        android:layout_marginTop="12dp"
+                        android:background="?attr/selectableItemBackground"
+                        android:drawableEnd="@drawable/ic_chevron_right"
+                        android:drawablePadding="4dp"
+                        android:gravity="center_vertical"
+                        android:paddingHorizontal="16dp"
+                        android:text="@string/header_history"
+                        android:textColor="@color/mobile_color_on_surface"
+                        android:textSize="20sp"
+                        android:textStyle="bold" />
+
+                    <androidx.recyclerview.widget.RecyclerView
+                        android:id="@+id/mobile_you_history_list"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:clipToPadding="false"
+                        android:nestedScrollingEnabled="false"
+                        android:paddingHorizontal="10dp" />
+
+                </LinearLayout>
 
                 <LinearLayout
                     android:id="@+id/mobile_you_rows"
@@ -207,6 +309,8 @@
                     android:orientation="vertical" />
 
             </LinearLayout>
+
+            </FrameLayout>
 
         </ScrollView>
 
@@ -448,7 +552,7 @@
          (see MobileBrowseActivity#attachMiniTexture + MiniPlayerBridge.getSessionTexture) -
          the codec's surface never changes, so the hand-off never freezes playback. The
          freeze ImageView shows the last captured frame during attach/detach beats.
-         Tap video = play/pause + X, tap again = expand; 2dp progress. -->
+         Tap video = expand; overlaid play/pause + X; 2dp progress. -->
     <com.google.android.material.card.MaterialCardView
         android:id="@+id/mobile_mini_player"
         android:contentDescription="@string/mobile_mini_expand"
@@ -490,49 +594,36 @@
 
             </androidx.media3.ui.AspectRatioFrameLayout>
 
-            <!-- METUBE(mini-controls): hidden until the card is tapped, like a PiP window's
-                 (MiniControls). -->
-            <FrameLayout
-                android:id="@+id/mobile_mini_controls"
-                android:layout_width="match_parent"
-                android:layout_height="match_parent"
-                android:visibility="gone">
+            <ImageButton
+                android:id="@+id/mobile_mini_play_pause"
+                android:layout_width="40dp"
+                android:layout_height="40dp"
+                android:layout_gravity="center"
+                android:contentDescription="@string/mobile_mini_play_pause"
+                android:padding="9dp"
+                android:src="@drawable/ic_player_pause" />
 
-                <ImageButton
-                    android:id="@+id/mobile_mini_play_pause"
-                    android:layout_width="40dp"
-                    android:layout_height="40dp"
-                    android:layout_gravity="center"
-                    android:background="@drawable/bg_mini_scrim_circle"
-                    android:contentDescription="@string/mobile_mini_play_pause"
-                    android:padding="9dp"
-                    android:src="@drawable/ic_player_pause" />
+            <!-- 48dp touch target, wholly inside the card (a child outside its parent gets no touches), around the same 40dp circle (was 28dp, then 40dp - NEWTUBE(touch)). -->
+            <ImageButton
+                android:id="@+id/mobile_mini_close"
+                android:layout_width="48dp"
+                android:layout_height="48dp"
+                android:layout_gravity="top|end"
+                android:layout_margin="0dp"
+                android:contentDescription="@string/mobile_mini_close"
+                android:padding="15dp"
+                android:src="@drawable/ic_sheet_close"
+                android:tint="@color/mobile_player_on_video" />
 
-                <!-- 48dp touch target, wholly inside the card (a child outside its parent gets no touches), around the same 40dp circle (was 28dp, then 40dp - NEWTUBE(touch)). -->
-                <ImageButton
-                    android:id="@+id/mobile_mini_close"
-                    android:layout_width="48dp"
-                    android:layout_height="48dp"
-                    android:layout_gravity="top|end"
-                    android:layout_margin="0dp"
-                    android:background="@drawable/bg_mini_scrim_circle_touch"
-                    android:contentDescription="@string/mobile_mini_close"
-                    android:padding="15dp"
-                    android:src="@drawable/ic_sheet_close"
-                    android:tint="@color/mobile_player_on_video" />
-
-                <ImageButton
-                    android:id="@+id/mobile_mini_audio"
-                    android:layout_width="48dp"
-                    android:layout_height="48dp"
-                    android:layout_gravity="top|start"
-                    android:background="@drawable/bg_mini_scrim_circle_touch"
-                    android:contentDescription="@string/mobile_player_audio_only"
-                    android:padding="14dp"
-                    android:src="@drawable/ic_player_headphones"
-                    android:tint="@color/mobile_player_on_video" />
-
-            </FrameLayout>
+            <ImageButton
+                android:id="@+id/mobile_mini_audio"
+                android:layout_width="48dp"
+                android:layout_height="48dp"
+                android:layout_gravity="top|start"
+                android:contentDescription="@string/mobile_player_audio_only"
+                android:padding="14dp"
+                android:src="@drawable/ic_player_headphones"
+                android:tint="@color/mobile_player_on_video" />
 
             <ProgressBar
                 android:id="@+id/mobile_mini_progress"
@@ -570,5 +661,16 @@
         <include layout="@layout/mobile_bottom_nav" />
 
     </com.newtube.mobile.ui.common.GlassView>
+
+    <!-- METUBE(nav lens, issue #46): the liquid glass lens a tab switch glides across the bar;
+         sized and placed in code (NavLens.play), there only while it moves. -->
+    <com.newtube.mobile.ui.common.NavLens
+        android:id="@+id/mobile_nav_lens"
+        android:layout_width="1dp"
+        android:layout_height="1dp"
+        android:elevation="8dp"
+        android:visibility="gone"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent" />
 
 </androidx.constraintlayout.widget.ConstraintLayout>

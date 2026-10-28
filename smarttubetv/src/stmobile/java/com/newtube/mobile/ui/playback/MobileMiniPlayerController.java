@@ -69,6 +69,18 @@ public final class MobileMiniPlayerController {
     private boolean mButtonsFadePending;
     private final MiniPlayerBridge.CardFold mCardFold = this::foldForPlayer;
 
+    /**
+     * METUBE(glass): the mini card's buttons on the player's see-through discs (close and audio:
+     * 40dp in a 48dp target). They are ImageButtons: with no background they show the platform's
+     * grey button box, so every screen with a card calls this (Home has its own card code).
+     */
+    public static void glassButtons(Activity activity) {
+        int inset = Math.round(4 * activity.getResources().getDisplayMetrics().density);
+        com.newtube.mobile.ui.common.GlassDrawable.apply(activity.findViewById(R.id.mobile_mini_play_pause), null, 0);
+        com.newtube.mobile.ui.common.GlassDrawable.apply(activity.findViewById(R.id.mobile_mini_close), null, inset);
+        com.newtube.mobile.ui.common.GlassDrawable.apply(activity.findViewById(R.id.mobile_mini_audio), null, inset);
+    }
+
     public MobileMiniPlayerController(Activity activity) {
         mActivity = activity;
         mBar = activity.findViewById(R.id.mobile_mini_player);
@@ -77,14 +89,12 @@ public final class MobileMiniPlayerController {
         mPlayPause = activity.findViewById(R.id.mobile_mini_play_pause);
         mClose = activity.findViewById(R.id.mobile_mini_close);
         mProgress = activity.findViewById(R.id.mobile_mini_progress);
-        mControls = new MiniControls(activity.findViewById(R.id.mobile_mini_controls));
+        glassButtons(activity);
+        mControls = new MiniControls(mPlayPause, mClose, activity.findViewById(R.id.mobile_mini_audio));
 
         View.OnClickListener expand = v -> {
             if (mClosing || !MiniPlayerBridge.isActive()) {
                 return; // a closed card leaving
-            }
-            if (mControls.onVideoTap()) {
-                return; // METUBE(mini-controls): the first tap shows the buttons
             }
             publishBounds();
             MiniPlayerBridge.expand(mActivity);
@@ -113,6 +123,11 @@ public final class MobileMiniPlayerController {
             @Override
             public void onSwipedAway(float toTranslationX, long durationMs) {
                 close(toTranslationX, durationMs);
+            }
+
+            @Override
+            public void onTouched() {
+                mControls.show();
             }
         }, mFrame, mBar);
     }
@@ -217,6 +232,7 @@ public final class MobileMiniPlayerController {
         mBar.setScaleX(1f);
         mBar.setScaleY(1f);
         mBar.setTranslationX(0f); // a card swiped away (MiniCardSwipe)
+        mBar.setTranslationY(0f); // or dragged to another corner (METUBE(mini-float))
 
         mEntryAnimating = animateFromPlayer;
         mTextureHasFrame = false;
@@ -230,6 +246,7 @@ public final class MobileMiniPlayerController {
         MiniPlayerBridge.fitToVideo(mFrame); // NEWTUBE(issue #9): letterbox, never stretch
         attachTexture();
         mBar.setVisibility(View.VISIBLE);
+        mControls.show();
         updatePlayPause(player);
 
         Utils.removeCallbacks(mTick);
@@ -363,11 +380,15 @@ public final class MobileMiniPlayerController {
             final TextureView texture = new TextureView(mActivity);
             texture.setOpaque(false); // NEWTUBE(texture-opaque): see MobilePlaybackActivity
             texture.setSurfaceTextureListener(new TextureView.SurfaceTextureListener() {
+                /** The session texture this view adopted: the player's, never released here. */
+                private SurfaceTexture mAdopted;
+
                 @Override
                 public void onSurfaceTextureAvailable(SurfaceTexture created, int width, int height) {
                     SurfaceTexture session = MiniPlayerBridge.getSessionTexture();
                     if (session != null && created != session) {
                         texture.setSurfaceTexture(session);
+                        mAdopted = session;
                         created.release();
                     }
                 }
@@ -379,8 +400,10 @@ public final class MobileMiniPlayerController {
                 @Override
                 public boolean onSurfaceTextureDestroyed(SurfaceTexture texture) {
                     // The playback Activity owns the session texture. Release only a temporary
-                    // TextureView-created surface that was never replaced by that session.
-                    return texture != MiniPlayerBridge.getSessionTexture();
+                    // TextureView-created surface that was never replaced by that session - checked
+                    // against the one adopted too: the bridge hands out nothing once the player
+                    // took the session back (METUBE(issue #38)).
+                    return texture != mAdopted && texture != MiniPlayerBridge.getSessionTexture();
                 }
 
                 @Override

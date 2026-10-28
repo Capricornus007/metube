@@ -73,6 +73,18 @@ final class AppPages {
                 context.getString(R.string.mobile_settings_indian_counts_summary),
                 () -> CountStyle.isIndian(context), on -> CountStyle.setIndian(context, on)).needsRestart());
 
+        // METUBE(performance): every screen at the display's top refresh rate (BitChord's setting).
+        rows.add(SettingsRow.header(context.getString(R.string.mobile_settings_performance)));
+        rows.add(SettingsRow.toggle(context.getString(R.string.mobile_settings_high_refresh),
+                context.getString(R.string.mobile_settings_high_refresh_summary,
+                        com.newtube.mobile.ui.common.HighRefresh.topRate(context)),
+                () -> com.newtube.mobile.ui.common.HighRefresh.isEnabled(context), on -> {
+                    com.newtube.mobile.ui.common.HighRefresh.setEnabled(context, on);
+                    if (context instanceof android.app.Activity) {
+                        com.newtube.mobile.ui.common.HighRefresh.apply((android.app.Activity) context);
+                    }
+                }));
+
         return new SettingsPages.Page(context.getString(R.string.mobile_settings_general), rows);
     }
 
@@ -84,14 +96,17 @@ final class AppPages {
         List<SettingsRow> rows = new ArrayList<>();
         MainUIData mainUIData = MainUIData.instance(context);
 
-        rows.add(SettingsRow.<Integer>choice(context.getString(R.string.mobile_theme))
+        // METUBE(customize): the pickers are tiles on the page, a picture per option (Tiles).
+        rows.add(SettingsRow.header(context.getString(R.string.mobile_settings_customize_look)));
+        rows.add(Tiles.of(SettingsRow.<Integer>choice(context.getString(R.string.mobile_theme))
                 .option(context.getString(R.string.mobile_theme_system), ThemeMode.SYSTEM)
                 .option(context.getString(R.string.mobile_theme_light), ThemeMode.LIGHT)
                 .option(context.getString(R.string.mobile_theme_dark), ThemeMode.DARK)
-                .bind(ThemeMode::get, mode -> ThemeMode.set(context, mode)));
+                .bind(ThemeMode::get, mode -> ThemeMode.set(context, mode)),
+                132, Tiles.THEME_SYSTEM, Tiles.THEME_LIGHT, Tiles.THEME_DARK));
 
         // METUBE(app icon): the launcher may take a few seconds to redraw it.
-        rows.add(SettingsRow.<String>choice(context.getString(R.string.mobile_settings_app_icon))
+        rows.add(Tiles.of(SettingsRow.<String>choice(context.getString(R.string.mobile_settings_app_icon))
                 .option(context.getString(R.string.mobile_app_icon_default), R.mipmap.app_icon,
                         com.newtube.mobile.ui.common.AppIcon.DEFAULT)
                 .option(context.getString(R.string.mobile_app_icon_classic), R.mipmap.app_icon_classic,
@@ -99,7 +114,59 @@ final class AppPages {
                 .option(context.getString(R.string.mobile_app_icon_fantasy), R.mipmap.app_icon_fantasy,
                         com.newtube.mobile.ui.common.AppIcon.FANTASY)
                 .bind(() -> com.newtube.mobile.ui.common.AppIcon.current(context),
-                        icon -> com.newtube.mobile.ui.common.AppIcon.set(context, icon)));
+                        icon -> com.newtube.mobile.ui.common.AppIcon.set(context, icon)),
+                88, Tiles.ICON, Tiles.ICON, Tiles.ICON));
+
+        rows.add(Tiles.slider(interfaceSize(context, mainUIData), mainUIData));
+
+        rows.add(SettingsRow.header(context.getString(R.string.mobile_settings_customize_layout)));
+
+        // METUBE(home-rows, issue #4): Home as one feed, or as SmartTube's rows of shelves.
+        rows.add(Tiles.of(SettingsRow.<Boolean>choice(context.getString(R.string.mobile_settings_home_layout))
+                .option(context.getString(R.string.mobile_settings_home_layout_feed),
+                        context.getString(R.string.mobile_settings_home_layout_feed_desc), false)
+                .option(context.getString(R.string.mobile_settings_home_layout_rows),
+                        context.getString(R.string.mobile_settings_home_layout_rows_desc), true)
+                .bind(() -> com.newtube.mobile.ui.browse.HomeLayout.isRows(context),
+                        rowsOn -> com.newtube.mobile.ui.browse.HomeLayout.setRows(context, rowsOn)),
+                132, Tiles.FEED, Tiles.SHELVES));
+
+        // METUBE(list layout, issue #82): feeds, channels, playlists and search as cards or as rows.
+        rows.add(Tiles.of(SettingsRow.<Boolean>choice(context.getString(R.string.mobile_settings_video_layout))
+                .option(context.getString(R.string.mobile_settings_video_layout_cards),
+                        context.getString(R.string.mobile_settings_video_layout_cards_desc), false)
+                .option(context.getString(R.string.mobile_settings_video_layout_list),
+                        context.getString(R.string.mobile_settings_video_layout_list_desc), true)
+                .bind(() -> com.newtube.mobile.ui.browse.HomeLayout.isVideoList(context),
+                        list -> com.newtube.mobile.ui.browse.HomeLayout.setVideoList(context, list)),
+                132, Tiles.FEED, Tiles.LIST));
+
+        rows.add(Tiles.of(SettingsRow.<Integer>choice(context.getString(R.string.mobile_settings_thumbnails))
+                .option(context.getString(R.string.mobile_settings_thumbnails_default_short),
+                        context.getString(R.string.mobile_settings_thumbnails_default), ClickbaitRemover.THUMB_QUALITY_DEFAULT)
+                .option(context.getString(R.string.mobile_settings_thumbnails_start_short),
+                        context.getString(R.string.mobile_settings_thumbnails_start), ClickbaitRemover.THUMB_QUALITY_START)
+                .option(context.getString(R.string.mobile_settings_thumbnails_middle_short),
+                        context.getString(R.string.mobile_settings_thumbnails_middle), ClickbaitRemover.THUMB_QUALITY_MIDDLE)
+                .option(context.getString(R.string.mobile_settings_thumbnails_end_short),
+                        context.getString(R.string.mobile_settings_thumbnails_end), ClickbaitRemover.THUMB_QUALITY_END)
+                .bind(mainUIData::getThumbQuality, mainUIData::setThumbQuality),
+                64, Tiles.THUMB_DEFAULT, Tiles.THUMB_START, Tiles.THUMB_MIDDLE, Tiles.THUMB_END));
+
+        rows.add(Tiles.of(SettingsRow.<Integer>choice(context.getString(R.string.mobile_settings_playlists_style))
+                .option(context.getString(R.string.mobile_settings_playlists_style_grid_short),
+                        context.getString(R.string.mobile_settings_playlists_style_grid), MainUIData.PLAYLISTS_STYLE_GRID)
+                .option(context.getString(R.string.mobile_settings_playlists_style_rows_short),
+                        context.getString(R.string.mobile_settings_playlists_style_rows), MainUIData.PLAYLISTS_STYLE_ROWS)
+                .bind(mainUIData::getPlaylistsStyle, style -> {
+                    mainUIData.setPlaylistsStyle(style);
+                    BrowsePresenter.instance(context).updatePlaylistsStyle();
+                }),
+                132, Tiles.GRID, Tiles.LIST));
+
+        rows.add(startScreen(context));
+
+        rows.add(SettingsRow.header(context.getString(R.string.mobile_settings_customize_effects)));
 
         // METUBE(glass): the lens shader runs every frame something scrolls under the glass.
         rows.add(SettingsRow.toggle(context.getString(R.string.mobile_settings_liquid_glass),
@@ -107,44 +174,27 @@ final class AppPages {
                 () -> com.newtube.mobile.ui.common.Glass.isLiquid(context),
                 on -> com.newtube.mobile.ui.common.Glass.setLiquid(context, on)).needsRestart());
 
-        rows.add(interfaceSize(context, mainUIData));
+        // METUBE(glass): the player's and Shorts' buttons frost the video under them; off by default.
+        rows.add(SettingsRow.toggle(context.getString(R.string.mobile_settings_player_frost),
+                context.getString(R.string.mobile_settings_player_frost_summary),
+                () -> com.newtube.mobile.ui.common.Glass.isPlayerFrost(context),
+                on -> com.newtube.mobile.ui.common.Glass.setPlayerFrost(context, on)).needsRestart());
 
-        rows.add(startScreen(context));
-
-        // METUBE(home-rows, issue #4): Home as one feed, or as SmartTube's rows of shelves.
-        rows.add(SettingsRow.<Boolean>choice(context.getString(R.string.mobile_settings_home_layout))
-                .option(context.getString(R.string.mobile_settings_home_layout_feed),
-                        context.getString(R.string.mobile_settings_home_layout_feed_desc), false)
-                .option(context.getString(R.string.mobile_settings_home_layout_rows),
-                        context.getString(R.string.mobile_settings_home_layout_rows_desc), true)
-                .bind(() -> com.newtube.mobile.ui.browse.HomeLayout.isRows(context),
-                        rowsOn -> com.newtube.mobile.ui.browse.HomeLayout.setRows(context, rowsOn)));
+        // METUBE(nav lens): the tab switch's lens and wiggle; off by default on a low-end phone.
+        rows.add(SettingsRow.toggle(context.getString(R.string.mobile_settings_tab_motion),
+                context.getString(R.string.mobile_settings_tab_motion_summary),
+                () -> com.newtube.mobile.ui.common.NavLens.enabled(context),
+                on -> com.newtube.mobile.ui.common.NavLens.setEnabled(context, on)));
 
         rows.add(SettingsRow.toggle(context.getString(R.string.mobile_settings_nav_labels),
                 context.getString(R.string.mobile_settings_nav_labels_summary),
                 () -> NavTabs.showLabels(context), on -> NavTabs.setShowLabels(context, on)));
 
-        rows.add(SettingsRow.divider());
-
+        rows.add(SettingsRow.header(context.getString(R.string.mobile_settings_customize_tabs_menus)));
         rows.add(SettingsRow.page(context.getString(R.string.mobile_settings_tabs),
                 () -> context.getString(R.string.mobile_settings_tabs_summary), SettingsPages.FEEDS_TABS));
         rows.add(SettingsRow.page(context.getString(R.string.mobile_settings_video_menu),
                 () -> context.getString(R.string.mobile_settings_video_menu_summary), SettingsPages.FEEDS_MENU));
-
-        rows.add(SettingsRow.<Integer>choice(context.getString(R.string.mobile_settings_thumbnails))
-                .option(context.getString(R.string.mobile_settings_thumbnails_default), ClickbaitRemover.THUMB_QUALITY_DEFAULT)
-                .option(context.getString(R.string.mobile_settings_thumbnails_start), ClickbaitRemover.THUMB_QUALITY_START)
-                .option(context.getString(R.string.mobile_settings_thumbnails_middle), ClickbaitRemover.THUMB_QUALITY_MIDDLE)
-                .option(context.getString(R.string.mobile_settings_thumbnails_end), ClickbaitRemover.THUMB_QUALITY_END)
-                .bind(mainUIData::getThumbQuality, mainUIData::setThumbQuality));
-
-        rows.add(SettingsRow.<Integer>choice(context.getString(R.string.mobile_settings_playlists_style))
-                .option(context.getString(R.string.mobile_settings_playlists_style_grid), MainUIData.PLAYLISTS_STYLE_GRID)
-                .option(context.getString(R.string.mobile_settings_playlists_style_rows), MainUIData.PLAYLISTS_STYLE_ROWS)
-                .bind(mainUIData::getPlaylistsStyle, style -> {
-                    mainUIData.setPlaylistsStyle(style);
-                    BrowsePresenter.instance(context).updatePlaylistsStyle();
-                }));
 
         return new SettingsPages.Page(context.getString(R.string.mobile_settings_customize), rows);
     }
@@ -264,8 +314,14 @@ final class AppPages {
                 MediaGroup.TYPE_USER_PLAYLISTS, MediaGroup.TYPE_MY_VIDEOS, MediaGroup.TYPE_CHANNEL_UPLOADS,
                 MediaGroup.TYPE_PLAYBACK_QUEUE, MediaGroup.TYPE_BLOCKED_CHANNELS};
 
-        rows.add(SettingsRow.header(context.getString(R.string.mobile_settings_tabs_bottom_bar)));
-        addSectionToggles(context, rows, sections, bottomBar, true);
+        rows.add(BarEditor.row(context)); // METUBE(bar editor): the bars as a stack to drag
+        rows.add(SettingsRow.note(context.getString(R.string.mobile_settings_tabs_bar_note)));
+        // METUBE(bar reset): Home, Shorts, Search, Subs, You - Search in the bar, not on top.
+        rows.add(SettingsRow.action(context.getString(R.string.mobile_settings_tabs_reset),
+                context.getString(R.string.mobile_settings_tabs_reset_summary), page -> {
+                    NavTabs.setLayout(context, MediaGroup.TYPE_SHORTS, MediaGroup.TYPE_SUBSCRIPTIONS, 1, false);
+                    page.rebuild();
+                }));
         rows.add(SettingsRow.toggle(context.getString(R.string.mobile_settings_shorts_player),
                 context.getString(R.string.mobile_settings_shorts_player_summary),
                 mainUIData::isShortsTabPlayerEnabled, mainUIData::setShortsTabPlayerEnabled));
@@ -291,23 +347,6 @@ final class AppPages {
         rows.add(SettingsRow.note(context.getString(R.string.mobile_settings_tabs_note)));
 
         return new SettingsPages.Page(context.getString(R.string.mobile_settings_tabs), rows);
-    }
-
-    /** METUBE(nav tabs, issue #7): one of the two bottom-bar tabs beside Search. */
-    private static SettingsRow navTab(Context context, int slot, int titleRes) {
-        int[] titles = {R.string.header_shorts, R.string.header_subscriptions, R.string.header_downloads,
-                R.string.header_history};
-        SettingsRow.Choice<Integer> choice = SettingsRow.choice(context.getString(titleRes));
-        for (int i = 0; i < NavTabs.CHOICES.length; i++) {
-            choice.option(context.getString(titles[i]), NavTabs.CHOICES[i]);
-        }
-        choice.option(context.getString(R.string.mobile_settings_tabs_none), NavTabs.NONE);
-        return choice.bind(() -> NavTabs.get(context, slot), sectionId -> {
-            NavTabs.set(context, slot, sectionId);
-            if (sectionId != NavTabs.NONE) {
-                BrowsePresenter.instance(context).enableSection(sectionId, true);
-            }
-        });
     }
 
     private static void addSectionToggles(Context context, List<SettingsRow> rows, Map<Integer, Integer> sections,

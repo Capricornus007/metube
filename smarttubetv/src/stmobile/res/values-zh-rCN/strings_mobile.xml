@@ -44,12 +44,14 @@
     <string name="mobile_watch_subscribe">订阅</string>
     <string name="mobile_watch_subscribed">已订阅</string>
     <string name="mobile_watch_related">即将播放</string>
+    <string name="mobile_player_more_videos">更多视频</string>
     <string name="mobile_watch_offline">你已离线</string>
     <string name="mobile_watch_queue_from">正在播放来自 %1$s 的内容</string>
     <string name="mobile_watch_queue_fallback">队列</string>
     <string name="mobile_watch_queue_now_playing">正在播放</string>
     <string name="mobile_watch_description">简介</string>
     <string name="mobile_watch_share_subject">观看此视频</string>
+    <string name="mobile_watch_share_at">从 %1$s 开始分享</string>
     <string name="mobile_comments_entry">评论</string>
     <string name="mobile_comments_title">评论</string>
     <string name="mobile_comments_replies_title">回复</string>
@@ -107,7 +109,9 @@
     <string name="mobile_search_error">无法加载结果。</string>
     <string name="mobile_channel_tab_videos">视频</string>
     <string name="mobile_nav_you">我</string>
+    <string name="mobile_nav_subs">订阅</string>
     <string name="mobile_you_explore">探索</string>
+    <string name="mobile_you_library">媒体库</string>
     <string name="mobile_no_browser">未找到可打开此链接的应用</string>
     <string name="mobile_add_device_title">配对设备</string>
     <string name="mobile_add_device_done">完成</string>
@@ -319,4 +323,8 @@
     <string name="mobile_about_share_text">MeTube —— 一款基于 SmartTube 的手机 YouTube 客户端：%1$s</string>
     <string name="sabr_vod_option">即使链接可用也优先 SABR（实验性；下一个 VOD）</string>
     <string name="sabr_vod_stopped">实验性 SABR 播放已停止。点播放重试，或在设置中禁用 SABR。</string>
+    <string name="mobile_shorts_mute">静音</string>
+    <string name="mobile_shorts_unmute">取消静音</string>
+    <!-- METUBE 3.1.8: new mobile strings (zh-CN) -->
+    <string name="mobile_subs_all_channels">全部订阅</string>
 </resources>

@@ -4,7 +4,9 @@
      translation or the bar reads "Inicio / Suscripciones / Historial / You". -->
 <resources xmlns:tools="http://schemas.android.com/tools">
     <string name="mobile_nav_you">Tú</string>
+    <string name="mobile_nav_subs">Suscrip.</string>
     <string name="mobile_you_explore">Explorar</string>
+    <string name="mobile_you_library">Biblioteca</string>
 
     <!-- Upstream es translation says "REGISTRARSE" (= create an account) on every sign-in
          button - wrong action. App-module resources override the library's, so fix it here
@@ -95,9 +97,11 @@
     <string name="mobile_lyrics_provider_not_fetched">Toca para buscar</string>
     <string name="mobile_lyrics_provider_not_found">Letra no encontrada</string>
     <string name="mobile_watch_share_subject">Mira este vídeo</string>
+    <string name="mobile_watch_share_at">Compartiendo desde %1$s</string>
     <string name="mobile_watch_subscribe">Suscribirse</string>
     <string name="mobile_watch_subscribed">Suscrito</string>
     <string name="mobile_watch_related">A continuación</string>
+    <string name="mobile_player_more_videos">Más videos</string>
     <string name="mobile_watch_offline">Sin conexión</string>
     <string name="mobile_watch_description">Descripción</string>
     <string name="mobile_watch_queue_from">Reproduciendo de %1$s</string>
@@ -427,4 +431,8 @@
     <string name="mobile_next_in">A continuación en %1$d</string>
     <string name="mobile_next_play">Reproducir</string>
     <string name="mobile_next_cancel">Cancelar</string>
+    <string name="mobile_shorts_mute">Silenciar</string>
+    <string name="mobile_shorts_unmute">Activar sonido</string>
+    <!-- METUBE 3.1.8: new mobile strings (es) -->
+    <string name="mobile_subs_all_channels">Todas las suscripciones</string>
 </resources>

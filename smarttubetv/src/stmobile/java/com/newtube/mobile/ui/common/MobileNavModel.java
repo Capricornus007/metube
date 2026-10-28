@@ -8,6 +8,7 @@ import com.liskovsoft.sharedutils.helpers.Helpers;
 import com.liskovsoft.smartyoutubetv2.common.app.models.data.BrowseSection;
 import com.liskovsoft.smartyoutubetv2.common.misc.VideoDownloads;
 import com.liskovsoft.smartyoutubetv2.tv.R;
+import com.newtube.mobile.ui.browse.NavTabs;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -27,27 +28,20 @@ public final class MobileNavModel {
     public static final int YOU_ITEM_ID = 2_000_000;
     public static final int MAX_NAV_ITEMS = 5;
 
-    private static final int[] PREFERRED_SECTION_IDS = {
-            MediaGroup.TYPE_HOME,
-            // METUBE(shorts): Shorts takes History's tab (History lives on in the You panel).
-            MediaGroup.TYPE_SHORTS,
-            MediaGroup.TYPE_SUBSCRIPTIONS,
-            VideoDownloads.SECTION_ID,
-    };
-    private static final int[] PREFERRED_SECTION_TITLE_RES = {
-            R.string.header_home,
-            R.string.header_shorts,
-            R.string.header_subscriptions,
-            R.string.header_downloads,
-    };
-
     private MobileNavModel() {}
 
     public static int toMenuItemId(int sectionId) {
         return sectionId + ITEM_ID_OFFSET;
     }
 
-    /** The enabled sections that get a tab, in tab order, capped at {@link #MAX_NAV_ITEMS}. */
+    /**
+     * The enabled sections that get a tab, in tab order, capped at {@link #MAX_NAV_ITEMS}.
+     *
+     * <p>METUBE(nav tabs, issue #7 / BarEditor): Home is fixed on the bar; the other two tabs are
+     * whatever Settings &gt; Customization &gt; Tabs put in the two slots ({@link NavTabs}), and the
+     * rest live in the You panel. The bar and this model are the same list, so a drag in BarEditor
+     * moves the pill in the Shorts player too.</p>
+     */
     public static List<BrowseSection> selectNavSections(
             Context context, List<BrowseSection> sections) {
         List<BrowseSection> chosen = new ArrayList<>();
@@ -64,9 +58,14 @@ public final class MobileNavModel {
             }
         }
 
-        for (int i = 0; i < PREFERRED_SECTION_IDS.length && chosen.size() < MAX_NAV_ITEMS; i++) {
-            BrowseSection match = findPreferredSection(
-                    context, enabledSections, chosen, PREFERRED_SECTION_IDS[i], PREFERRED_SECTION_TITLE_RES[i]);
+        int[] ids = {MediaGroup.TYPE_HOME, NavTabs.get(context, NavTabs.FIRST),
+                NavTabs.get(context, NavTabs.SECOND)};
+        for (int id : ids) {
+            if (chosen.size() >= MAX_NAV_ITEMS) {
+                break;
+            }
+            BrowseSection match = id == NavTabs.NONE ? null : findPreferredSection(
+                    context, enabledSections, chosen, id, id == MediaGroup.TYPE_HOME ? R.string.header_home : 0);
 
             if (match != null) {
                 chosen.add(match);
@@ -76,18 +75,19 @@ public final class MobileNavModel {
         return chosen;
     }
 
-    /** Matches primarily by section id; falls back to a title-string match. */
+    /** Matches primarily by section id; falls back to a title-string match ({@code titleResId} 0: none). */
     private static BrowseSection findPreferredSection(
             Context context, List<BrowseSection> candidates, List<BrowseSection> alreadyChosen,
             int id, int titleResId) {
-        String fallbackTitle = context.getString(titleResId);
+        String fallbackTitle = titleResId != 0 ? context.getString(titleResId) : null;
 
         for (BrowseSection section : candidates) {
             if (alreadyChosen.contains(section)) {
                 continue;
             }
 
-            if (section.getId() == id || Helpers.equals(section.getTitle(), fallbackTitle)) {
+            if (section.getId() == id
+                    || (fallbackTitle != null && Helpers.equals(section.getTitle(), fallbackTitle))) {
                 return section;
             }
         }
@@ -134,8 +134,11 @@ public final class MobileNavModel {
 
         for (int i = 0; i < navSections.size(); i++) {
             BrowseSection section = navSections.get(i);
+            // METUBE(issue #81): "Subscriptions" wraps to two lines in a 5-tab bar; the bar says "Subs".
+            CharSequence title = section.getId() == MediaGroup.TYPE_SUBSCRIPTIONS
+                    ? context.getString(R.string.mobile_nav_subs) : section.getTitle();
             android.view.MenuItem item =
-                    menu.add(android.view.Menu.NONE, toMenuItemId(section.getId()), i, section.getTitle());
+                    menu.add(android.view.Menu.NONE, toMenuItemId(section.getId()), i, title);
             int icon = navIconOrResFor(section);
             if (icon > 0) {
                 item.setIcon(icon);

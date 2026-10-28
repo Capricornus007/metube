@@ -438,11 +438,11 @@
     <string name="mobile_search_filter_any">
         不限
     </string>
-    <string name="mobile_search_filter_under_4">
-        4 分鐘以下
+    <string name="mobile_search_filter_under_3">
+        3 分鐘以下
     </string>
-    <string name="mobile_search_filter_4_20">
-        4 - 20 分鐘
+    <string name="mobile_search_filter_3_20">
+        3 - 20 分鐘
     </string>
     <string name="mobile_search_filter_over_20">
         20 分鐘以上
@@ -530,4 +530,16 @@
     <string name="mobile_cast_code_smarttube">SmartTube</string>
     <string name="mobile_about_repo_url">https://github.com/yashoncode/metube</string>
     <string name="mobile_about_site_url">https://github.com/yashoncode/metube</string>
+    <!-- METUBE 3.1.5-3.1.8: upstream new mobile strings (zh-TW) -->
+    <string name="mobile_nav_subs">訂閱</string>
+    <string name="mobile_player_more_videos">更多影片</string>
+    <string name="mobile_shorts_mute">靜音</string>
+    <string name="mobile_shorts_unmute">取消靜音</string>
+    <string name="mobile_subs_all_channels">全部訂閱</string>
+    <string name="mobile_watch_share_at">從 %1$s 開始分享</string>
+    <string name="mobile_you_library">媒體庫</string>
+    <!-- METUBE 3.1.5-3.1.8: 補上游新增字串繁中譯（zh-TW） -->
+    <string name="mobile_player_hide_actions">隱藏動作欄</string>
+    <string name="mobile_player_show_actions">顯示動作欄</string>
+    <string name="mobile_empty_my_videos">你公開上傳的影片會顯示在這裡。YouTube 不會把私人與未列出的影片放進 MeTube 使用的電視登入。</string>
 </resources>

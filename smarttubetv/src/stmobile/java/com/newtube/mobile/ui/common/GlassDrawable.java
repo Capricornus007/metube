@@ -31,7 +31,8 @@ import androidx.annotation.Nullable;
  * view. A disc (a pill, on a wide view) inset into the bounds: the {@link GlassSource} under it
  * (the video) saturated and blurred, a dark tint, grain and a light rim, with a ripple on press.
  * No lens: on a 40dp disc it would only magnify. Below API 31 there is nothing to sample, so the
- * tint alone, darker. With Liquid glass off ({@link Glass#isLiquid}) no grain or rim, as GlassView.
+ * tint alone, darker. With no source (the player's controls) the light tint alone: see-through.
+ * With Liquid glass off ({@link Glass#isLiquid}) no grain or rim, as GlassView.
  */
 public final class GlassDrawable extends Drawable {
     private static final float BLUR_DP = 12f;
@@ -135,7 +136,7 @@ public final class GlassDrawable extends Drawable {
         float r = Math.min(mShape.width(), mShape.height()) / 2f;
         boolean live = mNode != null && !mPaused && canvas.isHardwareAccelerated()
                 && Build.VERSION.SDK_INT >= Build.VERSION_CODES.S;
-        mTint.setColor(live ? TINT : FALLBACK_TINT);
+        mTint.setColor(live || mSource == null || mPaused ? TINT : FALLBACK_TINT);
         if (live) {
             moved();
             mRecordedX = mLoc[0] - mSourceLoc[0];

@@ -5,53 +5,57 @@ import android.view.View;
 import com.newtube.mobile.ui.common.Motion;
 
 /**
- * METUBE(mini-controls): the mini card's buttons stay hidden over the video, like a PiP window's.
- * A tap on the card brings them up for a few seconds; a tap on the video while they show expands.
+ * METUBE(mini-controls): the mini card's buttons fade out a few seconds after the card shows,
+ * leaving a bare picture; a finger on the card brings them back. A tap on the video still expands
+ * at once: a first tap that only revealed the buttons read as "the card won't open" (issue #34).
+ * Faded buttons are INVISIBLE, so a tap where one was reaches the video instead of pausing.
  */
 public final class MiniControls {
     private static final long SHOWN_MS = 3000;
 
-    private final View mControls;
+    private final View[] mButtons;
     private final Runnable mHide = this::hide;
-    private boolean mShown;
 
-    public MiniControls(View controls) {
-        mControls = controls;
+    public MiniControls(View... buttons) {
+        mButtons = buttons;
     }
 
-    /** A tap on the video: true when it only brought the buttons up, so it must not expand. */
-    public boolean onVideoTap() {
-        if (mShown) {
-            return false;
-        }
-        show();
-        return true;
-    }
-
-    /** Up, or up a few seconds longer (a button was used). */
+    /** Up (faded back in, if they had gone), and down again SHOWN_MS from now. */
     public void show() {
-        mShown = true;
-        mControls.removeCallbacks(mHide);
-        mControls.animate().cancel();
-        if (mControls.getVisibility() != View.VISIBLE) {
-            mControls.setAlpha(0f);
-            mControls.setVisibility(View.VISIBLE);
+        android.content.Context context = mButtons[0].getContext();
+        if (android.os.Build.VERSION.SDK_INT >= android.os.Build.VERSION_CODES.N
+                && context instanceof android.app.Activity
+                && ((android.app.Activity) context).isInPictureInPictureMode()) {
+            return; // a PiP window is a bare picture (MiniPip hides the buttons)
         }
-        mControls.animate().alpha(1f).setDuration(Motion.FADE_IN_MS).setInterpolator(Motion.STANDARD).start();
-        mControls.postDelayed(mHide, SHOWN_MS);
+        for (View button : mButtons) {
+            if (button.getVisibility() != View.VISIBLE) {
+                button.setAlpha(0f);
+                button.setVisibility(View.VISIBLE);
+            }
+            if (button.getAlpha() < 1f) { // faded, or fading out (a hide's end action is cancelled)
+                button.animate().cancel();
+                button.animate().alpha(1f).setDuration(Motion.FADE_IN_MS).setInterpolator(Motion.STANDARD).start();
+            }
+        }
+        mButtons[0].removeCallbacks(mHide);
+        mButtons[0].postDelayed(mHide, SHOWN_MS);
     }
 
     private void hide() {
-        mShown = false;
-        mControls.animate().alpha(0f).setDuration(Motion.FADE_OUT_MS).setInterpolator(Motion.STANDARD)
-                .withEndAction(() -> mControls.setVisibility(View.GONE)).start();
+        for (View button : mButtons) {
+            button.animate().alpha(0f).setDuration(Motion.FADE_OUT_MS).setInterpolator(Motion.STANDARD)
+                    .withEndAction(() -> button.setVisibility(View.INVISIBLE)).start();
+        }
     }
 
-    /** Gone at once: the card folded, so it comes back as a bare picture. */
+    /** The card went: no fade pending, and it comes back with its buttons up. */
     public void reset() {
-        mShown = false;
-        mControls.removeCallbacks(mHide);
-        mControls.animate().cancel();
-        mControls.setVisibility(View.GONE);
+        mButtons[0].removeCallbacks(mHide);
+        for (View button : mButtons) {
+            button.animate().cancel();
+            button.setAlpha(1f);
+            button.setVisibility(View.VISIBLE);
+        }
     }
 }

@@ -217,6 +217,10 @@ class Media3TrackAdapter {
             MediaTrack track = item.getTrack();
             String codec = track != null && track.format != null ? track.format.codecs : null;
             builder.setPreferredVideoMimeTypes(mimeTypesForCodec(codec));
+            TrackSelectionOverride hdr = hdrOverride(ceiling);
+            if (hdr != null) {
+                builder.setOverrideForType(hdr);
+            }
         } else {
             TrackLocation location = findTrack(TrackSelectorManager.RENDERER_INDEX_VIDEO, item);
             if (location != null) {
@@ -325,6 +329,44 @@ class Media3TrackAdapter {
         }
     }
 
+    /**
+     * METUBE(issue #35): HDR streams are in the manifest only with the HDR setting on, so Auto plays
+     * them when this device can: the HDR set with the tallest playable rung within the preset's
+     * size ceiling (VP9 on a tie), adapting inside it. The preset's frame rate and codec are left
+     * out - YouTube's HDR is 60 fps VP9.2 or AV1, so a "30fps avc" preset would always rule it out -
+     * and media3 can't prefer HDR itself: it knows a track is HDR only from colour info, which
+     * DASH doesn't carry. Null: no playable HDR, plain Auto.
+     */
+    @Nullable
+    private TrackSelectionOverride hdrOverride(int ceiling) {
+        TrackSelectionOverride best = null;
+        int bestHeight = 0;
+        boolean bestVp9 = false;
+        for (Tracks.Group group : mTracks.getGroups()) {
+            if (group.getType() != C.TRACK_TYPE_VIDEO) {
+                continue;
+            }
+            List<Integer> tracks = new ArrayList<>();
+            int height = 0;
+            boolean vp9 = false;
+            for (int i = 0; i < group.length; i++) {
+                androidx.media3.common.Format format = group.getTrackFormat(i);
+                if (group.isTrackSupported(i) && TrackSelectorUtil.isHdrFormat(format.id, format.codecs)
+                        && Math.max(format.width, format.height) <= ceiling) {
+                    tracks.add(i);
+                    height = Math.max(height, Math.min(format.width, format.height));
+                    vp9 = androidx.media3.common.MimeTypes.VIDEO_VP9.equals(format.sampleMimeType);
+                }
+            }
+            if (!tracks.isEmpty() && (height > bestHeight || (height == bestHeight && vp9 && !bestVp9))) {
+                best = new TrackSelectionOverride(group.getMediaTrackGroup(), tracks);
+                bestHeight = height;
+                bestVp9 = vp9;
+            }
+        }
+        return best;
+    }
+
     /** Preset codec ("vp9"/"avc"...) -> soft media3 mime preference; unknown -> no preference. */
     private static String[] mimeTypesForCodec(@Nullable String codec) {
         if (codec == null) {
@@ -372,6 +414,10 @@ class Media3TrackAdapter {
         }
         String targetId = item.getFormatId();
         TrackLocation fallback = null;
+        boolean video = rendererIndex == TrackSelectorManager.RENDERER_INDEX_VIDEO;
+        int targetClass = video ? VideoRung.classHeight(item.getWidth(), item.getHeight()) : 0;
+        TrackLocation nearest = null;
+        androidx.media3.common.Format nearestFormat = null;
 
         for (Tracks.Group group : mTracks.getGroups()) {
             if (Media3FormatConverter.rendererIndexForTrackType(group.getType()) != rendererIndex) {
@@ -390,10 +436,38 @@ class Media3TrackAdapter {
                 if (fallback == null && matchesLoosely(rendererIndex, item, format)) {
                     fallback = new TrackLocation(group, i);
                 }
+
+                if (targetClass > 0 && VideoRung.classHeight(format.width, format.height) <= targetClass
+                        && (nearestFormat == null || isNearer(item, format, nearestFormat))) {
+                    nearest = new TrackLocation(group, i);
+                    nearestFormat = format;
+                }
             }
         }
 
-        return fallback;
+        // METUBE(issue #58): a pick carried to a video without that stream (another codec or
+        // frame rate, or no such rung) plays the nearest rung at or below it. Leaving Auto in
+        // place opened at 240p while the Quality row kept reading the pick.
+        return fallback != null ? fallback : nearest;
+    }
+
+    /** Whether {@code candidate} is closer to the picked rung than {@code best}: class, frame rate, codec, bitrate. */
+    private static boolean isNearer(FormatItem item, androidx.media3.common.Format candidate,
+            androidx.media3.common.Format best) {
+        int classDiff = VideoRung.classHeight(candidate.width, candidate.height)
+                - VideoRung.classHeight(best.width, best.height);
+        if (classDiff != 0) {
+            return classDiff > 0;
+        }
+        float fpsDiff = Math.abs(best.frameRate - item.getFrameRate()) - Math.abs(candidate.frameRate - item.getFrameRate());
+        if (fpsDiff != 0) {
+            return fpsDiff > 0;
+        }
+        int codecDiff = MediaTrack.getCodecWeight(candidate.codecs) - MediaTrack.getCodecWeight(best.codecs);
+        if (codecDiff != 0) {
+            return codecDiff > 0;
+        }
+        return candidate.bitrate > best.bitrate;
     }
 
     /**
