@@ -775,4 +775,7 @@
     <string name="install_bridge">Установить мост ATV/Amazon</string>
     <string name="fix_empty_subs_and_channels">Исправить пустые Подписки и Каналы</string>
     <string name="cancel">Отменить</string>
+    <string name="about_source_code_url" translatable="false">https://github.com/yashoncode/metube</string>
+    <string name="about_license_name" translatable="false">MIT</string>
+    <string name="about_license_url" translatable="false">https://github.com/yashoncode/metube/blob/main/LICENSE</string>
 </resources>
