@@ -294,31 +294,6 @@ public class MobilePlaybackActivity extends MobileActivity
     private AmbientGlow mAmbient;
     /** MEETUBE(shorts): the vertical player mode for videos from the Shorts tab. */
     private ShortsOverlay mShorts;
-    /**
-     * METUBE(shorts): a short tapped on the browse page plays THERE, in place: this Activity keeps
-     * the player but hands its session SurfaceTexture to the browse screen and leaves the visible
-     * stack. Set from the first bind of that short until the picture is handed over (or the hand-off
-     * is abandoned), so the watch page paints nothing in between - the user never sees this window.
-     */
-    private boolean mShortsHandoffPending;
-    /** True while a host screen renders this session full screen (see MiniPlayerBridge.ShortsHost). */
-    private boolean mShortsHosted;
-    /** Handed to the texture listener: a view cannot be removed while its window is drawing. */
-    private final Runnable mShortsHandoffRun = () -> {
-        if (mShortsHandoffPending && !isFinishing() && !isDestroyed()) {
-            minimizeIntoShortsHost();
-        }
-    };
-    /**
-     * METUBE(shorts): the browse page's bottom pill, on the watch page. The Shorts tab IS the
-     * vertical player, so the bar has to stay put while it plays - that persistence is what makes
-     * swiping through shorts read as one page rather than a screen change. Hidden everywhere else
-     * (a normal video keeps its immersive chrome).
-     */
-    private com.google.android.material.bottomnavigation.BottomNavigationView mShortsNav;
-    private android.view.View mShortsNavGlass;
-    /** Whether the pill currently shows the tab list it was built for. */
-    private boolean mShortsNavBuilt;
     private TextView mWatchDescription;
     private View mWatchLike;
     private ImageView mWatchLikeIcon;
@@ -420,15 +395,7 @@ public class MobilePlaybackActivity extends MobileActivity
     @Nullable private BottomSheetDialog mChaptersSheet;
     private View mWatchChatEntry;
     private String mCommentsKey;
-    private String mNewestCommentsKey;
     private String mLiveChatKey;
-    /** Non-null while the in-place Shorts host owns the player menu: its sheets use this Activity. */
-    @Nullable
-    private android.app.Activity mSheetHost;
-
-    private android.app.Activity sheetActivity() {
-        return mSheetHost != null ? mSheetHost : this;
-    }
 
     // Live chat stream: the reused ChatController pushes a ChatReceiver here; incoming messages
     // accumulate into a bounded buffer that the LiveChatSheet seeds from and observes live.
@@ -611,12 +578,6 @@ public class MobilePlaybackActivity extends MobileActivity
         // A tapped card supplies its own geometry-driven open below. Suppress Android's whole-
         // window animation so it cannot fade/scale the custom thumbnail morph a second time.
         if (PlayerTransitionBridge.hasPending()) {
-            overridePendingTransition(0, 0);
-        }
-
-        // METUBE(shorts): an open the browse page asked to play in place must not animate in at
-        // all - the page under this translucent window is the screen the short belongs on.
-        if (MiniPlayerBridge.hasFullscreenRequest()) {
             overridePendingTransition(0, 0);
         }
 
@@ -1149,31 +1110,6 @@ public class MobilePlaybackActivity extends MobileActivity
                     toggleShortsMute(); // a long video after the shorts plays with its sound
                     mShorts.showMuted(false);
                 }
-                // METUBE(shorts): a short tapped on the browse page does NOT open this window: the
-                // browse screen plays it in place and this Activity goes behind it. Pending mode
-                // keeps every pixel of the watch page off screen from here until the hand-off (the
-                // translucent window shows Browse through it, so the page never changes).
-                if (on) {
-                    maybeStartShortsHandoff();
-                    if (mShortsHandoffPending) {
-                        return; // the host paints this one; no pill, no still, no chrome
-                    }
-                }
-                // METUBE(shorts): the in-place player is for shorts only. The queue's next item being
-                // an ordinary video means the watch page has to come back - it owns all the controls
-                // a landscape or 16:9 video needs.
-                if (!on && mShortsHosted) {
-                    MiniPlayerBridge.clearFullscreenRequest();
-                    expandFromShortsHost();
-                }
-                // METUBE(shorts): the pill comes and goes with shorts mode; rebuilt each time it
-                // opens so a tab the user enabled/disabled in the meantime is reflected.
-                if (mShortsNavGlass != null) {
-                    if (on && !mShortsNavBuilt) {
-                        buildShortsNav();
-                    }
-                    mShortsNavGlass.setVisibility(on && mShortsNavBuilt ? View.VISIBLE : View.GONE);
-                }
             }
 
             @Override
@@ -1247,26 +1183,6 @@ public class MobilePlaybackActivity extends MobileActivity
         mCommentTeaser = findViewById(R.id.mobile_watch_comment_teaser);
         mCommentTeaserAvatar = findViewById(R.id.mobile_watch_comment_avatar);
         mCommentTeaserText = findViewById(R.id.mobile_watch_comment_text);
-        android.text.TextWatcher shortsActionsWatcher = new android.text.TextWatcher() {
-            @Override
-            public void beforeTextChanged(CharSequence s, int start, int count, int after) {
-            }
-
-            @Override
-            public void onTextChanged(CharSequence s, int start, int before, int count) {
-            }
-
-            @Override
-            public void afterTextChanged(android.text.Editable s) {
-                pushShortsActions();
-            }
-        };
-        if (mWatchLikeCount != null) {
-            mWatchLikeCount.addTextChangedListener(shortsActionsWatcher);
-        }
-        if (mWatchCommentsCount != null) {
-            mWatchCommentsCount.addTextChangedListener(shortsActionsWatcher);
-        }
         mWatchChatEntry = findViewById(R.id.mobile_watch_chat_entry);
         mScrubChapterView = findViewById(R.id.mobile_player_scrub_chapter);
         mChapterButton = findViewById(R.id.mobile_player_chapter);
@@ -2167,12 +2083,6 @@ public class MobilePlaybackActivity extends MobileActivity
         super.onResume();
 
         PlayerTransitionBridge.LaunchSnapshot launch = PlayerTransitionBridge.take();
-        if (mShortsHandoffPending) {
-            // METUBE(shorts): the tapped-card thumbnail that grows into the watch page IS a
-            // page change, and there is no page change here: the snapshot is taken (so no
-            // other path can pick it up) and dropped, and the host paints the short itself.
-            launch = null;
-        }
 
         mIsResumed = true;
         applyAmbientSetting(); // MEETUBE(ambient): the Settings switch, read on every resume
@@ -2186,29 +2096,6 @@ public class MobilePlaybackActivity extends MobileActivity
         }
         // In the foreground again: auto-PiP behaves normally from here on.
         mSuppressAutoPip = false;
-        // METUBE(shorts): back from an in-place session (the notification's / an expand, a link
-        // routed onto this player, a non-short queued next): the chrome the hand-off hid comes back,
-        // and the pill that belongs to the watch page's shorts mode goes up again with it. Only for
-        // a session that WAS hosted - the first resume of a browse-tapped short still has the
-        // hand-off pending (the texture does not exist yet), and clearing it here would cancel it.
-        if (mShortsHosted) {
-            mShortsHosted = false;
-            mSheetHost = null;
-            mContainer.removeCallbacks(mShortsHandoffTimeout);
-            MiniPlayerBridge.clearFullscreenRequest();
-            if (mVideoArea != null) {
-                mVideoArea.setBackgroundColor(Color.BLACK);
-            }
-            if (mShorts != null) {
-                mShorts.setChromeSuppressed(false);
-                if (mShorts.isActive() && mShortsNavGlass != null) {
-                    if (!mShortsNavBuilt) {
-                        buildShortsNav();
-                    }
-                    mShortsNavGlass.setVisibility(View.VISIBLE);
-                }
-            }
-        }
         mDismissDragActive = false;
         if (mPipEnterPending) {
             // NEWTUBE(menu-pip): resumed while a PiP entry is still pending (accepted, no mode
@@ -2254,10 +2141,7 @@ public class MobilePlaybackActivity extends MobileActivity
         // it the whole time, so no surface change, no codec re-init, no frozen frames. The card
         // captured its last frame for us; it covers the 1-2 frames until the texture paints.
         boolean fromMini = MiniPlayerBridge.isActive();
-        // METUBE(shorts): an in-place session has no card rectangle to grow from - the host filled
-        // the same space the video does here, so coming back is a plain window swap, not a morph.
-        boolean fromHost = MiniPlayerBridge.isFullscreen();
-        Rect miniBounds = fromMini && !fromHost ? MiniPlayerBridge.takeMiniBounds() : null;
+        Rect miniBounds = fromMini ? MiniPlayerBridge.takeMiniBounds() : null;
         if (fromMini) {
             Bitmap handoff = MiniPlayerBridge.takeHandoffStill();
             if (handoff != null) {
@@ -2286,10 +2170,6 @@ public class MobilePlaybackActivity extends MobileActivity
             // player's first frame is up.
             FrameGate.afterNextFrame(mContainer, HOST_CARD_FOLD_WAIT_MS,
                     () -> MiniPlayerBridge.foldHostCard(null));
-        } else if (fromHost) {
-            // METUBE(shorts): back from the in-place player: no transition and no morph - the host
-            // filled the same space the video takes here, so this is a plain window swap.
-            overridePendingTransition(0, 0);
         } else if (fromMini && mContainer != null) {
             // Plain mini-card expansion: exact reverse of minimize, from the card rectangle.
             overridePendingTransition(0, 0);
@@ -5232,7 +5112,7 @@ public class MobilePlaybackActivity extends MobileActivity
 
         cancelAutoHide();
 
-        BottomSheetDialog sheet = Haptics.watch(new BottomSheetDialog(sheetActivity()));
+        BottomSheetDialog sheet = Haptics.watch(new BottomSheetDialog(this));
         LinearLayout content = createSheetContent();
 
         // Mirrors the official app's gear sheet: no title, a handful of everyday rows, icon +
@@ -5351,7 +5231,7 @@ public class MobilePlaybackActivity extends MobileActivity
 
         cancelAutoHide();
 
-        BottomSheetDialog sheet = Haptics.watch(new BottomSheetDialog(sheetActivity()));
+        BottomSheetDialog sheet = Haptics.watch(new BottomSheetDialog(this));
         LinearLayout content = createSheetContent();
 
         // Effective, not stored: a Shuffle started from the playlist page is scoped to that queue
@@ -5402,7 +5282,7 @@ public class MobilePlaybackActivity extends MobileActivity
      * its top (nested scrolling), like any Material sheet.</p>
      */
     private LinearLayout createSheetContent() {
-        LinearLayout root = new LinearLayout(sheetActivity());
+        LinearLayout root = new LinearLayout(this);
         root.setOrientation(LinearLayout.VERTICAL);
         root.setBackgroundResource(R.drawable.bg_mobile_sheet);
         root.setPadding(0, dp(8), 0, 0);
@@ -5501,12 +5381,6 @@ public class MobilePlaybackActivity extends MobileActivity
      * recipe) so the bars stay hidden.
      */
     private void showPlayerSheet(BottomSheetDialog dialog) {
-        if (mSheetHost != null) {
-            // A host sheet lives in the browse window; this page's immersive/inset handling and
-            // its "dismiss on fullscreen" registry do not apply to it.
-            dialog.show();
-            return;
-        }
         pruneShownSheets();
         mShownSheets.add(new java.lang.ref.WeakReference<>(dialog));
         mSheetsOrientation = layoutOrientation();
@@ -6040,14 +5914,6 @@ public class MobilePlaybackActivity extends MobileActivity
                 case Player.STATE_READY:
                     showProgressBar(false);
                     mIsEnded = false;
-                    // METUBE(shorts): the in-place host covers the texture with the neighbour's
-                    // portrait until it is safe to lift it; this is that signal. And the loading
-                    // still that normally paces the held metadata never shows here, so the metadata
-                    // (full title, real counts, the description the host shows) is released now.
-                    if (mShortsHosted || mShortsHandoffPending) {
-                        MiniPlayerBridge.notifyShortsReady();
-                        releaseWatchMetadata();
-                    }
                     // CASTING: the TV owns playback while a session is active - the local engine
                     // may load/buffer (so disconnect can resume instantly) but must never audibly
                     // play. Re-pause the moment any (re)load reaches READY.
@@ -6358,12 +6224,6 @@ public class MobilePlaybackActivity extends MobileActivity
             }
             logPip("surface-available size=" + width + 'x' + height
                     + " adopted=" + (texture == mSessionTexture ? "y" : "n"));
-            // METUBE(shorts): the session texture now exists, so the browse screen can take the
-            // picture over. Posted rather than run here: the hand-off detaches this very view, and
-            // removing a view while the hierarchy is being drawn is not allowed.
-            if (mShortsHandoffPending) {
-                mVideoTexture.post(mShortsHandoffRun);
-            }
         }
 
         @Override
@@ -6600,13 +6460,6 @@ public class MobilePlaybackActivity extends MobileActivity
     private void maybeShowLoadingStill(Video item) {
         if (item == null || item.videoId == null || mVideoStill == null
                 || Helpers.equals(item.videoId, mStillVideoId)) {
-            return;
-        }
-        // METUBE(shorts): while a host screen draws the session it shows the short's own portrait
-        // over the texture (MobileShortsHost#armCover). A still in THIS window would either be
-        // invisible or - worse - a black box over Browse for the frames before the hand-off.
-        if (mShortsHandoffPending || mShortsHosted) {
-            mStillVideoId = item.videoId;
             return;
         }
         mStillVideoId = item.videoId;
@@ -6881,7 +6734,6 @@ public class MobilePlaybackActivity extends MobileActivity
         watch.likeCount = mWatchLikeCount;
         watch.commentsCount = findViewById(R.id.mobile_watch_comments_count);
         watch.meta = mWatchMeta;
-        watch.description = mWatchDescription; // METUBE(shorts): all of it, not one line
         watch.avatar = mWatchAvatar;
         return watch;
     }
@@ -8442,233 +8294,6 @@ public class MobilePlaybackActivity extends MobileActivity
         return true;
     }
 
-    // ---------------------------------------------------------------------------------
-    // METUBE(shorts): the short plays IN PLACE on the browse page instead of opening this window.
-    //
-    // The hand-off is the mini card's, reversed: this Activity still owns ExoPlayer, the media
-    // session and the queue (so the notification and background audio are untouched), but it
-    // detaches its own TextureView, hands the session SurfaceTexture to the browse screen's
-    // full-screen host and leaves the visible stack - with the window never having painted a frame
-    // of the watch page. See MobileShortsHost.
-    // ---------------------------------------------------------------------------------
-
-    /** No picture ever reached the texture: give the watch page back rather than host nothing. */
-    private final Runnable mShortsHandoffTimeout = this::abortShortsHandoff;
-
-    /**
-     * METUBE(shorts): is this open one the browse page asked to play in place? One-shot request,
-     * so a short opened from anywhere else (a deep link, an autoplay inside the watch page, a
-     * channel screen) keeps the ordinary full-screen player.
-     */
-    private void maybeStartShortsHandoff() {
-        if (mShortsHandoffPending || mShortsHosted || mIsInPip || mPipEnterPending
-                || mClosing || isLandscape() || mShorts == null || !mShorts.isActive()) {
-            return;
-        }
-        if (MiniPlayerBridge.consumeFullscreenRequest() && MiniPlayerBridge.getShortsHost() != null) {
-            enterShortsHandoff();
-        }
-    }
-
-    /** SHORTS_HANDOFF_TIMEOUT_MS: how long the picture may take before this window owns it again. */
-    private static final long SHORTS_HANDOFF_TIMEOUT_MS = 1200;
-
-    /**
-     * Strip this window down to nothing while the host takes over. The theme is translucent with a
-     * transparent windowBackground and the TextureView is not opaque, so with the video box's black
-     * removed and no still / chrome drawn, Browse is what the user sees through this window - until
-     * the reorder puts Browse in front for real, one or two frames later and with no transition.
-     */
-    private void enterShortsHandoff() {
-        mShortsHandoffPending = true;
-        if (mVideoArea != null) {
-            mVideoArea.setBackgroundColor(Color.TRANSPARENT);
-        }
-        if (mShorts != null) {
-            mShorts.setChromeSuppressed(true);
-        }
-        if (mShortsNavGlass != null) {
-            mShortsNavGlass.setVisibility(View.GONE);
-        }
-        hideControls();
-        mContainer.postDelayed(mShortsHandoffTimeout, SHORTS_HANDOFF_TIMEOUT_MS);
-    }
-
-    /** The hand-off never landed (no texture, no host, an error): the ordinary watch page again. */
-    private void abortShortsHandoff() {
-        if (!mShortsHandoffPending) {
-            return;
-        }
-        mShortsHandoffPending = false;
-        mContainer.removeCallbacks(mShortsHandoffTimeout);
-        if (mVideoArea != null) {
-            mVideoArea.setBackgroundColor(Color.BLACK);
-        }
-        if (mShorts != null) {
-            mShorts.setChromeSuppressed(false);
-        }
-        if (mShortsNavGlass != null && mShorts != null && mShorts.isActive()) {
-            if (!mShortsNavBuilt) {
-                buildShortsNav();
-            }
-            mShortsNavGlass.setVisibility(View.VISIBLE);
-        }
-        mStillVideoId = null; // the pending path recorded it and painted nothing: re-arm for real
-        maybeShowLoadingStill(mWatchVideo); // the picture is this window's job again
-    }
-
-    /**
-     * The browse screen takes the picture. Runs once the session texture exists (the codec needs it
-     * adopted before anything can draw it) - from the texture listener, one posted frame later.
-     */
-    private void minimizeIntoShortsHost() {
-        mContainer.removeCallbacks(mShortsHandoffTimeout);
-        mShortsHandoffPending = false;
-        MiniPlayerBridge.clearFullscreenRequest();
-        MiniPlayerBridge.ShortsHost host = MiniPlayerBridge.getShortsHost();
-        if (mPlayer == null || mSessionTexture == null || host == null) {
-            abortShortsHandoff();
-            return;
-        }
-        // The card and the full-screen host cannot both hold the one session texture: the host
-        // screen stands its card down first (MobileBrowseActivity#prepareForShortsHandoff).
-        MiniPlayerBridge.activateFullscreen(this);
-        detachVideoTexture();
-        mShortsHosted = true;
-        getViewManager().enablePlayerOnlyMode(false); // a stale flag would exit the app on Back
-        // NEWTUBE(viewport): the cap is the window the video is really drawn in. This one is the
-        // whole screen, NOT the 216x102 card - capping a short at card size would drop it to 360p
-        // (see prepareMiniPlayerHandoff for the card path). Repeated with the host's measured size
-        // from MobileShortsHost as soon as it has laid out.
-        android.util.DisplayMetrics dm = getResources().getDisplayMetrics();
-        mExoPlayerController.setSmallWindowViewport("shorts", dm.widthPixels, dm.heightPixels);
-        // An in-place session must never fall into background-audio mode at onStop (which drops the
-        // video renderer): the host is rendering live video, so the track stays. Same flag the
-        // minimize hand-off raises, cleared on the next onResume when the page comes back.
-        mSuppressAutoPip = true;
-        updatePipActions();
-        MiniPlayerBridge.setShortsInfo(buildShortsInfo());
-        pushShortsActions();
-
-        Runnable showHost = () -> {
-            if (isFinishing() || isDestroyed()) {
-                return;
-            }
-            if (mIsInPip || mPipEnterPending) {
-                // A PiP entry won the race against the hand-off (the home gesture fires while the
-                // first frame is being drawn). The pinned window must own the video: take the
-                // texture back and let the host stand down, exactly as an expand does.
-                MiniPlayerBridge.deactivate();
-                mShortsHosted = false;
-                mSuppressAutoPip = false;
-                reattachVideoTexture();
-                return;
-            }
-            getViewManager().startView(host.getShortsHostViewClass());
-            overridePendingTransition(0, 0); // no window animation: this is not a page change
-            // The docked player leaves the logical stack, so a Back press on the host resolves to
-            // the host's own parent instead of expanding this window (same rule as the card path,
-            // and the reason it must run AFTER the reorder launch).
-            getViewManager().removeTop(this);
-        };
-        if (!MiniPlayerBridge.prepareShortsHostForHandoff(showHost)) {
-            showHost.run();
-        }
-    }
-
-    /** Back from an in-place session (a non-short was queued next, or the host asked to expand). */
-    private void expandFromShortsHost() {
-        if (mShortsHosted || mShortsHandoffPending) {
-            MiniPlayerBridge.expand(this);
-        }
-    }
-
-    /** The watch page's rendered text for this short, for the host's info block. */
-    private MiniPlayerBridge.ShortsInfo buildShortsInfo() {
-        Video item = mWatchVideo;
-        return new MiniPlayerBridge.ShortsInfo(
-                item != null ? item.videoId : null,
-                mWatchTitle != null ? mWatchTitle.getText() : null,
-                mWatchChannelName != null ? mWatchChannelName.getText() : null,
-                mWatchMeta != null ? mWatchMeta.getText() : null,
-                mWatchDescription != null ? mWatchDescription.getText() : null);
-    }
-
-    // ---- called through MiniPlayerBridge by the host screen (its swipes, its scrub line) ----
-
-    void hostPlayNextShort() {
-        if (mPresenter != null) {
-            mPresenter.onNextClicked();
-        }
-    }
-
-    // ---- the in-place Shorts host's action rail (MiniPlayerBridge.ShortsActions) ----
-
-    void hostShortsLike() {
-        if (mWatchLike != null) {
-            mWatchLike.performClick();
-        }
-    }
-
-    void hostShortsDislike() {
-        if (mWatchDislike != null) {
-            mWatchDislike.performClick();
-        }
-    }
-
-    void hostShortsShare() {
-        if (mWatchShare != null) {
-            mWatchShare.performClick();
-        }
-    }
-
-    /**
-     * The host's ⋮: the same full player menu the gear button opens, but its sheets have to be
-     * built on the host Activity's window - this Activity is behind the in-place player, so a
-     * BottomSheetDialog created with it would never be seen.
-     */
-    void hostShortsMore(android.app.Activity host) {
-        mSheetHost = host;
-        openPlayerMenu();
-    }
-
-    /** A comment's timestamp/video link while the host is up: act on the same session. */
-    void hostOpenVideo(String videoId) {
-        onRelatedClicked(Video.from(videoId));
-    }
-
-    /** Mirror the watch page's rail state into the in-place host (same buttons, same state). */
-    private void pushShortsActions() {
-        boolean liked = getButtonState(R.id.action_thumbs_up) == BUTTON_ON;
-        boolean disliked = getButtonState(R.id.action_thumbs_down) == BUTTON_ON;
-        CharSequence likeCount = mWatchLikeCount != null ? mWatchLikeCount.getText() : null;
-        CharSequence commentCount = mWatchCommentsCount != null ? mWatchCommentsCount.getText() : null;
-        android.graphics.drawable.Drawable avatar =
-                mWatchAvatar != null ? mWatchAvatar.getDrawable() : null;
-        MiniPlayerBridge.setShortsActions(new MiniPlayerBridge.ShortsActions(
-                liked, disliked, likeCount, commentCount, avatar,
-                mCommentsKey, mNewestCommentsKey));
-    }
-
-    void hostPlayPreviousShort() {
-        if (mPresenter != null) {
-            mPresenter.onPreviousClicked();
-        }
-    }
-
-    void hostSeekShortTo(long positionMs) {
-        if (mExoPlayerController != null) {
-            mExoPlayerController.setPositionMs(positionMs);
-        }
-    }
-
-    /** The host's picture size: the same viewport cap PiP / the mini card report. */
-    void hostSetViewport(int widthPx, int heightPx) {
-        if (mExoPlayerController != null && mShortsHosted && widthPx > 0 && heightPx > 0) {
-            mExoPlayerController.setSmallWindowViewport("shorts", widthPx, heightPx);
-        }
-    }
-
     /** X tapped on the Browse mini bar: stop playback and quietly retire this hidden activity. */
     void closeFromMiniPlayer() {
         if (mPresenter != null) {
@@ -9679,9 +9304,8 @@ public class MobilePlaybackActivity extends MobileActivity
         }
 
         com.google.android.material.bottomsheet.BottomSheetDialog dialog =
-                new com.google.android.material.bottomsheet.BottomSheetDialog(sheetActivity());
-        View content = android.view.LayoutInflater.from(sheetActivity())
-                .inflate(R.layout.sheet_mobile_quality, null);
+                new com.google.android.material.bottomsheet.BottomSheetDialog(this);
+        View content = getLayoutInflater().inflate(R.layout.sheet_mobile_quality, null);
         dialog.setContentView(content);
 
         LinearLayout qualityList = content.findViewById(R.id.quality_sheet_quality_list);
@@ -9816,9 +9440,8 @@ public class MobilePlaybackActivity extends MobileActivity
 
         cancelAutoHide();
 
-        BottomSheetDialog dialog = Haptics.watch(new BottomSheetDialog(sheetActivity()));
-        View content = android.view.LayoutInflater.from(sheetActivity())
-                .inflate(R.layout.sheet_mobile_quality, null);
+        BottomSheetDialog dialog = Haptics.watch(new BottomSheetDialog(this));
+        View content = getLayoutInflater().inflate(R.layout.sheet_mobile_quality, null);
         dialog.setContentView(content);
         ((TextView) content.findViewById(R.id.quality_sheet_quality_title))
                 .setText(R.string.mobile_player_audio_track);
@@ -10021,9 +9644,8 @@ public class MobilePlaybackActivity extends MobileActivity
         moveLastUsedCaptionsFirst(autoTracks);
 
         com.google.android.material.bottomsheet.BottomSheetDialog dialog =
-                new com.google.android.material.bottomsheet.BottomSheetDialog(sheetActivity());
-        View content = android.view.LayoutInflater.from(sheetActivity())
-                .inflate(R.layout.sheet_mobile_captions, null);
+                new com.google.android.material.bottomsheet.BottomSheetDialog(this);
+        View content = getLayoutInflater().inflate(R.layout.sheet_mobile_captions, null);
         dialog.setContentView(content);
 
         // One flat list, official-app style: Off, then the video's tracks, then the
@@ -10170,9 +9792,8 @@ public class MobilePlaybackActivity extends MobileActivity
         }
 
         com.google.android.material.bottomsheet.BottomSheetDialog dialog =
-                new com.google.android.material.bottomsheet.BottomSheetDialog(sheetActivity());
-        View content = android.view.LayoutInflater.from(sheetActivity())
-                .inflate(R.layout.sheet_mobile_speed, null);
+                new com.google.android.material.bottomsheet.BottomSheetDialog(this);
+        View content = getLayoutInflater().inflate(R.layout.sheet_mobile_speed, null);
         dialog.setContentView(content);
 
         LinearLayout list = content.findViewById(R.id.speed_sheet_list);
@@ -10470,16 +10091,7 @@ public class MobilePlaybackActivity extends MobileActivity
             return;
         }
         if (mShorts != null) {
-            // The old full-screen Shorts page is gone. Only the hand-off the Shorts tab asked for
-            // may put this player into shorts mode; a short opened from anywhere else is an
-            // ordinary watch-page video (the in-place host is the only Shorts surface).
-            boolean hostSession = MiniPlayerBridge.hasFullscreenRequest()
-                    || mShortsHosted || mShortsHandoffPending;
-            if (item != null && item.belongsToShorts() && !hostSession) {
-                mShorts.bind(null);
-            } else {
-                mShorts.bind(item);
-            }
+            mShorts.bind(item);
             updateHdrOutput(); // Shorts never use the HDR SurfaceView (#35)
         }
 
@@ -10559,15 +10171,6 @@ public class MobilePlaybackActivity extends MobileActivity
         if (!TextUtils.isEmpty(item.description)) {
             mWatchDescription.setText(item.description);
         }
-        // METUBE(shorts): a browse tap landing on an already-shorts view never flips the mode, so
-        // this is the other place the in-place request can be picked up.
-        maybeStartShortsHandoff();
-        // The in-place host has no window of its own to read the watch page from; it gets exactly
-        // what this page rendered, every time this page renders it.
-        if (mShortsHosted || mShortsHandoffPending) {
-            MiniPlayerBridge.setShortsInfo(buildShortsInfo());
-        pushShortsActions();
-        }
     }
 
     private void resetWatchHeader() {
@@ -10592,7 +10195,6 @@ public class MobilePlaybackActivity extends MobileActivity
 
         // New video: clear comments/chat availability and any buffered chat until metadata returns.
         mCommentsKey = null;
-        mNewestCommentsKey = null;
         mLiveChatKey = null;
         if (mWatchCommentsEntry != null) {
             setCommentsEntryVisibility(View.VISIBLE); // reserved; see above
@@ -10756,7 +10358,6 @@ public class MobilePlaybackActivity extends MobileActivity
             // Comments / live-chat availability. A non-null comments key = comments enabled; a
             // non-null live-chat key = live stream. Reuse the same keys the TV controllers use.
             mCommentsKey = metadata.getCommentsKey();
-            mNewestCommentsKey = metadata.getNewestCommentsKey();
             mLiveChatKey = metadata.getLiveChatKey();
             if (mWatchCommentsEntry != null) {
                 setCommentsEntryVisibility(mCommentsKey != null ? View.VISIBLE : View.GONE);
@@ -10777,12 +10378,6 @@ public class MobilePlaybackActivity extends MobileActivity
             }
             if (mLiveChatKey != null) {
                 setChatEntryVisible(true);
-            }
-            // METUBE(shorts): the counts / date / description are what made this re-bind; the
-            // in-place host's info block has to see them too (see bindWatchVideo).
-            if (mShortsHosted || mShortsHandoffPending) {
-                MiniPlayerBridge.setShortsInfo(buildShortsInfo());
-        pushShortsActions();
             }
         }
     }
@@ -11100,7 +10695,6 @@ public class MobilePlaybackActivity extends MobileActivity
                 }
             }
             showLikeCount(false); // Shorts mirrors it
-            pushShortsActions();
         } else if (buttonId == R.id.action_thumbs_down && mWatchDislikeIcon != null) {
             int icon = on ? R.drawable.ic_watch_thumb_down : R.drawable.ic_watch_thumb_down_outline;
             mWatchDislikeIcon.setImageResource(icon);
@@ -11110,7 +10704,6 @@ public class MobilePlaybackActivity extends MobileActivity
             if (mWatchDislike != null) {
                 mWatchDislike.setSelected(on);
             }
-            pushShortsActions();
         } else if (buttonId == R.id.lb_control_closed_captioning && mSubtitlesButton != null) {
             // YouTube-style: filled CC glyph while captions are on, outlined while off.
             mSubtitlesButton.setImageResource(on ? R.drawable.ic_player_cc : R.drawable.ic_player_cc_off);
@@ -11187,11 +10780,10 @@ public class MobilePlaybackActivity extends MobileActivity
 
     private void onDownloadTapped() {
         DownloadItem item = currentDownload();
-        android.app.Activity host = sheetActivity();
         if (item != null) {
-            DownloadMenu.show(host, item);
+            DownloadMenu.show(this, item);
         } else {
-            VideoDownloads.request(host, getVideo());
+            VideoDownloads.request(this, getVideo());
         }
     }
 
