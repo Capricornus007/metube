@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources xmlns:tools="http://schemas.android.com/tools">
-    <!--
+<!--
       Touch UI theme for the stmobile flavor.
 
       Deliberately Theme.MaterialComponents (NOT a Theme.AppCompat fallback): Material
@@ -24,15 +24,16 @@
       stays dark in both, like YouTube's: its chrome uses the fixed mobile_player_* colours.
     -->
     <style name="Theme.NewTube" parent="Theme.MaterialComponents.DayNight.NoActionBar">
-        <!-- METUBE(app icon): a task the system restores after killing the app (reopened from the
-             launcher or recents) gets its splash from this theme, not the per-icon one AppIcon
-             persists - and without an icon here that splash showed the manifest's (default) icon
-             whatever icon was picked. A blank splash is never the wrong icon. -->
-        <item name="android:windowSplashScreenAnimatedIcon" tools:targetApi="31">@android:color/transparent</item>
-        <!-- METUBE(loader): every circular spinner is the morphing cookie (metube_loader). -->
-        <item name="android:progressBarStyle">@style/Widget.MeTube.Loader</item>
-        <item name="android:progressBarStyleLarge">@style/Widget.MeTube.Loader.Large</item>
-        <item name="android:progressBarStyleSmall">@style/Widget.MeTube.Loader.Small</item>
+        <!-- MEETUBE(launch): the system splash shows the launch animation's first frame, still, from
+             the tap; the animation itself plays in-app over Home (LaunchSplash), since vivo's splash
+             never animates. The same on every phone and for every app icon. -->
+        <item name="android:windowSplashScreenAnimatedIcon" tools:targetApi="31">@drawable/splash_play_still</item>
+        <!-- MEETUBE(loader): every circular spinner is the loader picked in Settings > Customization
+             (meetubeLoader; Loader applies the pick's overlay to each screen's theme). -->
+        <item name="meetubeLoader">@drawable/avd_neon_ring</item>
+        <item name="android:progressBarStyle">@style/Widget.MeeTube.Loader</item>
+        <item name="android:progressBarStyleLarge">@style/Widget.MeeTube.Loader.Large</item>
+        <item name="android:progressBarStyleSmall">@style/Widget.MeeTube.Loader.Small</item>
         <item name="colorPrimary">@color/mobile_color_primary</item>
         <item name="colorPrimaryDark">@color/mobile_color_primary_dark</item>
         <!-- Selection controls (checkbox, radio, switch, text caret) and any untinted
@@ -89,32 +90,44 @@
              light one) in the app's ink, not red - "Sign in" / "Undo" / "View" are choices,
              not alarms. -->
         <item name="snackbarButtonStyle">@style/Widget.NewTube.Snackbar.Action</item>
-        <!-- METUBE: no sharp corners - snackbars are rounded like the rest of the glass UI. -->
-        <item name="snackbarStyle">@style/Widget.MeTube.Snackbar</item>
-        <!-- METUBE: modern capsule switches everywhere (Settings rows, dialog rows). -->
-        <item name="switchStyle">@style/Widget.MeTube.Switch</item>
+        <!-- MEETUBE: no sharp corners - snackbars are rounded like the rest of the glass UI. -->
+        <item name="snackbarStyle">@style/Widget.MeeTube.Snackbar</item>
+        <!-- MEETUBE: modern capsule switches everywhere (Settings rows, dialog rows). -->
+        <item name="switchStyle">@style/Widget.MeeTube.Switch</item>
     </style>
-
-    <style name="Widget.MeTube.Snackbar" parent="Widget.MaterialComponents.Snackbar">
-        <item name="shapeAppearance">@style/ShapeAppearance.MeTube.Round</item>
+<style name="Widget.MeeTube.Snackbar" parent="Widget.MaterialComponents.Snackbar">
+        <item name="shapeAppearance">@style/ShapeAppearance.MeeTube.Round</item>
     </style>
-
-    <style name="ShapeAppearance.MeTube.Round" parent="">
+<style name="ShapeAppearance.MeeTube.Round" parent="">
         <item name="cornerFamily">rounded</item>
         <item name="cornerSize">16dp</item>
     </style>
-
-    <style name="Widget.NewTube.Snackbar.Action" parent="Widget.MaterialComponents.Button.TextButton.Snackbar">
+<!-- MEETUBE(issue #107): the one loader - the one picked in Settings (meetubeLoader, the neon
+         ring by default), on every page, sheet and button. Layouts set no size or tint of their own. -->
+    <style name="Widget.MeeTube.GlassSpinner" parent="android:Widget.Material.ProgressBar.Large">
+        <item name="android:layout_width">60dp</item>
+        <item name="android:layout_height">60dp</item>
+        <item name="android:padding">8dp</item>
+        <item name="android:indeterminateDrawable">?attr/meetubeLoader</item>
+    </style>
+<style name="Widget.MeeTube.GlassSpinner.Small" parent="Widget.MeeTube.GlassSpinner">
+        <item name="android:layout_width">24dp</item>
+        <item name="android:layout_height">24dp</item>
+        <item name="android:padding">1dp</item>
+    </style>
+<!-- The neon loader's ring, radius 8 (its widest glow stays inside the 24 box), from the top. -->
+    <string name="neon_ring_path" translatable="false">M12,4 A8,8 0 1,1 12,20 A8,8 0 1,1 12,4</string>
+<!-- The launch animation's play symbol (avd_splash_glass), round-cornered, centred in 240. -->
+    <string name="splash_play_path" translatable="false">M96,88 L96,152 Q96,162 104.64,156.96 L159.36,125.04 Q168,120 159.36,114.96 L104.64,83.04 Q96,78 96,88 Z</string>
+<style name="Widget.NewTube.Snackbar.Action" parent="Widget.MaterialComponents.Button.TextButton.Snackbar">
         <item name="android:textColor">@color/mobile_color_background</item>
         <item name="android:fontFamily">sans-serif-medium</item>
     </style>
-
-    <style name="TextAppearance.NewTube.Button" parent="TextAppearance.MaterialComponents.Button">
+<style name="TextAppearance.NewTube.Button" parent="TextAppearance.MaterialComponents.Button">
         <item name="android:textAllCaps">false</item>
         <item name="android:letterSpacing">0</item>
     </style>
-
-    <!--
+<!--
       NEWTUBE(buttons): the app's one main-action button - a white pill with black sentence-case
       text (near-black with white text in the light theme, mobile_color_inverse_*), the look
       "Play all", "Subscribe" and the cast sheet's "Link TV" already had inline.
@@ -139,8 +152,7 @@
         <item name="android:stateListAnimator">@null</item>
         <item name="cornerRadius">22dp</item>
     </style>
-
-    <style name="ThemeOverlay.NewTube.BottomSheetDialog" parent="ThemeOverlay.MaterialComponents.BottomSheetDialog">
+<style name="ThemeOverlay.NewTube.BottomSheetDialog" parent="ThemeOverlay.MaterialComponents.BottomSheetDialog">
         <item name="bottomSheetStyle">@style/Widget.NewTube.BottomSheet</item>
         <!-- ElevationOverlayProvider reads this off the THEME, not off the widget style.
              Left on, the sheet's 16dp elevation blended 14.75% white into colorSurface -
@@ -148,29 +160,26 @@
              the sheet in the first place. -->
         <item name="elevationOverlayEnabled">false</item>
     </style>
-
-    <!--
+<!--
       The sheet surface itself: our flat #1E1E1E (no elevation overlay) with the same top-only
       16dp corners as bg_mobile_sheet, so the frame and the content it wraps line up exactly and
       the colour runs under the gesture bar to the display edge.
     -->
     <style name="Widget.NewTube.BottomSheet" parent="Widget.MaterialComponents.BottomSheet.Modal">
-        <item name="backgroundTint">@color/metube_sheet_glass</item>
+        <item name="backgroundTint">@color/meetube_sheet_glass</item>
         <item name="shapeAppearanceOverlay">@style/ShapeAppearance.NewTube.BottomSheet</item>
-        <!-- METUBE: Material squares the top corners off once a sheet is expanded; keep them round. -->
+        <!-- MEETUBE: Material squares the top corners off once a sheet is expanded; keep them round. -->
         <item name="shouldRemoveExpandedCorners">false</item>
-        <item name="android:maxWidth">@dimen/metube_sheet_max_width</item>
+        <item name="android:maxWidth">@dimen/meetube_sheet_max_width</item>
     </style>
-
-    <style name="ShapeAppearance.NewTube.BottomSheet" parent="">
+<style name="ShapeAppearance.NewTube.BottomSheet" parent="">
         <item name="cornerFamily">rounded</item>
         <item name="cornerSizeTopLeft">28dp</item>
         <item name="cornerSizeTopRight">28dp</item>
         <item name="cornerSizeBottomLeft">28dp</item>
         <item name="cornerSizeBottomRight">28dp</item>
     </style>
-
-    <!--
+<!--
       Player window transitions. A card launch suppresses OPEN and animates the tapped thumbnail
       itself; applying a second whole-window transform would make that morph feel like a route
       transition. The alpha-only OPEN below is the fallback for deep links or clipped thumbnails,
@@ -191,8 +200,7 @@
         <item name="android:taskToBackEnterAnimation">@anim/player_close_enter</item>
         <item name="android:taskToBackExitAnimation">@anim/player_close_exit</item>
     </style>
-
-    <!--
+<!--
       Browse window animations. With every touch activity in ONE shared task (manifest note),
       these quick fades replace the stock sideways slide for ordinary Search/Channel/etc.
       navigation. Interactive player minimize explicitly disables the window transition: Browse
@@ -210,8 +218,7 @@
         <item name="android:taskToFrontEnterAnimation">@anim/browse_to_front_enter</item>
         <item name="android:taskToFrontExitAnimation">@anim/mobile_stay</item>
     </style>
-
-    <!--
+<!--
       Keep the player window translucent (but undimmed) so the Activity immediately below it in
       the shared mobile task remains the live backdrop. The watch page's own video/content children
       are fully opaque at rest; during the interactive minimize they fade/move independently and
@@ -236,18 +243,15 @@
         <item name="android:windowLightStatusBar">false</item>
         <item name="bottomSheetDialogTheme">@style/ThemeOverlay.NewTube.BottomSheetDialog.Player</item>
     </style>
-
-    <style name="ThemeOverlay.NewTube.BottomSheetDialog.Player">
+<style name="ThemeOverlay.NewTube.BottomSheetDialog.Player">
         <item name="android:windowLightStatusBar">false</item>
     </style>
-
-    <!-- NEWTUBE(theme): android:theme of the player's video area (and the mini player), so the
+<!-- NEWTUBE(theme): android:theme of the player's video area (and the mini player), so the
          ripples and default control colours over the video are the dark theme's in both themes.
          values-night/ redefines it empty: there the whole app is already dark, and the player
          stays exactly as it was. -->
     <style name="ThemeOverlay.NewTube.PlayerChrome" parent="ThemeOverlay.MaterialComponents.Dark" />
-
-    <!--
+<!--
       Translucent theme for MobileAppDialogActivity (context menus, player option pickers,
       settings). Mirrors the proven TV overlay theme (App.Theme.Leanback.Preferences:
       windowIsTranslucent + transparent windowBackground + backgroundDimEnabled=false):
@@ -269,8 +273,7 @@
         <item name="android:windowContentOverlay">@null</item>
         <item name="android:windowAnimationStyle">@null</item>
     </style>
-
-    <!--
+<!--
       App-styled MaterialAlertDialog (accounts sign-out confirm etc.): sheet-colored rounded
       surface, white title, secondary body, sentence-case buttons - red reserved for the
       destructive action. The stock look (grey box + all-caps red pair) read as foreign
@@ -288,27 +291,22 @@
         <item name="buttonBarNegativeButtonStyle">@style/MobileAlertDialogButton</item>
         <item name="shapeAppearanceMediumComponent">@style/MobileAlertDialogShape</item>
     </style>
-
-    <style name="MobileAlertDialogShape" parent="ShapeAppearance.MaterialComponents.MediumComponent">
+<style name="MobileAlertDialogShape" parent="ShapeAppearance.MaterialComponents.MediumComponent">
         <item name="cornerSize">28dp</item>
     </style>
-
-    <style name="MobileAlertDialogBody" parent="MaterialAlertDialog.MaterialComponents.Body.Text">
+<style name="MobileAlertDialogBody" parent="MaterialAlertDialog.MaterialComponents.Body.Text">
         <item name="android:textColor">@color/mobile_color_on_surface_secondary</item>
         <item name="android:textSize">14sp</item>
     </style>
-
-    <style name="MobileAlertDialogButton" parent="Widget.MaterialComponents.Button.TextButton.Dialog">
+<style name="MobileAlertDialogButton" parent="Widget.MaterialComponents.Button.TextButton.Dialog">
         <item name="android:textAllCaps">false</item>
         <item name="android:textColor">@color/mobile_color_on_surface</item>
         <item name="android:textSize">15sp</item>
     </style>
-
-    <style name="MobileAlertDialogButtonDestructive" parent="MobileAlertDialogButton">
+<style name="MobileAlertDialogButtonDestructive" parent="MobileAlertDialogButton">
         <item name="android:textColor">@color/mobile_color_primary</item>
     </style>
-
-    <!-- Pairing is a neutral action, with the same surface and typography as the cast sheet. -->
+<!-- Pairing is a neutral action, with the same surface and typography as the cast sheet. -->
     <style name="MobileCastCodeDialog" parent="MobileAlertDialog">
         <item name="android:backgroundDimEnabled">true</item>
         <item name="android:backgroundDimAmount">0.6</item>
@@ -322,31 +320,27 @@
         <item name="buttonBarPositiveButtonStyle">@style/MobileCastCodeDialogPrimaryButton</item>
         <item name="buttonBarNegativeButtonStyle">@style/MobileCastCodeDialogSecondaryButton</item>
     </style>
-
-    <style name="MobileCastCodeDialogButtonBar" parent="Widget.AppCompat.ButtonBar">
+<style name="MobileCastCodeDialogButtonBar" parent="Widget.AppCompat.ButtonBar">
         <!-- The Material actions layout supplies another 8dp horizontally and 2dp vertically. -->
         <item name="android:paddingStart">16dp</item>
         <item name="android:paddingEnd">16dp</item>
         <item name="android:paddingTop">4dp</item>
         <item name="android:paddingBottom">18dp</item>
     </style>
-
-    <style name="MobileCastCodeDialogTitle" parent="MaterialAlertDialog.MaterialComponents.Title.Text">
+<style name="MobileCastCodeDialogTitle" parent="MaterialAlertDialog.MaterialComponents.Title.Text">
         <item name="android:fontFamily">sans-serif-medium</item>
         <item name="android:textColor">@color/mobile_color_on_surface</item>
         <item name="android:textSize">20sp</item>
         <item name="android:letterSpacing">0</item>
     </style>
-
-    <style name="MobileCastCodeDialogSecondaryButton" parent="MobileAlertDialogButton">
+<style name="MobileCastCodeDialogSecondaryButton" parent="MobileAlertDialogButton">
         <item name="android:fontFamily">sans-serif-medium</item>
         <item name="android:textSize">14sp</item>
         <item name="android:textStyle">normal</item>
         <item name="android:letterSpacing">0</item>
         <item name="android:minHeight">48dp</item>
     </style>
-
-    <style name="MobileCastCodeDialogPrimaryButton" parent="Widget.MaterialComponents.Button">
+<style name="MobileCastCodeDialogPrimaryButton" parent="Widget.MaterialComponents.Button">
         <item name="android:fontFamily">sans-serif-medium</item>
         <item name="android:textSize">14sp</item>
         <item name="android:textStyle">normal</item>
@@ -362,16 +356,14 @@
         <item name="backgroundTint">@color/mobile_cast_button_background</item>
         <item name="cornerRadius">22dp</item>
     </style>
-
-    <!-- Regular weight at 11sp tracks the YouTube bar labels (medium/bold read heavier than
+<!-- Regular weight at 11sp tracks the YouTube bar labels (medium/bold read heavier than
          theirs side-by-side; the old 10sp-medium choice predates dropping the long
          "Listas de reproducción" label from the bar). -->
     <style name="MobileBottomNavText" parent="TextAppearance.MaterialComponents.Caption">
         <item name="android:textSize">10sp</item>
         <item name="android:fontFamily">sans-serif-medium</item>
     </style>
-
-    <!-- Watch-page loading skeleton (alpha-pulsed from code while related videos load). -->
+<!-- Watch-page loading skeleton (alpha-pulsed from code while related videos load). -->
     <!-- NEWTUBE(seek bar): a pill over the video (the seek bar's time/chapter, "Release to cancel",
          "2x"). -->
     <style name="MobilePlayerPill">
@@ -389,8 +381,7 @@
         <item name="android:textColor">@android:color/white</item>
         <item name="android:textSize">14sp</item>
     </style>
-
-    <!-- METUBE(fullscreen-actions): an action on the fullscreen pill - a size under the player's
+<!-- MEETUBE(fullscreen-actions): an action on the fullscreen pill - a size under the player's
          48dp buttons. -->
     <style name="MobilePlayerAction">
         <item name="android:layout_width">38dp</item>
@@ -400,39 +391,72 @@
         <item name="android:scaleType">fitCenter</item>
         <item name="android:tint">@color/mobile_player_on_video</item>
     </style>
-
-    <style name="MobileSkeletonRelatedRow">
+<!-- MEETUBE(lock, issue #98): the fullscreen lock button, on the controls' glass (GlassDrawable). -->
+    <style name="MobilePlayerLock">
+        <item name="android:layout_width">44dp</item>
+        <item name="android:layout_height">44dp</item>
+        <item name="android:padding">11dp</item>
+        <item name="android:scaleType">fitCenter</item>
+        <item name="android:src">@drawable/ic_bar_lock</item>
+        <item name="android:tint">@color/mobile_player_on_video</item>
+    </style>
+<!-- MEETUBE(watch-look): an icon-only glass pill on the compact watch page's action row. -->
+    <style name="MobileWatchIconPill">
+        <item name="android:layout_width">wrap_content</item>
+        <item name="android:layout_height">wrap_content</item>
+        <item name="android:layout_marginStart">6dp</item>
+        <item name="android:background">@drawable/mobile_watch_pill_bg_touch</item>
+        <item name="android:clickable">true</item>
+        <item name="android:focusable">true</item>
+        <item name="android:gravity">center_vertical</item>
+        <item name="android:orientation">horizontal</item>
+        <item name="android:paddingHorizontal">10dp</item>
+        <item name="android:paddingVertical">14dp</item>
+    </style>
+<!-- MEETUBE(description): a section heading in the Description panel (Transcript, Video details). -->
+    <style name="MobileDescriptionHeading">
+        <item name="android:layout_width">match_parent</item>
+        <item name="android:layout_height">wrap_content</item>
+        <item name="android:textColor">@color/mobile_color_on_surface</item>
+        <item name="android:textSize">17sp</item>
+        <item name="android:textStyle">bold</item>
+    </style>
+<style name="MobileSkeletonRelatedRow">
         <item name="android:layout_width">match_parent</item>
         <item name="android:layout_height">wrap_content</item>
         <item name="android:orientation">horizontal</item>
         <item name="android:paddingTop">6dp</item>
         <item name="android:paddingBottom">6dp</item>
     </style>
-    <style name="MobileSkeletonRelatedThumb">
+<!-- MEETUBE(issue #91): a List layout feed row's ghost (item_video_row: margin card_spacing). -->
+    <style name="MobileSkeletonFeedRow" parent="MobileSkeletonRelatedRow">
+        <item name="android:paddingTop">@dimen/mobile_card_spacing</item>
+        <item name="android:paddingBottom">@dimen/mobile_card_spacing</item>
+    </style>
+<style name="MobileSkeletonRelatedThumb">
         <item name="android:layout_width">@dimen/mobile_watch_related_thumb_width</item>
         <item name="android:layout_height">@dimen/mobile_watch_related_thumb_height</item>
         <item name="android:background">@drawable/bg_skeleton_block</item>
     </style>
-    <style name="MobileSkeletonRelatedTextColumn">
+<style name="MobileSkeletonRelatedTextColumn">
         <item name="android:layout_width">match_parent</item>
         <item name="android:layout_height">wrap_content</item>
         <item name="android:orientation">vertical</item>
         <item name="android:layout_marginStart">10dp</item>
         <item name="android:layout_marginTop">4dp</item>
     </style>
-    <style name="MobileSkeletonRelatedLineWide">
+<style name="MobileSkeletonRelatedLineWide">
         <item name="android:layout_width">match_parent</item>
         <item name="android:layout_height">14dp</item>
         <item name="android:background">@drawable/bg_skeleton_block</item>
     </style>
-    <style name="MobileSkeletonRelatedLineNarrow">
+<style name="MobileSkeletonRelatedLineNarrow">
         <item name="android:layout_width">120dp</item>
         <item name="android:layout_height">12dp</item>
         <item name="android:layout_marginTop">8dp</item>
         <item name="android:background">@drawable/bg_skeleton_block</item>
     </style>
-
-    <!-- NEWTUBE(write-comments): the comment composer (CommentComposer). A floating window at the
+<!-- NEWTUBE(write-comments): the comment composer (CommentComposer). A floating window at the
          bottom that the keyboard pushes up (adjustResize still moves floating windows; where the
          platform draws them edge to edge anyway, the composer pads itself by the keyboard's
          inset). It slides in and out with the keyboard's own animation. No dim: like YouTube's,
@@ -448,8 +472,7 @@
         <item name="android:windowSoftInputMode">adjustResize|stateAlwaysVisible</item>
         <item name="android:windowAnimationStyle">@android:style/Animation.InputMethod</item>
     </style>
-
-    <!-- NEWTUBE(comments-panel): rows of the Top / Newest menu (mobile_comments_sort_menu). -->
+<!-- NEWTUBE(comments-panel): rows of the Top / Newest menu (mobile_comments_sort_menu). -->
     <style name="MobileCommentsSortRow">
         <item name="android:layout_width">match_parent</item>
         <item name="android:layout_height">wrap_content</item>
@@ -464,88 +487,77 @@
         <item name="android:clickable">true</item>
         <item name="android:focusable">true</item>
     </style>
-    <style name="MobileCommentsSortCheck">
+<style name="MobileCommentsSortCheck">
         <item name="android:layout_width">20dp</item>
         <item name="android:layout_height">20dp</item>
         <item name="android:layout_marginEnd">16dp</item>
         <item name="android:src">@drawable/ic_mobile_check</item>
         <item name="android:contentDescription">@null</item>
     </style>
-    <style name="MobileCommentsSortText">
+<style name="MobileCommentsSortText">
         <item name="android:layout_width">0dp</item>
         <item name="android:layout_height">wrap_content</item>
         <item name="android:layout_weight">1</item>
         <item name="android:orientation">vertical</item>
     </style>
-    <style name="MobileCommentsSortTitle">
+<style name="MobileCommentsSortTitle">
         <item name="android:layout_width">wrap_content</item>
         <item name="android:layout_height">wrap_content</item>
         <item name="android:textColor">@color/mobile_color_on_surface</item>
         <item name="android:textSize">15sp</item>
     </style>
-    <style name="MobileCommentsSortHint">
+<style name="MobileCommentsSortHint">
         <item name="android:layout_width">wrap_content</item>
         <item name="android:layout_height">wrap_content</item>
         <item name="android:textColor">@color/mobile_color_on_surface_secondary</item>
         <item name="android:textSize">12sp</item>
     </style>
-
-    <!-- NEWTUBE(comments-panel): comment loading rows (item_mobile_comment_skeleton). A line is a
+<!-- NEWTUBE(comments-panel): comment loading rows (item_mobile_comment_skeleton). A line is a
          weighted bar + spacer so the bars keep their share of the column at any width. -->
     <style name="MobileSkeletonCommentLine">
         <item name="android:layout_width">match_parent</item>
         <item name="android:layout_height">10dp</item>
         <item name="android:orientation">horizontal</item>
     </style>
-    <style name="MobileSkeletonCommentBar">
+<style name="MobileSkeletonCommentBar">
         <item name="android:layout_width">0dp</item>
         <item name="android:layout_height">match_parent</item>
         <item name="android:background">@drawable/bg_skeleton_block</item>
     </style>
-
-    <!-- Feed first-load skeleton (alpha-pulsed from code) - ghosts of the full-width video cards. -->
+<!-- Feed first-load skeleton (alpha-pulsed from code) - ghosts of the full-width video cards. -->
     <style name="MobileSkeletonFeedCard">
         <item name="android:layout_width">match_parent</item>
         <item name="android:layout_height">wrap_content</item>
         <item name="android:orientation">vertical</item>
         <item name="android:layout_marginBottom">20dp</item>
     </style>
-    <style name="MobileSkeletonFeedThumb">
+<style name="MobileSkeletonFeedThumb">
         <item name="android:layout_width">match_parent</item>
         <item name="android:layout_height">204dp</item>
         <item name="android:background">@drawable/bg_skeleton_block</item>
     </style>
-    <style name="MobileSkeletonFeedLineWide">
+<style name="MobileSkeletonFeedLineWide">
         <item name="android:layout_width">match_parent</item>
         <item name="android:layout_height">15dp</item>
         <item name="android:layout_marginTop">12dp</item>
         <item name="android:layout_marginEnd">48dp</item>
         <item name="android:background">@drawable/bg_skeleton_block</item>
     </style>
-    <style name="MobileSkeletonFeedLineNarrow">
+<style name="MobileSkeletonFeedLineNarrow">
         <item name="android:layout_width">180dp</item>
         <item name="android:layout_height">12dp</item>
         <item name="android:layout_marginTop">8dp</item>
         <item name="android:background">@drawable/bg_skeleton_block</item>
     </style>
-
-    <!-- METUBE(shorts): the in-place Shorts host's action column (mobile_shorts_host.xml).
-         Sized like every other icon button on the phone (48dp touch target around a 24dp glyph,
-         see @dimen/mobile_player_icon_button) and given the theme's borderless ripple, so a rail
-         button answers a tap visually, is reachable with a D-pad, and is not a 34dp dot. Before
-         this it was a bare 42dp box with no background at all, and MobileShortsHost additionally
-         scaled the whole rail by 0.82 - a ~34dp target that read as "nothing happens". -->
-    <style name="MeTubeShortsAction">
-        <item name="android:layout_width">@dimen/mobile_player_icon_button</item>
-        <item name="android:layout_height">@dimen/mobile_player_icon_button</item>
-        <item name="android:padding">12dp</item>
+<!-- MEETUBE(shorts): the vertical player's action column (mobile_shorts_overlay). -->
+    <style name="MeeTubeShortsAction">
+        <item name="android:layout_width">42dp</item>
+        <item name="android:layout_height">42dp</item>
+        <item name="android:padding">10dp</item>
         <item name="android:scaleType">fitCenter</item>
-        <item name="android:background">?attr/selectableItemBackgroundBorderless</item>
-        <item name="android:focusable">true</item>
-        <item name="android:clickable">true</item>
-        <item name="android:tint">@color/mobile_player_on_video</item>
+        <item name="android:tint">@android:color/white</item>
     </style>
-    <style name="MeTubeShortsActionLabel">
+<style name="MeeTubeShortsActionLabel">
         <item name="android:layout_width">wrap_content</item>
         <item name="android:layout_height">wrap_content</item>
         <item name="android:layout_marginTop">2dp</item>
@@ -553,30 +565,50 @@
         <item name="android:maxLines">1</item>
         <item name="android:shadowColor">#B3000000</item>
         <item name="android:shadowRadius">4</item>
-        <item name="android:textColor">@color/mobile_player_on_video</item>
+        <item name="android:textColor">@android:color/white</item>
         <item name="android:textSize">12sp</item>
     </style>
-
-    <style name="Widget.MeTube.Loader" parent="android:Widget.Material.ProgressBar">
-        <item name="android:indeterminateDrawable">@drawable/metube_loader</item>
+<!-- MEETUBE(loader): the other loaders of the picker (Loader), over the default neon ring. -->
+    <style name="ThemeOverlay.MeeTube.Loader.Frosted" parent="">
+        <item name="meetubeLoader">@drawable/avd_frosted_ring</item>
     </style>
-    <style name="Widget.MeTube.Loader.Large" parent="android:Widget.Material.ProgressBar.Large">
-        <item name="android:indeterminateDrawable">@drawable/metube_loader</item>
+<style name="ThemeOverlay.MeeTube.Loader.Cookie" parent="">
+        <item name="meetubeLoader">@drawable/meetube_loader</item>
     </style>
-    <style name="Widget.MeTube.Loader.Small" parent="android:Widget.Material.ProgressBar.Small">
-        <item name="android:indeterminateDrawable">@drawable/metube_loader</item>
+<style name="ThemeOverlay.MeeTube.Loader.FrostedCookie" parent="">
+        <item name="meetubeLoader">@drawable/avd_frosted_cookie</item>
     </style>
-
-    <style name="Widget.MeTube.Switch" parent="Widget.MaterialComponents.CompoundButton.Switch">
+<style name="ThemeOverlay.MeeTube.Loader.LiquidRing" parent="">
+        <item name="meetubeLoader">@drawable/avd_liquid_ring</item>
+    </style>
+<style name="ThemeOverlay.MeeTube.Loader.GlassOrb" parent="">
+        <item name="meetubeLoader">@drawable/avd_glass_orb</item>
+    </style>
+<style name="ThemeOverlay.MeeTube.Loader.MorphingBlob" parent="">
+        <item name="meetubeLoader">@drawable/avd_morphing_blob</item>
+    </style>
+<style name="ThemeOverlay.MeeTube.Loader.GlassOrbit" parent="">
+        <item name="meetubeLoader">@drawable/avd_glass_orbit</item>
+    </style>
+<style name="Widget.MeeTube.Loader" parent="android:Widget.Material.ProgressBar">
+        <item name="android:indeterminateDrawable">?attr/meetubeLoader</item>
+    </style>
+<style name="Widget.MeeTube.Loader.Large" parent="android:Widget.Material.ProgressBar.Large">
+        <item name="android:indeterminateDrawable">?attr/meetubeLoader</item>
+    </style>
+<style name="Widget.MeeTube.Loader.Small" parent="android:Widget.Material.ProgressBar.Small">
+        <item name="android:indeterminateDrawable">?attr/meetubeLoader</item>
+    </style>
+<style name="Widget.MeeTube.Switch" parent="Widget.MaterialComponents.CompoundButton.Switch">
         <item name="useMaterialThemeColors">false</item>
-        <item name="android:thumb">@drawable/metube_switch_thumb</item>
-        <item name="track">@drawable/metube_switch_track</item>
+        <item name="android:thumb">@drawable/meetube_switch_thumb</item>
+        <item name="track">@drawable/meetube_switch_track</item>
         <item name="thumbTint">@null</item>
         <item name="trackTint">@null</item>
         <item name="android:background">@null</item>
     </style>
-    <!-- METUBE(up-next): the countdown card's three pills. -->
-    <style name="MeTubeNextButton">
+<!-- MEETUBE(up-next): the countdown card's three pills. -->
+    <style name="MeeTubeNextButton">
         <item name="android:layout_width">wrap_content</item>
         <item name="android:layout_height">32dp</item>
         <item name="android:drawablePadding">4dp</item>
@@ -586,5 +618,9 @@
         <item name="android:textColor">@android:color/white</item>
         <item name="android:textSize">13sp</item>
     </style>
+
+
+
+<!-- METUBE(up-next): the countdown card's three pills. -->
 
 </resources>

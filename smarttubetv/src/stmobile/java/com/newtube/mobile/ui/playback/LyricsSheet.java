@@ -20,6 +20,7 @@ import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.core.content.ContextCompat;
 import androidx.core.util.Consumer;
+import androidx.core.view.ViewCompat;
 import androidx.core.widget.NestedScrollView;
 
 import com.google.android.material.bottomsheet.BottomSheetDialog;
@@ -27,9 +28,10 @@ import com.liskovsoft.smartyoutubetv2.tv.R;
 import com.newtube.mobile.ui.common.Haptics;
 
 import java.util.function.LongSupplier;
+import java.util.function.Predicate;
 
 /**
- * METUBE(lyrics): the playing song's lyrics (found by {@link Lyrics}) in a panel under the video, like
+ * MEETUBE(lyrics): the playing song's lyrics (found by {@link Lyrics}) in a panel under the video, like
  * YouTube Music's Lyrics tab. Timed lyrics light up line by line and keep the sung line in view;
  * plain ones are one selectable text, so any of it can be copied. Same frosted sheet and sizing as
  * the Description panel (DescriptionSheet), shown by the player (showPlayerSheet). The header names
@@ -47,11 +49,14 @@ final class LyricsSheet {
 
     /**
      * {@code position} is the player's position in ms (negative when unknown); {@code showSheet} shows
-     * the provider chooser the way the player shows its sheets (showPlayerSheet).
+     * the provider chooser the way the player shows its sheets (showPlayerSheet). {@code transcript}, null
+     * when the video has none, opens its transcript in this panel's place (given true when no provider has
+     * the song): true when it did. It is also the chooser's last row.
      */
     static BottomSheetDialog create(@NonNull Activity activity, @NonNull String videoId, String title, String channel,
                                     @Nullable View video, @NonNull LongSupplier position,
-                                    @NonNull Consumer<BottomSheetDialog> showSheet) {
+                                    @NonNull Consumer<BottomSheetDialog> showSheet,
+                                    @Nullable Predicate<Boolean> transcript) {
         BottomSheetDialog dialog = Haptics.watch(new BottomSheetDialog(activity));
         View content = LayoutInflater.from(activity).inflate(R.layout.sheet_mobile_lyrics, null);
         dialog.setContentView(content);
@@ -71,11 +76,20 @@ final class LyricsSheet {
         Lyrics.fetch(videoId, title != null ? title : "", channel != null ? channel : "", song -> {
             content.findViewById(R.id.lyrics_sheet_loading).setVisibility(View.GONE);
             if (song == null) {
+                if (transcript != null && dialog.isShowing() && transcript.test(true)) {
+                    dialog.dismiss();
+                    return;
+                }
                 content.findViewById(R.id.lyrics_sheet_empty).setVisibility(View.VISIBLE);
                 return;
             }
             Runnable showLyrics = () -> show(dialog, content, song, position);
-            Chooser chooser = new Chooser(activity, song, showSheet, showLyrics);
+            Runnable showTranscript = transcript == null ? null : () -> {
+                if (transcript.test(false)) {
+                    dialog.dismiss();
+                }
+            };
+            Chooser chooser = new Chooser(activity, song, showSheet, showLyrics, showTranscript);
             View provider = content.findViewById(R.id.lyrics_sheet_provider);
             provider.setVisibility(View.VISIBLE);
             provider.setOnClickListener(v -> chooser.open());
@@ -85,7 +99,7 @@ final class LyricsSheet {
     }
 
     /**
-     * METUBE(lyrics): the minimize drag fades the lyrics out with the watch page, and back in if it is
+     * MEETUBE(lyrics): the minimize drag fades the lyrics out with the watch page, and back in if it is
      * let go, as it does the comments panel (MobilePlaybackActivity.applyMorph / resetMorph).
      */
     static void setMorphAlpha(@Nullable BottomSheetDialog sheet, float alpha) {
@@ -101,8 +115,15 @@ final class LyricsSheet {
      * (FLAG_NOT_TOUCH_MODAL): the video takes taps as usual - controls, seek, fullscreen - and the
      * lyrics stay open. They close by the X, a drag down or Back.
      */
-    private static void leaveVideoFree(Window window, View video) {
+    static void leaveVideoFree(Window window, View video) {
         window.addFlags(WindowManager.LayoutParams.FLAG_NOT_TOUCH_MODAL);
+        // BottomSheetDialog's own listener pads the sheet's top by the status bar once the sheet's top is
+        // above it, which in this shortened window it always is (y 0): a status bar of empty glass over
+        // the handle. The window never reaches the bar, so nothing of that is needed.
+        View container = window.findViewById(com.google.android.material.R.id.container);
+        if (container != null) {
+            ViewCompat.setOnApplyWindowInsetsListener(container, (v, insets) -> insets);
+        }
         View decor = window.getDecorView();
         int[] at = new int[2];
         decor.getViewTreeObserver().addOnPreDrawListener(() -> {
@@ -213,7 +234,7 @@ final class LyricsSheet {
     }
 
     /**
-     * METUBE(lyrics): BitChord's provider chooser (LyricsProviderSheet), in the player's single-choice
+     * MEETUBE(lyrics): BitChord's provider chooser (LyricsProviderSheet), in the player's single-choice
      * sheet: every provider with what it has for this song - the current one, lyrics found (tap to
      * use), none, being fetched, or not asked yet (tap to fetch). A pick with lyrics in hand switches
      * at once and closes the list; one not asked yet is fetched, and switched to when it answers with
@@ -226,6 +247,9 @@ final class LyricsSheet {
         private final Consumer<BottomSheetDialog> mShowSheet;
         /** Shows the lyrics of the provider the song shows. */
         private final Runnable mShowLyrics;
+        /** Opens the video's transcript in the lyrics' place; null when it has none. */
+        @Nullable
+        private final Runnable mShowTranscript;
         /** Providers asked from here whose answer is still to come. */
         private final boolean[] mAsking = new boolean[Lyrics.PROVIDERS.length];
         /** The last pick still being fetched, -1 when none. */
@@ -236,11 +260,13 @@ final class LyricsSheet {
         @Nullable
         private LinearLayout mRows;
 
-        Chooser(Activity activity, Lyrics.Song song, Consumer<BottomSheetDialog> showSheet, Runnable showLyrics) {
+        Chooser(Activity activity, Lyrics.Song song, Consumer<BottomSheetDialog> showSheet, Runnable showLyrics,
+                @Nullable Runnable showTranscript) {
             mActivity = activity;
             mSong = song;
             mShowSheet = showSheet;
             mShowLyrics = showLyrics;
+            mShowTranscript = showTranscript;
         }
 
         void open() {
@@ -278,20 +304,36 @@ final class LyricsSheet {
                         : mSong.asked(i) ? R.string.mobile_lyrics_provider_found
                         : mAsking[i] ? R.string.mobile_lyrics_provider_fetching
                         : R.string.mobile_lyrics_provider_not_fetched;
-                SpannableStringBuilder label = new SpannableStringBuilder(Lyrics.PROVIDERS[i]).append('\n');
-                int start = label.length();
-                label.append(mActivity.getString(status));
-                label.setSpan(new RelativeSizeSpan(0.87f), start, label.length(), Spanned.SPAN_EXCLUSIVE_EXCLUSIVE);
-                label.setSpan(new ForegroundColorSpan(secondary), start, label.length(),
-                        Spanned.SPAN_EXCLUSIVE_EXCLUSIVE);
-                View row = LayoutInflater.from(mActivity).inflate(R.layout.item_mobile_quality_row, mRows, false);
-                ((TextView) row.findViewById(R.id.quality_row_label)).setText(label);
-                row.findViewById(R.id.quality_row_check).setVisibility(current ? View.VISIBLE : View.INVISIBLE);
+                View row = row(Lyrics.PROVIDERS[i], mActivity.getString(status), secondary, current);
                 row.setOnClickListener(v -> pick(provider));
                 row.setEnabled(!current && !none);
                 row.setAlpha(none ? 0.5f : 1f);
                 mRows.addView(row);
             }
+            if (mShowTranscript != null) { // the video's captions, in place of any lyrics
+                View row = row(mActivity.getString(R.string.mobile_transcript),
+                        mActivity.getString(R.string.mobile_transcript_follow), secondary, false);
+                row.setOnClickListener(v -> {
+                    if (mList != null) {
+                        mList.dismiss();
+                    }
+                    mShowTranscript.run();
+                });
+                mRows.addView(row);
+            }
+        }
+
+        /** A row: its name over what it has, in smaller grey. */
+        private View row(String name, String status, int secondary, boolean current) {
+            SpannableStringBuilder label = new SpannableStringBuilder(name).append('\n');
+            int start = label.length();
+            label.append(status);
+            label.setSpan(new RelativeSizeSpan(0.87f), start, label.length(), Spanned.SPAN_EXCLUSIVE_EXCLUSIVE);
+            label.setSpan(new ForegroundColorSpan(secondary), start, label.length(), Spanned.SPAN_EXCLUSIVE_EXCLUSIVE);
+            View row = LayoutInflater.from(mActivity).inflate(R.layout.item_mobile_quality_row, mRows, false);
+            ((TextView) row.findViewById(R.id.quality_row_label)).setText(label);
+            row.findViewById(R.id.quality_row_check).setVisibility(current ? View.VISIBLE : View.INVISIBLE);
+            return row;
         }
 
         private void pick(int provider) {

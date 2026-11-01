@@ -37,7 +37,7 @@ import com.liskovsoft.smartyoutubetv2.tv.R;
 import java.util.Random;
 
 /**
- * METUBE(glass): iOS-style liquid glass over a {@link GlassSource} - BitChord's floating bar,
+ * MEETUBE(glass): iOS-style liquid glass over a {@link GlassSource} - BitChord's floating bar,
  * ported from Compose to plain RenderNodes, with its numbers:
  *
  * <ol>
@@ -182,6 +182,8 @@ public class GlassView extends FrameLayout {
     @Nullable private GlassSource mSource;
     /** Sits on glass already (glassOnGlass): its tint is drawn as given, see-through. */
     private final boolean mOnGlass;
+    /** The widest it grows (glassMaxWidth), 0: no limit. */
+    private final int mMaxWidth;
     @Nullable private RenderNode mNode;
 
     private final ViewTreeObserver.OnPreDrawListener mTrackPosition = () -> {
@@ -203,6 +205,7 @@ public class GlassView extends FrameLayout {
         mTint = a.getColor(R.styleable.GlassView_glassTint, 0x66121212);
         mLiquid = a.getBoolean(R.styleable.GlassView_glassLiquid, true) && Glass.isLiquid(context);
         mOnGlass = a.getBoolean(R.styleable.GlassView_glassOnGlass, false);
+        mMaxWidth = a.getDimensionPixelSize(R.styleable.GlassView_glassMaxWidth, 0);
         a.recycle();
 
         setWillNotDraw(false);
@@ -241,7 +244,7 @@ public class GlassView extends FrameLayout {
     }
 
     /**
-     * METUBE(live chat, issue #32): this glass's specular rim alone, as a foreground for a rounded
+     * MEETUBE(live chat, issue #32): this glass's specular rim alone, as a foreground for a rounded
      * card that is not a GlassView (the landscape chat and comments cards).
      */
     public static Drawable rim(float cornerPx, float density) {
@@ -297,10 +300,18 @@ public class GlassView extends FrameLayout {
     public void setSource(@Nullable GlassSource source) {
         mSource = source;
         if (source != null && source.node != null && mNode == null) {
-            mNode = new RenderNode("MeTube glass");
+            mNode = new RenderNode("MeeTube glass");
         }
         mRecordedX = Integer.MIN_VALUE;
         invalidate();
+    }
+
+    @Override
+    protected void onMeasure(int widthMeasureSpec, int heightMeasureSpec) {
+        if (mMaxWidth > 0 && MeasureSpec.getSize(widthMeasureSpec) > mMaxWidth) {
+            widthMeasureSpec = MeasureSpec.makeMeasureSpec(mMaxWidth, MeasureSpec.getMode(widthMeasureSpec));
+        }
+        super.onMeasure(widthMeasureSpec, heightMeasureSpec);
     }
 
     @Override
@@ -336,7 +347,7 @@ public class GlassView extends FrameLayout {
         }
         canvas.drawRect(0, 0, getWidth(), getHeight(), mTintPaint);
         if (mLiquid) {
-            // METUBE(amoled): only the floating glass is grainy - the flat top bar stays true black.
+            // MEETUBE(amoled): only the floating glass is grainy - the flat top bar stays true black.
             canvas.drawRect(0, 0, getWidth(), getHeight(), mNoisePaint);
             float r = radius(getWidth(), getHeight());
             canvas.drawRoundRect(mRimRect, r, r, mRimPaint);

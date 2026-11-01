@@ -90,8 +90,16 @@ final class CommentsPanel implements CommentsAdapter.Listener, CommentsPanelLayo
         /** The panel now covers (true) or uncovers the watch page. */
         void onCommentsPanelShown(boolean shown);
 
-        /** METUBE(shorts): the panel has started closing; it is gone in {@code durationMs}. */
+        /** MEETUBE(shorts): the panel has started closing; it is gone in {@code durationMs}. */
         default void onCommentsPanelClosing(long durationMs) {
+        }
+
+        /** MEETUBE(shorts): the sheet moved, {@code gone} of the way off the screen (0 open, 1 gone). */
+        default void onCommentsPanelMoved(float gone) {
+        }
+
+        /** MEETUBE(watch-look): the top comments' first page arrived (the watch page shows them one by one). */
+        default void onTopComments(List<CommentItem> comments) {
         }
     }
 
@@ -583,7 +591,7 @@ final class CommentsPanel implements CommentsAdapter.Listener, CommentsPanelLayo
             bindFeedToList(feed, false);
         }
         if (!mLayout.isOpen()) {
-            // METUBE(glass): the sheet is the frosted page under it, as the Description sheet is -
+            // MEETUBE(glass): the sheet is the frosted page under it, as the Description sheet is -
             // copied now, before the sheet comes up over it.
             com.newtube.mobile.ui.common.SheetGlass.frost(mLayout.getSheet(), mActivity.getWindow());
         }
@@ -683,6 +691,11 @@ final class CommentsPanel implements CommentsAdapter.Listener, CommentsPanelLayo
     }
 
     @Override
+    public void onPanelMoved(float gone) {
+        mHost.onCommentsPanelMoved(gone);
+    }
+
+    @Override
     public void onPanelClosed() {
         if (mReleased) {
             return;
@@ -759,6 +772,13 @@ final class CommentsPanel implements CommentsAdapter.Listener, CommentsPanelLayo
         feed.nextKey = nextKey(group, feed.firstKey);
         if (!feed.replies) {
             learnCreator(feed.entries);
+        }
+        if (feed == mTop) {
+            List<CommentItem> top = new ArrayList<>();
+            for (CommentsAdapter.Entry entry : feed.entries) {
+                top.add(entry.item);
+            }
+            mHost.onTopComments(top);
         }
         if (feed == pendingSortFeed()) {
             finishSortSwitch(feed);
@@ -1026,7 +1046,7 @@ final class CommentsPanel implements CommentsAdapter.Listener, CommentsPanelLayo
     }
 
     /**
-     * METUBE(glass): a comments popup (Top / Newest, a comment's menu) is frosted glass like the
+     * MEETUBE(glass): a comments popup (Top / Newest, a comment's menu) is frosted glass like the
      * panel under it - the page copied as it opens, blurred, inside the menu's 18dp corners.
      */
     private void frostMenu(View content) {
@@ -1065,7 +1085,7 @@ final class CommentsPanel implements CommentsAdapter.Listener, CommentsPanelLayo
         menu.setAnimationStyle(0);
         menu.setOutsideTouchable(true);
         menu.setElevation(8 * mDensity);
-        com.newtube.mobile.ui.common.Haptics.watch(menu); // METUBE(haptics)
+        com.newtube.mobile.ui.common.Haptics.watch(menu); // MEETUBE(haptics)
         menu.setOnDismissListener(() -> {
             if (mSortMenu == menu) {
                 mSortMenu = null;
@@ -1662,7 +1682,7 @@ final class CommentsPanel implements CommentsAdapter.Listener, CommentsPanelLayo
         setComposeRowsHidden(true);
     }
 
-    /** METUBE: while the composer is open its bar is the only "Add a comment…" on screen. */
+    /** MEETUBE: while the composer is open its bar is the only "Add a comment…" on screen. */
     private void setComposeRowsHidden(boolean hidden) {
         mListAdapter.setComposeHidden(hidden);
         mRepliesAdapter.setComposeHidden(hidden);
@@ -1932,7 +1952,7 @@ final class CommentsPanel implements CommentsAdapter.Listener, CommentsPanelLayo
         menu.setAnimationStyle(0);
         menu.setOutsideTouchable(true);
         menu.setElevation(8 * mDensity);
-        com.newtube.mobile.ui.common.Haptics.watch(menu); // METUBE(haptics)
+        com.newtube.mobile.ui.common.Haptics.watch(menu); // MEETUBE(haptics)
         menu.setOnDismissListener(() -> {
             if (mCommentMenu == menu) {
                 mCommentMenu = null;

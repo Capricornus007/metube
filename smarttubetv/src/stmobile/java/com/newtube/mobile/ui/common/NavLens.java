@@ -21,7 +21,7 @@ import androidx.annotation.Nullable;
 import androidx.annotation.RequiresApi;
 
 /**
- * METUBE(nav lens, issue #46): a tab switch as iOS 26's liquid glass tab bar plays it - the lit pill
+ * MEETUBE(nav lens, issue #46): a tab switch as iOS 26's liquid glass tab bar plays it - the lit pill
  * swells into a clear lens taller than the bar, glides to the picked tab (stretching with its speed,
  * landing with a little overshoot) magnifying and bending the bar under it through
  * {@link GlassView}'s lens shader, unblurred, and settles back down into the pill.
@@ -31,7 +31,7 @@ import androidx.annotation.RequiresApi;
  * ({@link #jiggle}), and with the setting off ({@link #enabled}) it just nudges.
  */
 public final class NavLens extends View {
-    private static final String PREFS = "metube_app";
+    private static final String PREFS = "meetube_app";
     private static final String KEY_MOTION = "tab_switch_motion";
     /** The lens swells in place this long before it glides (a switch's page swap lands then, not mid-glide). */
     private static final long GLIDE_DELAY_MS = 80;
@@ -108,6 +108,8 @@ public final class NavLens extends View {
         if (running instanceof Animator) {
             ((Animator) running).cancel();
         }
+        float fromX = bar.getScaleX(); // a dragged bar's pop (#90) settles into the wiggle
+        float fromY = bar.getScaleY();
         float lean = JIGGLE_LEAN_DP * bar.getResources().getDisplayMetrics().density * direction;
         ValueAnimator jiggle = ValueAnimator.ofFloat(0f, 1f);
         jiggle.setDuration(JIGGLE_MS);
@@ -115,8 +117,9 @@ public final class NavLens extends View {
         jiggle.addUpdateListener(a -> {
             float t = (float) a.getAnimatedValue();
             float wobble = (float) (Math.exp(-4.2 * t) * Math.sin(2 * Math.PI * 2.25 * t));
-            bar.setScaleX(1f + 0.028f * wobble);
-            bar.setScaleY(1f - 0.04f * wobble);
+            float popped = (float) Math.exp(-6 * t);
+            bar.setScaleX((1f + (fromX - 1f) * popped) * (1f + 0.028f * wobble));
+            bar.setScaleY((1f + (fromY - 1f) * popped) * (1f - 0.04f * wobble));
             bar.setTranslationX(lean * (float) (Math.exp(-3.5 * t) * Math.sin(2 * Math.PI * 1.4 * t)));
         });
         jiggle.addListener(new AnimatorListenerAdapter() {
@@ -137,30 +140,58 @@ public final class NavLens extends View {
      * when a newer switch takes over first).
      */
     public void play(GlassView bar, View from, View to, Runnable onSettled) {
-        if (mAnimator != null) {
-            mAnimator.removeAllListeners();
-            mAnimator.cancel();
-        }
-        mBar = bar;
         // The tabs' centres in the bar's own coordinates (their layout, untouched by any wiggle).
-        float fromX = centreInBar(from, bar);
-        float toX = centreInBar(to, bar);
-        mCy = bar.getHeight() / 2f;
+        play(bar, centreInBar(from, bar), to, false, onSettled);
+    }
 
-        int w = Math.round(to.getWidth() + GROW_W_DP * mDensity);
-        int h = Math.round(to.getHeight() + GROW_H_DP * mDensity);
-        ViewGroup.LayoutParams lp = getLayoutParams();
-        if (lp.width != w || lp.height != h) {
-            lp.width = w;
-            lp.height = h;
-            setLayoutParams(lp);
+    /**
+     * MEETUBE(#90): the lens under a finger dragging the lit pill along the bar, centred at {@code x}
+     * (bar coordinates); {@link #play} with {@code grown} glides it on from there when it is let go.
+     */
+    public void drag(GlassView bar, View tab, float x) {
+        mBar = bar;
+        mCy = bar.getHeight() / 2f;
+        mCx = x;
+        mMagnify = MAGNIFY;
+        int w = fit(tab);
+        int h = getLayoutParams().height;
+        if (!mDragging) { // it swells out of the pill (or out of a glide it takes over)
+            mDragging = true;
+            stop();
+            clipTo(bar);
+            if (getVisibility() != VISIBLE) {
+                setScaleX((tab.getWidth() - 4 * mDensity) / w);
+                setScaleY((float) tab.getHeight() / h);
+            }
+            setAlpha(1f);
+            setVisibility(VISIBLE);
+            animate().scaleX(1f).scaleY(1f).setDuration((long) GROW_MS)
+                    .setInterpolator(Motion.EMPHASIZED_DECELERATE).start();
         }
-        // The pill it grows out of and settles into: the tab, 2dp in on each side (bg_nav_item).
-        float restX = (to.getWidth() - 4 * mDensity) / w;
-        float restY = (float) to.getHeight() / h;
+        place(bar, w, h);
+        invalidate();
+    }
+
+    private boolean mDragging;
+
+    private void clipTo(GlassView bar) {
         float corner = bar.corner();
         mBarClip.reset();
         mBarClip.addRoundRect(0, 0, bar.getWidth(), bar.getHeight(), corner, corner, Path.Direction.CW);
+    }
+
+    public void play(GlassView bar, float fromX, View to, boolean grown, Runnable onSettled) {
+        stop();
+        mDragging = false;
+        mBar = bar;
+        float toX = centreInBar(to, bar);
+        mCy = bar.getHeight() / 2f;
+        int w = fit(to);
+        int h = getLayoutParams().height;
+        // The pill it grows out of and settles into: the tab, 2dp in on each side (bg_nav_item).
+        float restX = (to.getWidth() - 4 * mDensity) / w;
+        float restY = (float) to.getHeight() / h;
+        clipTo(bar);
 
         // The glide is a spring (a ~4% overshoot as it lands); its stretch follows its real speed.
         Motion.Spring glide = new Motion.Spring(0f, 1f, 0f, GLIDE_STIFFNESS, GLIDE_DAMPING, 0.004f);
@@ -180,7 +211,7 @@ public final class NavLens extends View {
         animator.setInterpolator(new LinearInterpolator());
         animator.addUpdateListener(a -> {
             float ms = (float) a.getAnimatedValue();
-            float grow = Motion.EMPHASIZED_DECELERATE.getInterpolation(clamp(ms / GROW_MS));
+            float grow = grown ? 1f : Motion.EMPHASIZED_DECELERATE.getInterpolation(clamp(ms / GROW_MS));
             float travel = clamp((ms - GLIDE_DELAY_MS) / glideMs);
             float settle = Motion.STANDARD.getInterpolation(clamp((ms - settleAt) / SETTLE_MS));
             float presence = grow * (1f - settle);
@@ -194,11 +225,7 @@ public final class NavLens extends View {
             setScaleX(lerp(restX, 1f, presence) * (1f + STRETCH * speed));
             setScaleY(lerp(restY, 1f, presence) * (1f - STRETCH / 3f * speed));
             setAlpha(clamp(presence * 1.6f));
-            // Where that point of the bar is now, the bar's wiggle (scale about its centre) included.
-            float px = bar.getPivotX();
-            float py = bar.getPivotY();
-            setTranslationX(bar.getLeft() + bar.getTranslationX() + px + (mCx - px) * bar.getScaleX() - getLeft() - w / 2f);
-            setTranslationY(bar.getTop() + bar.getTranslationY() + py + (mCy - py) * bar.getScaleY() - getTop() - h / 2f);
+            place(bar, w, h);
             invalidate();
         });
         animator.addListener(new AnimatorListenerAdapter() {
@@ -215,8 +242,38 @@ public final class NavLens extends View {
         animator.start();
     }
 
+    private void stop() {
+        animate().cancel();
+        if (mAnimator != null) {
+            mAnimator.removeAllListeners();
+            mAnimator.cancel();
+            mAnimator = null;
+        }
+    }
+
+    /** Sizes the lens to {@code tab} swollen; returns its width (the height is in its layout params). */
+    private int fit(View tab) {
+        int w = Math.round(tab.getWidth() + GROW_W_DP * mDensity);
+        int h = Math.round(tab.getHeight() + GROW_H_DP * mDensity);
+        ViewGroup.LayoutParams lp = getLayoutParams();
+        if (lp.width != w || lp.height != h) {
+            lp.width = w;
+            lp.height = h;
+            setLayoutParams(lp);
+        }
+        return w;
+    }
+
+    /** Over the point (mCx, mCy) of the bar as it is now, the bar's wiggle (scale about its centre) included. */
+    private void place(View bar, int w, int h) {
+        float px = bar.getPivotX();
+        float py = bar.getPivotY();
+        setTranslationX(bar.getLeft() + bar.getTranslationX() + px + (mCx - px) * bar.getScaleX() - getLeft() - w / 2f);
+        setTranslationY(bar.getTop() + bar.getTranslationY() + py + (mCy - py) * bar.getScaleY() - getTop() - h / 2f);
+    }
+
     /** The horizontal centre of {@code tab} in {@code bar}'s layout coordinates (no transforms). */
-    private static float centreInBar(View tab, View bar) {
+    public static float centreInBar(View tab, View bar) {
         float x = tab.getWidth() / 2f;
         View view = tab;
         while (view != bar && view.getParent() instanceof View) {
@@ -254,7 +311,7 @@ public final class NavLens extends View {
         int w = getWidth();
         int h = getHeight();
         if (mNode == null) {
-            mNode = new RenderNode("MeTube nav lens");
+            mNode = new RenderNode("MeeTube nav lens");
         }
         mNode.setPosition(0, 0, w, h);
         if (w != mEffectW || h != mEffectH) {

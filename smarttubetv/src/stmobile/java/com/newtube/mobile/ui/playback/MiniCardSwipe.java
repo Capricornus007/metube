@@ -15,7 +15,7 @@ import androidx.dynamicanimation.animation.SpringAnimation;
 import com.newtube.mobile.ui.common.Haptics;
 
 /**
- * METUBE(mini-float): the docked mini card floats free, like YouTube's Shorts mini player. Drag it
+ * MEETUBE(mini-float): the docked mini card floats free, like YouTube's Shorts mini player. Drag it
  * anywhere and it follows the finger; let go and it springs to the nearest corner of the screen,
  * the throw's direction counted. Flung hard sideways, or let go mostly past a side edge, it flies
  * off that side and the host closes the session (the old swipe to close). Taps are untouched: the
@@ -36,7 +36,7 @@ public final class MiniCardSwipe implements View.OnTouchListener {
         /** Committed: fly the card to {@code toTranslationX} over {@code durationMs}, then close. */
         void onSwipedAway(float toTranslationX, long durationMs);
 
-        /** A finger came down on the card (METUBE(mini-controls): its buttons come back). */
+        /** A finger came down on the card (MEETUBE(mini-controls): its buttons come back). */
         default void onTouched() {
         }
     }
@@ -51,6 +51,9 @@ public final class MiniCardSwipe implements View.OnTouchListener {
     /** SystemUI's snap-back spring for a notification that did not go. */
     private static final float SNAP_STIFFNESS = 550f;
     private static final float SNAP_DAMPING = 0.75f;
+    /** MEETUBE(issue #125): riding the nav bar, a bouncier spring - a small overshoot, then rest. */
+    private static final float FOLLOW_STIFFNESS = 500f;
+    private static final float FOLLOW_DAMPING = 0.55f;
     private static final long FLY_MIN_MS = 110;
     private static final long FLY_MAX_MS = 240;
 
@@ -65,6 +68,8 @@ public final class MiniCardSwipe implements View.OnTouchListener {
     private float mStartX;
     private float mStartY;
     private boolean mDragging;
+    /** MEETUBE(issue #125): home's translation, below its laid-out place while the nav bar is away. */
+    private float mHomeY;
     /** The touch stopped being a drag (a second finger): consume it to the end. */
     private boolean mIgnoring;
     @Nullable
@@ -93,6 +98,25 @@ public final class MiniCardSwipe implements View.OnTouchListener {
         }
         mSnapX.cancel();
         mSnapY.cancel();
+    }
+
+    public float homeY() {
+        return mHomeY;
+    }
+
+    /**
+     * MEETUBE(issue #125): home moves with the nav bar under it (slid off by a scroll, NavHider). A
+     * card resting at a bottom corner rides along; one at the top, held, or closing stays put.
+     */
+    public void setHomeY(float homeY) {
+        mHomeY = homeY;
+        View parent = (View) mCard.getParent();
+        if (mDragging || parent == null || mCard.getVisibility() != View.VISIBLE || !mCallback.canSwipe()
+                || mCard.getTop() + mCard.getHeight() / 2f + mCard.getTranslationY() <= parent.getHeight() / 2f) {
+            return;
+        }
+        mSnapY.getSpring().setStiffness(FOLLOW_STIFFNESS).setDampingRatio(FOLLOW_DAMPING);
+        mSnapY.animateToFinalPosition(homeY);
     }
 
     private MiniCardSwipe(View card, Callback callback) {
@@ -240,11 +264,12 @@ public final class MiniCardSwipe implements View.OnTouchListener {
         float centerY = mCard.getTop() + mCard.getHeight() / 2f + mCard.getTranslationY() + velocityY * THROW_S;
         float homeCenterX = homeLeft + mCard.getWidth() / 2f;
         float x = Math.abs(centerX - homeCenterX) < Math.abs(centerX - (homeCenterX + otherSide)) ? 0f : otherSide;
-        float y = centerY > parent.getHeight() / 2f || top >= 0f ? 0f : top;
+        float y = centerY > parent.getHeight() / 2f || top >= 0f ? mHomeY : top;
 
         mCard.setAlpha(1f);
         mSnapX.setStartVelocity(velocityX);
         mSnapX.animateToFinalPosition(x);
+        mSnapY.getSpring().setStiffness(SNAP_STIFFNESS).setDampingRatio(SNAP_DAMPING); // after a nav ride's bounce
         mSnapY.setStartVelocity(velocityY);
         mSnapY.animateToFinalPosition(y);
     }

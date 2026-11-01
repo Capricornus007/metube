@@ -48,7 +48,7 @@ abstract class CopyRenamedApks extends DefaultTask {
         builtArtifacts.elements.each { artifact ->
             def abi = artifact.filters.find { it.filterType.toString() == 'ABI' }?.identifier ?: 'universal'
             def version = (artifact.versionName ?: 'unknown').split(' ')[0] // without the code name
-            def outputFile = new File(outputDirectory, "MeTube_${version}_${nameTag.get()}${abi}.apk")
+            def outputFile = new File(outputDirectory, "MeeTube_${version}_${nameTag.get()}${abi}.apk")
             Files.copy(new File(artifact.outputFile).toPath(), outputFile.toPath(), StandardCopyOption.REPLACE_EXISTING)
         }
     }
@@ -59,7 +59,7 @@ abstract class CopyRenamedApks extends DefaultTask {
  *
  * AGP packages the profile as assets/dexopt/baseline.prof, which only androidx.profileinstaller
  * reads - on the app's first run it queues the profile for the next BACKGROUND dexopt (idle +
- * charging). NewTube is sideloaded (a GitHub APK), so an update
+ * charging). NewTube is sideloaded (GitHub APK, in-app updater -> system installer), so an update
  * installs with filter "verify" and every cold start runs interpreted/JIT until that background
  * job: measured on the Pixel 9, cold share-link opens at median 926 ms right after install vs
  * 582 ms once compiled. Since Android 15, ART Service's install-time dexopt also reads an
@@ -170,6 +170,9 @@ android {
         def sourceDateEpoch = System.getenv('SOURCE_DATE_EPOCH')
         buildConfigField "long", "TIMESTAMP", (sourceDateEpoch ? (sourceDateEpoch as long) * 1000L : System.currentTimeMillis()) + "L"
         buildConfigField "boolean", "BENCHMARK", "false"
+        // NEWTUBE(fdroid): -Pfdroid turns the in-app updater off - F-Droid delivers the updates, and
+        // its inclusion policy forbids self-updates that aren't an explicit opt-in.
+        buildConfigField "boolean", "IN_APP_UPDATES", project.hasProperty('fdroid') ? "false" : "true"
 
         // The content of Universal apk
         ndk {
@@ -318,10 +321,10 @@ android {
             // fork-point 31.97/2387). versionCode starts at 10000 - above upstream's code so
             // existing test installs upgrade in place - and encodes the version:
             // 1.0.0 -> 10000, 1.0.1 -> 10001, 1.1.0 -> 10100, 2.0.0 -> 20000.
-            // METUBE: every release has a code name after its number (Settings > About, App info);
+            // MEETUBE: every release has a code name after its number (Settings > About, App info);
             // APK files and the update manifest use the number alone.
-            versionCode 30108
-            versionName "3.1.8 Lora"
+            versionCode 30203
+            versionName "3.2.3 Mirage"
         }
     }
 }
@@ -333,8 +336,8 @@ androidComponents {
         def copyTask = tasks.register("copyRenamedApksFor${variant.name.capitalize()}", CopyRenamedApks) {
             output.set(layout.buildDirectory.dir("outputs/renamed_apks/${variant.name}"))
             builtArtifactsLoader.set(variant.artifacts.getBuiltArtifactsLoader())
-            // A -Pfdroid build is a different APK (Maven J2V8 instead of the vendored one): its
-            // files must not overwrite the regular release files when both are built in one checkout.
+            // A -Pfdroid build is a different APK (updater off, Maven J2V8): its files must not
+            // overwrite the regular release files when both are built in one checkout.
             nameTag.set(project.hasProperty('fdroid') ? 'fdroid_' : '')
         }
         variant.artifacts.use(copyTask).wiredWith { it.input }.toListenTo(SingleArtifact.APK.INSTANCE)
@@ -467,7 +470,7 @@ configurations {
     sabrProofProtoc
 }
 dependencies {
-    // METUBE: the compiler for the machine running the build (it was pinned to Linux only).
+    // MEETUBE: the compiler for the machine running the build (it was pinned to Linux only).
     def os = System.getProperty('os.name').toLowerCase()
     def arch = System.getProperty('os.arch') in ['aarch64', 'arm64'] ? 'aarch_64' : 'x86_64'
     def protocTarget = os.contains('win') ? 'windows-x86_64' : (os.contains('mac') ? 'osx-' + arch : 'linux-' + arch)

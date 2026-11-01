@@ -67,7 +67,7 @@ public final class ThemeMode {
     public static void init(@NonNull Application app, boolean existingInstall) {
         SharedPreferences prefs = prefs(app);
         if (!prefs.contains(KEY_MODE)) {
-            int initial = DARK; // METUBE: the floating-glass design is dark-first
+            int initial = DARK; // MEETUBE: the floating-glass design is dark-first
             prefs.edit().putInt(KEY_MODE, initial).apply();
             NetPath.log("theme default mode=" + name(initial) + " existing=" + (existingInstall ? "y" : "n"));
         }
@@ -162,6 +162,7 @@ public final class ThemeMode {
             int themeRes = manifestTheme(activity);
             if (themeRes != 0) {
                 activity.getTheme().applyStyle(themeRes, true);
+                Loader.applyTo(activity, activity.getTheme()); // MEETUBE(loader): the manifest theme reset it
             }
         }
     }

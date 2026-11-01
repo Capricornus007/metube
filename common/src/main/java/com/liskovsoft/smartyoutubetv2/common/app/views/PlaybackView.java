@@ -26,7 +26,7 @@ public interface PlaybackView extends PlayerManager {
     default void showPlaybackNotice(String message) {}
 
     /**
-     * METUBE(up-next): the video ended and autoplay is about to open {@code next} (null while the
+     * MEETUBE(up-next): the video ended and autoplay is about to open {@code next} (null while the
      * suggestions are still loading). Return true to hold the advance behind the view's own
      * countdown, which runs {@code playNext} when it is done (or the user taps Play now); false
      * (the default, or a player nobody is looking at) advances at once.
@@ -34,4 +34,15 @@ public interface PlaybackView extends PlayerManager {
     default boolean showNextCountdown(com.liskovsoft.smartyoutubetv2.common.app.models.data.Video next, Runnable playNext) {
         return false;
     }
+
+    /**
+     * MEETUBE(sponsorblock): offer a SponsorBlock skip as a small pill on the player for
+     * {@code timeoutMs}, {@code skip} on a tap. Return false (the default) for the TV's dialog.
+     */
+    default boolean showSkipSegment(String category, Runnable skip, long timeoutMs) {
+        return false;
+    }
+
+    /** MEETUBE(sponsorblock): take the skip pill down (skipped, or the segment is over). */
+    default void hideSkipSegment() {}
 }

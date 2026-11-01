@@ -2,14 +2,22 @@ package com.newtube.mobile.ui.common;
 
 import android.annotation.SuppressLint;
 import android.content.Context;
+import android.content.res.TypedArray;
+import android.graphics.drawable.Animatable;
+import android.graphics.drawable.Drawable;
+import android.graphics.drawable.GradientDrawable;
+import android.graphics.drawable.LayerDrawable;
 import android.os.SystemClock;
 import android.util.AttributeSet;
 import android.view.MotionEvent;
 import android.view.View;
+import android.widget.ImageView;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.swiperefreshlayout.widget.SwipeRefreshLayout;
+
+import com.liskovsoft.smartyoutubetv2.tv.R;
 
 import java.lang.reflect.Field;
 
@@ -23,6 +31,10 @@ import java.lang.reflect.Field;
  * after each step of the pull (swiperefreshlayout 1.2.0: {@code mTotalUnconsumed} for a pull that
  * comes through the list's nested scrolling, {@code mInitialMotionY} for one it catches itself).
  * If a later version renames them, the pull just goes back to being silent.</p>
+ *
+ * <p>MEETUBE(loader): the circle that comes down shows the loader picked in Settings (the theme's
+ * {@code meetubeLoader}, as every other spinner) on a see-through glass disc, in place of the stock arrow;
+ * SwipeRefreshLayout still animates its own arrow drawable, which is just no longer drawn.</p>
  */
 public class HapticSwipeRefreshLayout extends SwipeRefreshLayout {
     /** SwipeRefreshLayout.DRAG_RATE: its own touch pull moves the spinner at half the finger. */
@@ -47,11 +59,36 @@ public class HapticSwipeRefreshLayout extends SwipeRefreshLayout {
     private long mLastClickAt;
 
     public HapticSwipeRefreshLayout(@NonNull Context context) {
-        super(context);
+        this(context, null);
     }
 
     public HapticSwipeRefreshLayout(@NonNull Context context, @Nullable AttributeSet attrs) {
         super(context, attrs);
+        useLoader(context);
+    }
+
+    /** Puts the picked loader into SwipeRefreshLayout's circle; left as the arrow if that fails. */
+    private void useLoader(Context context) {
+        TypedArray a = context.obtainStyledAttributes(new int[] {R.attr.meetubeLoader});
+        Drawable loader = a.getDrawable(0);
+        a.recycle();
+        Field circleField = field("mCircleView");
+        if (loader == null || circleField == null) {
+            return;
+        }
+        try {
+            ImageView circle = (ImageView) circleField.get(this);
+            int pad = Math.round(4 * getResources().getDisplayMetrics().density);
+            circle.setPadding(pad, pad, pad, pad);
+            circle.setImageDrawable(loader);
+            circle.setBackground(glass());
+            circle.setElevation(0); // a shadow under see-through glass shows through it as a grey blot
+            if (loader instanceof Animatable) {
+                ((Animatable) loader).start(); // loops forever; drawn only while the circle shows
+            }
+        } catch (IllegalAccessException | RuntimeException e) {
+            // keep the stock arrow
+        }
     }
 
     @Override
@@ -104,6 +141,22 @@ public class HapticSwipeRefreshLayout extends SwipeRefreshLayout {
         } else if (!engaged) {
             Haptics.tension(this, pull / distance);
         }
+    }
+
+    /**
+     * The disc as glass: a smoky tint (so the white loaders still read over a light page), a gloss
+     * fading down from the top, and a thin bright rim. No blur: a view can't blur what is behind it.
+     */
+    private Drawable glass() {
+        float dp = getResources().getDisplayMetrics().density;
+        GradientDrawable smoke = new GradientDrawable();
+        smoke.setShape(GradientDrawable.OVAL);
+        smoke.setColor(0x47000000);
+        GradientDrawable gloss = new GradientDrawable(GradientDrawable.Orientation.TOP_BOTTOM,
+                new int[] {0x40FFFFFF, 0x00FFFFFF});
+        gloss.setShape(GradientDrawable.OVAL);
+        gloss.setStroke(Math.max(1, Math.round(dp)), 0x66FFFFFF);
+        return new LayerDrawable(new Drawable[] {smoke, gloss});
     }
 
     /** How far a nested-scroll pull has gone (px), or -1 when unknown. */

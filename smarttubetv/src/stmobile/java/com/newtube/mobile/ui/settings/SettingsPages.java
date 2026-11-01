@@ -37,6 +37,7 @@ public final class SettingsPages {
     public static final String FEEDS_TABS = "feeds_tabs";
     public static final String FEEDS_HIDDEN = "feeds_hidden";
     public static final String FEEDS_MENU = "feeds_menu";
+    public static final String PLAYER_BUTTONS = "player_buttons";
     public static final String PRIVACY = "privacy";
     public static final String PLAYBACK = "playback";
     public static final String QUALITY = "quality";
@@ -77,6 +78,8 @@ public final class SettingsPages {
                 return AppPages.hidden(context);
             case FEEDS_MENU:
                 return AppPages.videoMenu(context);
+            case PLAYER_BUTTONS:
+                return AppPages.playerButtons(context);
             case PRIVACY:
                 return AppPages.privacy(context);
             case PLAYBACK:
@@ -106,7 +109,7 @@ public final class SettingsPages {
     private static Page root(Context context) {
         List<SettingsRow> rows = new ArrayList<>();
 
-        // METUBE: no account or coffee rows here - the You tab switches accounts, About thanks.
+        // MEETUBE: no account or coffee rows here - the You tab switches accounts, About thanks.
         rows.add(SettingsRow.header(context.getString(R.string.mobile_settings_group_app)));
         rows.add(SettingsRow.page(R.drawable.ic_settings_general, context.getString(R.string.mobile_settings_general),
                 context.getString(R.string.mobile_settings_general_summary), GENERAL));
@@ -168,10 +171,14 @@ public final class SettingsPages {
         rows.add(SettingsRow.action(context.getString(R.string.about_source_code),
                 context.getString(R.string.about_source_code_url).replace("https://", ""),
                 page -> Utils.openLinkExt(page.requireContext(), context.getString(R.string.about_source_code_url))));
+        // MEETUBE(ci): release APKs come from .github/workflows/release.yml; this opens its runs.
+        rows.add(SettingsRow.action(context.getString(R.string.mobile_about_ci),
+                context.getString(R.string.mobile_about_ci_desc),
+                page -> Utils.openLinkExt(page.requireContext(), context.getString(R.string.mobile_about_ci_url))));
         rows.add(SettingsRow.action(context.getString(R.string.about_license),
                 context.getString(R.string.about_license_name),
                 page -> Utils.openLinkExt(page.requireContext(), context.getString(R.string.about_license_url))));
-        // METUBE(support): a quiet thank-you at the foot of About, not another row.
+        // MEETUBE(support): a quiet thank-you at the foot of About, not another row.
         rows.add(SettingsRow.footer(R.drawable.ic_settings_coffee,
                 context.getString(R.string.mobile_about_thanks),
                 context.getString(R.string.mobile_about_thanks_support),

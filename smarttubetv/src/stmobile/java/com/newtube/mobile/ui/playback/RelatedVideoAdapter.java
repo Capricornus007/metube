@@ -57,6 +57,14 @@ public class RelatedVideoAdapter extends ListAdapter<Video, RelatedVideoAdapter.
      * Up-next list the playing video isn't present at all.
      */
     private String mCurrentVideoId;
+    /** MEETUBE(list layout): full-width cards (item_mobile_related_card) instead of rows. */
+    private boolean mCards;
+
+    /** Set before the list binds (Customization > Video layout: Cards). */
+    public RelatedVideoAdapter setCards(boolean cards) {
+        mCards = cards;
+        return this;
+    }
 
     public RelatedVideoAdapter(OnRelatedClickListener clickListener) {
         this(clickListener, null, 0);
@@ -104,7 +112,7 @@ public class RelatedVideoAdapter extends ListAdapter<Video, RelatedVideoAdapter.
     @Override
     public RelatedViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
         View view = LayoutInflater.from(parent.getContext())
-                .inflate(R.layout.item_mobile_related_video, parent, false);
+                .inflate(mCards ? R.layout.item_mobile_related_card : R.layout.item_mobile_related_video, parent, false);
         return new RelatedViewHolder(view, mClickListener, mPressListener, mPressIntentMs);
     }
 
@@ -146,7 +154,7 @@ public class RelatedVideoAdapter extends ListAdapter<Video, RelatedVideoAdapter.
                     clickListener.onRelatedClick(mVideo, mThumbnail);
                 }
             });
-            // METUBE(issue #66): a hold opens the video's menu, the feeds' (queue, playlist, share...).
+            // MEETUBE(issue #66): a hold opens the video's menu, the feeds' (queue, playlist, share...).
             itemView.setOnLongClickListener(v -> {
                 if (mVideo == null) {
                     return false;
@@ -234,7 +242,7 @@ public class RelatedVideoAdapter extends ListAdapter<Video, RelatedVideoAdapter.
         private void bindProgress(Video video) {
             int progress = video.percentWatched > 0 && video.percentWatched < 1 ? 1 : Math.round(video.percentWatched);
 
-            if (progress > 0 && progress <= 100) {
+            if (progress > 0 && progress <= 100 && com.newtube.mobile.ui.common.WatchedBar.isShown(itemView.getContext())) {
                 mWatchProgress.setProgress(progress);
                 mWatchProgress.setVisibility(View.VISIBLE);
             } else {

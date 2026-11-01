@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <!--
-  METUBE(list layout, issue #82): item_video_card as a compact row - a small 16:9 thumbnail on the
+  MEETUBE(list layout, issue #82): item_video_card as a compact row - a small 16:9 thumbnail on the
   left, title and meta on the right, YouTube's list. Same view ids as the card, so
   VideoCardAdapter.VideoViewHolder binds it unchanged; no avatar (the row has no room for one).
 -->
@@ -63,7 +63,7 @@
                 android:visibility="gone"
                 tools:text="12:34" />
 
-            <ProgressBar
+            <com.newtube.mobile.ui.common.GlowProgressBar
                 android:id="@+id/video_watch_progress"
                 style="?android:attr/progressBarStyleHorizontal"
                 android:layout_width="match_parent"

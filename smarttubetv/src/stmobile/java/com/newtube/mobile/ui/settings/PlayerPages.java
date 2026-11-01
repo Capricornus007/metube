@@ -68,6 +68,12 @@ final class PlayerPages {
                 .option(context.getString(R.string.mobile_settings_video_ends_close), PlayerConstants.PLAYBACK_MODE_CLOSE)
                 .bind(playerData::getPlaybackMode, playerData::setPlaybackMode));
 
+        // MEETUBE(issue #134): Shorts loop or scroll on by themselves, apart from the mode above.
+        rows.add(SettingsRow.<Boolean>choice(context.getString(R.string.mobile_settings_short_ends))
+                .option(context.getString(R.string.mobile_settings_short_ends_loop), true)
+                .option(context.getString(R.string.mobile_settings_short_ends_next), false)
+                .bind(tweaks::isLoopShortsEnabled, tweaks::setLoopShortsEnabled));
+
         rows.add(SettingsRow.<Integer>choice(context.getString(R.string.mobile_settings_remember_speed))
                 .option(context.getString(R.string.mobile_settings_remember_speed_channel), SPEED_PER_CHANNEL)
                 .option(context.getString(R.string.mobile_settings_remember_speed_video), SPEED_PER_VIDEO)
@@ -115,12 +121,16 @@ final class PlayerPages {
                 tweaks::isAudioTimeStretchingEnabled, tweaks::setAudioTimeStretchingEnabled));
 
         rows.add(sleepTimer(context, playerData));
-        // METUBE(background): OEM battery managers kill an optimized app's screen-off audio.
+        // MEETUBE(background): OEM battery managers kill an optimized app's screen-off audio.
         rows.add(SettingsRow.action(0, context.getString(R.string.mobile_settings_screen_off),
                 () -> context.getString(com.newtube.mobile.ui.playback.BackgroundPlay.isExempt(context)
                         ? R.string.mobile_settings_screen_off_on : R.string.mobile_settings_screen_off_off),
                 page -> com.newtube.mobile.ui.playback.BackgroundPlay.request(page.requireActivity())));
 
+        rows.add(SettingsRow.toggle(context.getString(R.string.mobile_settings_auto_pip),
+                context.getString(R.string.mobile_settings_auto_pip_summary),
+                () -> com.newtube.mobile.ui.playback.MiniPip.isAutoEnabled(context),
+                on -> com.newtube.mobile.ui.playback.MiniPip.setAutoEnabled(context, on)));
         rows.add(SettingsRow.toggle(context.getString(R.string.mobile_settings_audio_focus),
                 context.getString(R.string.mobile_settings_audio_focus_summary),
                 tweaks::isAudioFocusEnabled, tweaks::setAudioFocusEnabled));
@@ -144,7 +154,7 @@ final class PlayerPages {
                 context.getString(R.string.mobile_settings_gesture_seek_summary),
                 () -> PlayerGesturePrefs.isSeekSwipeOn(context),
                 on -> PlayerGesturePrefs.setSeekSwipeOn(context, on)));
-        // METUBE(double-tap seek, issue #6): how far a double tap jumps; 10 s stays the default.
+        // MEETUBE(double-tap seek, issue #6): how far a double tap jumps; 10 s stays the default.
         SettingsRow.Choice<Integer> doubleTap = SettingsRow.choice(
                 context.getString(R.string.mobile_settings_double_tap_seek));
         for (int seconds : new int[] {3, 5, 10, 15, 30}) {
@@ -153,7 +163,7 @@ final class PlayerPages {
         rows.add(doubleTap.bind(playerData::getSeekIncrementMs, playerData::setSeekIncrementMs));
 
         rows.add(SettingsRow.header(context.getString(R.string.mobile_settings_watch_page)));
-        // METUBE(ambient): on by default.
+        // MEETUBE(ambient): on by default.
         rows.add(SettingsRow.toggle(context.getString(R.string.mobile_settings_ambient),
                 context.getString(R.string.mobile_settings_ambient_summary),
                 () -> com.newtube.mobile.ui.playback.AmbientGlow.isOn(context),
@@ -250,7 +260,7 @@ final class PlayerPages {
         rows.add(defaultQuality(context, QUALITY_WIFI));
         rows.add(defaultQuality(context, QUALITY_MOBILE));
         rows.add(defaultQuality(context, QUALITY_SHORTS));
-        // METUBE(issue #35): only where the screen can show it.
+        // MEETUBE(issue #35): only where the screen can show it.
         if (com.newtube.mobile.player.Media3PlayerController.isHdrDisplay(context)) {
             rows.add(SettingsRow.toggle(context.getString(R.string.mobile_settings_hdr),
                     context.getString(R.string.mobile_settings_hdr_summary),
@@ -292,13 +302,13 @@ final class PlayerPages {
     /**
      * YouTube-style quality choice: Auto plus one cap per resolution. Each cap is a preset (a
      * ceiling the automatic selection stays under, 60 fps where the phone decodes it); the exact
-     * codec presets stay one level down, under Advanced > Video format. A preset picked there shows
+     * codec presets are the player quality sheet's full list. A preset picked there shows
      * here under its own name.
      */
     private static SettingsRow defaultQuality(Context context, int which) {
         PlayerData playerData = PlayerData.instance(context);
-        // METUBE(quality-network): one row for Wi-Fi, one for mobile data ("Same as Wi-Fi" = none),
-        // METUBE(shorts-quality): and one for Shorts, Auto (up to 1080p) at first (issue #26).
+        // MEETUBE(quality-network): one row for Wi-Fi, one for mobile data ("Same as Wi-Fi" = none),
+        // MEETUBE(shorts-quality): and one for Shorts, Auto (up to 1080p) at first (issue #26).
         FormatItem current = which == QUALITY_MOBILE ? playerData.getCellularVideoFormat()
                 : which == QUALITY_SHORTS ? playerData.getShortsVideoFormat() : playerData.getWifiVideoFormat();
         SettingsRow.Pick<FormatItem> store = format -> {
@@ -353,7 +363,7 @@ final class PlayerPages {
             }
         }
         if (currentKey == null) {
-            // A preset chosen under Advanced (another codec or frame rate): show it by name.
+            // A preset chosen in the player's full list (another codec or frame rate): show it by name.
             choice.option(presetLabel(presetName(current)), QUALITY_OTHER);
             currentKey = QUALITY_OTHER;
         }
@@ -371,14 +381,6 @@ final class PlayerPages {
                 }
             }
         });
-    }
-
-    /** Same as the TV presets list: a pick also clears "Force legacy codecs". */
-    private static void setFormat(PlayerData playerData, FormatItem format) {
-        if (playerData.isLegacyCodecsForced()) {
-            playerData.setLegacyCodecsForced(false);
-        }
-        playerData.setFormat(format);
     }
 
     /** The phone's best preset at a height: 60 fps first, then VP9 > AV1 > AVC, SDR only. */
@@ -632,7 +634,6 @@ final class PlayerPages {
         rows.add(SettingsRow.note(context.getString(R.string.mobile_settings_advanced_note)));
 
         rows.add(SettingsRow.header(context.getString(R.string.mobile_settings_streaming)));
-        rows.add(videoFormat(context, playerData, tweaks));
         rows.add(SettingsRow.<Integer>choice(context.getString(R.string.mobile_settings_buffer))
                 .option(context.getString(R.string.video_buffer_size_low), context.getString(R.string.mobile_settings_buffer_low_desc), PlayerData.BUFFER_LOW)
                 .option(context.getString(R.string.video_buffer_size_med), context.getString(R.string.mobile_settings_buffer_med_desc), PlayerData.BUFFER_MEDIUM)
@@ -710,30 +711,5 @@ final class PlayerPages {
                 serviceData::isLegacyUIEnabled, serviceData::setLegacyUIEnabled));
 
         return new SettingsPages.Page(context.getString(R.string.mobile_settings_advanced), rows);
-    }
-
-    /** Every preset, labelled "1080p60 · VP9", as the exact format the automatic quality stays under. */
-    private static SettingsRow videoFormat(Context context, PlayerData playerData, PlayerTweaksData tweaks) {
-        FormatItem current = playerData.getFormat(FormatItem.TYPE_VIDEO);
-        boolean presetSelected = current != null && current.isPreset();
-        SettingsRow.Choice<Object> choice = SettingsRow.choice(context.getString(R.string.mobile_settings_video_format));
-        Object auto = new Object();
-        choice.option(context.getString(R.string.mobile_settings_quality_auto,
-                playerData.getDefaultVideoFormat().getHeight()), auto);
-        Object selected = auto;
-        VideoPreset[] presets = AppDataSourceManager.instance().getVideoPresets();
-        for (int i = presets.length - 1; i >= 0; i--) {
-            VideoPreset preset = presets[i];
-            if (!tweaks.isAllFormatsUnlocked() && !Utils.isPresetSupported(preset)) {
-                continue;
-            }
-            choice.option(presetLabel(preset.name), preset);
-            if (presetSelected && preset.format.equals(current)) {
-                selected = preset;
-            }
-        }
-        Object currentValue = selected;
-        return choice.bind(() -> currentValue, value -> setFormat(playerData,
-                value instanceof VideoPreset ? ((VideoPreset) value).format : playerData.getDefaultVideoFormat()));
     }
 }

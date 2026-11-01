@@ -1,6 +1,7 @@
 package com.newtube.mobile.ui.common;
 
 import android.content.res.Configuration;
+import android.content.res.Resources;
 import android.os.Build;
 import android.os.Bundle;
 import android.view.MotionEvent;
@@ -51,6 +52,16 @@ public abstract class MobileActivity extends MotherActivity {
      */
     private int mThemedNight;
 
+    /** MEETUBE(loader): the loader this screen's theme was given (see {@link #onResume}). */
+    private String mLoader;
+
+    @Override
+    protected void onApplyThemeResource(Resources.Theme theme, int resid, boolean first) {
+        super.onApplyThemeResource(theme, resid, first);
+        mLoader = Loader.current(this);
+        Loader.applyTo(this, theme);
+    }
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -63,12 +74,12 @@ public abstract class MobileActivity extends MotherActivity {
     @Override
     protected void onPostCreate(@Nullable Bundle savedInstanceState) {
         super.onPostCreate(savedInstanceState);
-        FocusRing.install(getWindow()); // METUBE(tv): the remote's highlight, on every screen
+        FocusRing.install(getWindow()); // MEETUBE(tv): the remote's highlight, on every screen
     }
 
     @Override
     public boolean dispatchTouchEvent(MotionEvent event) {
-        Haptics.onTouch(getWindow().peekDecorView(), event); // METUBE(haptics): every tap clicks
+        Haptics.onTouch(getWindow().peekDecorView(), event); // MEETUBE(haptics): every tap clicks
         return super.dispatchTouchEvent(event);
     }
 
@@ -284,7 +295,7 @@ public abstract class MobileActivity extends MotherActivity {
     @Override
     protected void onResume() {
         super.onResume();
-        HighRefresh.apply(this); // METUBE(performance): back from Settings with it changed
+        HighRefresh.apply(this); // MEETUBE(performance): back from Settings with it changed
 
         // Mandatory: keeps the ViewManager back-stack/parent lookup correct.
         if (isBackStackScreen()) {
@@ -300,6 +311,13 @@ public abstract class MobileActivity extends MotherActivity {
         // theme changed.
         mResumed = true;
         checkTheme();
+        // MEETUBE(loader): Settings picked another loader while this screen was open. Not the
+        // player: it keeps playing, and its spinner changes the next time it opens.
+        if (mLoader != null && !mLoader.equals(Loader.current(this)) && !mRecreating
+                && !(this instanceof com.newtube.mobile.ui.playback.MobilePlaybackActivity)) {
+            mRecreating = true;
+            recreate();
+        }
     }
 
     @Override

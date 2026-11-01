@@ -3,6 +3,7 @@ package com.newtube.mobile.ui.settings;
 import android.content.Context;
 
 import androidx.annotation.NonNull;
+import androidx.core.content.ContextCompat;
 
 import com.google.android.material.dialog.MaterialAlertDialogBuilder;
 import com.liskovsoft.mediaserviceinterfaces.data.MediaGroup;
@@ -23,10 +24,16 @@ import com.liskovsoft.smartyoutubetv2.common.utils.ClickbaitRemover;
 import com.liskovsoft.smartyoutubetv2.tv.R;
 import com.liskovsoft.youtubeapi.service.internal.MediaServiceData;
 import com.newtube.mobile.CardMenuMigration;
+import com.newtube.mobile.downloads.DownloadFolder;
 import com.newtube.mobile.ui.browse.NavTabs;
+import com.newtube.mobile.ui.common.AppIcon;
 import com.newtube.mobile.ui.common.CountStyle;
+import com.newtube.mobile.ui.common.Loader;
 import com.newtube.mobile.ui.common.MobileSnackbar;
+import com.newtube.mobile.ui.common.RefreshFeedback;
 import com.newtube.mobile.ui.common.ThemeMode;
+import com.newtube.mobile.ui.common.WatchedBar;
+import com.newtube.mobile.ui.playback.WatchLook;
 
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -68,12 +75,19 @@ final class AppPages {
                 context.getString(R.string.mobile_settings_24_hour_summary),
                 generalData::is24HourLocaleEnabled, generalData::set24HourLocaleEnabled).needsRestart());
 
-        // METUBE(counts): K and M by default; lakh and crore, as YouTube writes them for India, here.
+        // MEETUBE(counts): K and M by default; lakh and crore, as YouTube writes them for India, here.
         rows.add(SettingsRow.toggle(context.getString(R.string.mobile_settings_indian_counts),
                 context.getString(R.string.mobile_settings_indian_counts_summary),
                 () -> CountStyle.isIndian(context), on -> CountStyle.setIndian(context, on)).needsRestart());
 
-        // METUBE(performance): every screen at the display's top refresh rate (BitChord's setting).
+        // MEETUBE(download-folder): also a long press on any Download button.
+        if (DownloadFolder.isSupported()) {
+            rows.add(SettingsRow.action(0, context.getString(R.string.mobile_download_folder),
+                    () -> DownloadFolder.label(context),
+                    page -> page.showDialog(DownloadFolder.showOptions(page.requireActivity()))));
+        }
+
+        // MEETUBE(performance): every screen at the display's top refresh rate (BitChord's setting).
         rows.add(SettingsRow.header(context.getString(R.string.mobile_settings_performance)));
         rows.add(SettingsRow.toggle(context.getString(R.string.mobile_settings_high_refresh),
                 context.getString(R.string.mobile_settings_high_refresh_summary,
@@ -96,7 +110,7 @@ final class AppPages {
         List<SettingsRow> rows = new ArrayList<>();
         MainUIData mainUIData = MainUIData.instance(context);
 
-        // METUBE(customize): the pickers are tiles on the page, a picture per option (Tiles).
+        // MEETUBE(customize): the pickers are tiles on the page, a picture per option (Tiles).
         rows.add(SettingsRow.header(context.getString(R.string.mobile_settings_customize_look)));
         rows.add(Tiles.of(SettingsRow.<Integer>choice(context.getString(R.string.mobile_theme))
                 .option(context.getString(R.string.mobile_theme_system), ThemeMode.SYSTEM)
@@ -105,7 +119,7 @@ final class AppPages {
                 .bind(ThemeMode::get, mode -> ThemeMode.set(context, mode)),
                 132, Tiles.THEME_SYSTEM, Tiles.THEME_LIGHT, Tiles.THEME_DARK));
 
-        // METUBE(app icon): the launcher may take a few seconds to redraw it.
+        // MEETUBE(app icon): the launcher may take a few seconds to redraw it.
         rows.add(Tiles.of(SettingsRow.<String>choice(context.getString(R.string.mobile_settings_app_icon))
                 .option(context.getString(R.string.mobile_app_icon_default), R.mipmap.app_icon,
                         com.newtube.mobile.ui.common.AppIcon.DEFAULT)
@@ -113,15 +127,49 @@ final class AppPages {
                         com.newtube.mobile.ui.common.AppIcon.CLASSIC)
                 .option(context.getString(R.string.mobile_app_icon_fantasy), R.mipmap.app_icon_fantasy,
                         com.newtube.mobile.ui.common.AppIcon.FANTASY)
-                .bind(() -> com.newtube.mobile.ui.common.AppIcon.current(context),
-                        icon -> com.newtube.mobile.ui.common.AppIcon.set(context, icon)),
-                88, Tiles.ICON, Tiles.ICON, Tiles.ICON));
+                .option(context.getString(R.string.mobile_app_icon_glass_heart), R.mipmap.app_icon_glass_heart,
+                        com.newtube.mobile.ui.common.AppIcon.GLASS_HEART)
+                .option(context.getString(R.string.mobile_app_icon_ruby), R.mipmap.app_icon_ruby, AppIcon.RUBY)
+                .option(context.getString(R.string.mobile_app_icon_play), R.mipmap.app_icon_play, AppIcon.PLAY)
+                .option(context.getString(R.string.mobile_app_icon_play_dark), R.mipmap.app_icon_play_dark, AppIcon.PLAY_DARK)
+                .option(context.getString(R.string.mobile_app_icon_blaze), R.mipmap.app_icon_blaze, AppIcon.BLAZE)
+                .bind(() -> AppIcon.current(context), icon -> AppIcon.set(context, icon)),
+                88, Tiles.ICON, Tiles.ICON, Tiles.ICON, Tiles.ICON, Tiles.ICON, Tiles.ICON, Tiles.ICON, Tiles.ICON));
+
+        // MEETUBE(loader): every spinner in the app, from this list; each tile spins its own.
+        rows.add(Tiles.of(SettingsRow.<String>choice(context.getString(R.string.mobile_settings_loader))
+                .option(context.getString(R.string.mobile_loader_neon), Loader.drawable(Loader.NEON), Loader.NEON)
+                .option(context.getString(R.string.mobile_loader_frosted), Loader.drawable(Loader.FROSTED), Loader.FROSTED)
+                .option(context.getString(R.string.mobile_loader_cookie), Loader.drawable(Loader.COOKIE), Loader.COOKIE)
+                .option(context.getString(R.string.mobile_loader_frosted_cookie), Loader.drawable(Loader.FROSTED_COOKIE),
+                        Loader.FROSTED_COOKIE)
+                .option(context.getString(R.string.mobile_loader_liquid_ring), Loader.drawable(Loader.LIQUID_RING),
+                        Loader.LIQUID_RING)
+                .option(context.getString(R.string.mobile_loader_glass_orb), Loader.drawable(Loader.GLASS_ORB), Loader.GLASS_ORB)
+                .option(context.getString(R.string.mobile_loader_morphing_blob), Loader.drawable(Loader.MORPHING_BLOB),
+                        Loader.MORPHING_BLOB)
+                .option(context.getString(R.string.mobile_loader_glass_orbit), Loader.drawable(Loader.GLASS_ORBIT),
+                        Loader.GLASS_ORBIT)
+                .bind(() -> Loader.current(context), loader -> Loader.set(context, loader)),
+                80, Tiles.LOADER, Tiles.LOADER, Tiles.LOADER, Tiles.LOADER,
+                Tiles.LOADER, Tiles.LOADER, Tiles.LOADER, Tiles.LOADER));
 
         rows.add(Tiles.slider(interfaceSize(context, mainUIData), mainUIData));
 
+        // MEETUBE(issue #132): the red watched line on thumbnails, which YouTube keeps sending even
+        // with watch history paused.
+        rows.add(SettingsRow.toggle(context.getString(R.string.mobile_settings_watched_bar),
+                context.getString(R.string.mobile_settings_watched_bar_summary),
+                () -> WatchedBar.isShown(context), on -> WatchedBar.setShown(context, on)).needsRestart());
+
+        // MEETUBE(issue #120): the pop when a pull-to-refresh lets go; off by default.
+        rows.add(SettingsRow.toggle(context.getString(R.string.mobile_settings_refresh_sound),
+                context.getString(R.string.mobile_settings_refresh_sound_summary),
+                () -> RefreshFeedback.isSoundOn(context), on -> RefreshFeedback.setSoundOn(context, on)));
+
         rows.add(SettingsRow.header(context.getString(R.string.mobile_settings_customize_layout)));
 
-        // METUBE(home-rows, issue #4): Home as one feed, or as SmartTube's rows of shelves.
+        // MEETUBE(home-rows, issue #4): Home as one feed, or as SmartTube's rows of shelves.
         rows.add(Tiles.of(SettingsRow.<Boolean>choice(context.getString(R.string.mobile_settings_home_layout))
                 .option(context.getString(R.string.mobile_settings_home_layout_feed),
                         context.getString(R.string.mobile_settings_home_layout_feed_desc), false)
@@ -131,7 +179,7 @@ final class AppPages {
                         rowsOn -> com.newtube.mobile.ui.browse.HomeLayout.setRows(context, rowsOn)),
                 132, Tiles.FEED, Tiles.SHELVES));
 
-        // METUBE(list layout, issue #82): feeds, channels, playlists and search as cards or as rows.
+        // MEETUBE(list layout, issue #82): feeds, channels, playlists and search as cards or as rows.
         rows.add(Tiles.of(SettingsRow.<Boolean>choice(context.getString(R.string.mobile_settings_video_layout))
                 .option(context.getString(R.string.mobile_settings_video_layout_cards),
                         context.getString(R.string.mobile_settings_video_layout_cards_desc), false)
@@ -166,25 +214,53 @@ final class AppPages {
 
         rows.add(startScreen(context));
 
+        // MEETUBE(watch-look): the watch page compact (default) or as it was, and the player's buttons.
+        rows.add(SettingsRow.<Boolean>choice(context.getString(R.string.mobile_settings_watch_style))
+                .option(context.getString(R.string.mobile_settings_watch_style_compact),
+                        context.getString(R.string.mobile_settings_watch_style_compact_desc), false)
+                .option(context.getString(R.string.mobile_settings_watch_style_classic),
+                        context.getString(R.string.mobile_settings_watch_style_classic_desc), true)
+                .bind(() -> WatchLook.isClassic(context), classic -> WatchLook.setClassic(context, classic))
+                .needsRestart());
+        rows.add(SettingsRow.page(context.getString(R.string.mobile_settings_player_buttons),
+                () -> context.getString(R.string.mobile_settings_player_buttons_summary), SettingsPages.PLAYER_BUTTONS));
+
         rows.add(SettingsRow.header(context.getString(R.string.mobile_settings_customize_effects)));
 
-        // METUBE(glass): the lens shader runs every frame something scrolls under the glass.
+        // MEETUBE(glass): the lens shader runs every frame something scrolls under the glass.
         rows.add(SettingsRow.toggle(context.getString(R.string.mobile_settings_liquid_glass),
                 context.getString(R.string.mobile_settings_liquid_glass_summary),
                 () -> com.newtube.mobile.ui.common.Glass.isLiquid(context),
                 on -> com.newtube.mobile.ui.common.Glass.setLiquid(context, on)).needsRestart());
 
-        // METUBE(glass): the player's and Shorts' buttons frost the video under them; off by default.
+        // MEETUBE(glass): the player's and Shorts' buttons frost the video under them; off by default.
         rows.add(SettingsRow.toggle(context.getString(R.string.mobile_settings_player_frost),
                 context.getString(R.string.mobile_settings_player_frost_summary),
                 () -> com.newtube.mobile.ui.common.Glass.isPlayerFrost(context),
                 on -> com.newtube.mobile.ui.common.Glass.setPlayerFrost(context, on)).needsRestart());
 
-        // METUBE(nav lens): the tab switch's lens and wiggle; off by default on a low-end phone.
+        // MEETUBE(nav lens): the tab switch's lens and wiggle; off by default on a low-end phone.
         rows.add(SettingsRow.toggle(context.getString(R.string.mobile_settings_tab_motion),
                 context.getString(R.string.mobile_settings_tab_motion_summary),
                 () -> com.newtube.mobile.ui.common.NavLens.enabled(context),
                 on -> com.newtube.mobile.ui.common.NavLens.setEnabled(context, on)));
+
+        // MEETUBE(nav bloom, issue #47): a glow behind the lit tab, with or without Liquid glass.
+        rows.add(SettingsRow.<Integer>choice(context.getString(R.string.mobile_settings_tab_glow))
+                .option(context.getString(R.string.mobile_settings_tab_glow_white),
+                        context.getString(R.string.mobile_settings_tab_glow_white_desc), com.newtube.mobile.ui.browse.NavBloom.MODE_WHITE)
+                .option(context.getString(R.string.mobile_settings_tab_glow_tabs),
+                        context.getString(R.string.mobile_settings_tab_glow_tabs_desc), com.newtube.mobile.ui.browse.NavBloom.MODE_TABS)
+                .option(context.getString(R.string.mobile_settings_tab_glow_accent),
+                        context.getString(R.string.mobile_settings_tab_glow_accent_desc), com.newtube.mobile.ui.browse.NavBloom.MODE_ACCENT)
+                .option(context.getString(R.string.mobile_settings_tab_glow_off), null, com.newtube.mobile.ui.browse.NavBloom.MODE_OFF)
+                .bind(() -> com.newtube.mobile.ui.browse.NavBloom.mode(context), mode -> com.newtube.mobile.ui.browse.NavBloom.setMode(context, mode)));
+
+        // MEETUBE(progress glow): the light at the head of the seek bar and the cards' watched line.
+        rows.add(SettingsRow.toggle(context.getString(R.string.mobile_settings_progress_glow),
+                context.getString(R.string.mobile_settings_progress_glow_summary),
+                () -> com.newtube.mobile.ui.common.GlowProgressBar.enabled(context),
+                on -> com.newtube.mobile.ui.common.GlowProgressBar.setEnabled(context, on)));
 
         rows.add(SettingsRow.toggle(context.getString(R.string.mobile_settings_nav_labels),
                 context.getString(R.string.mobile_settings_nav_labels_summary),
@@ -197,6 +273,42 @@ final class AppPages {
                 () -> context.getString(R.string.mobile_settings_video_menu_summary), SettingsPages.FEEDS_MENU));
 
         return new SettingsPages.Page(context.getString(R.string.mobile_settings_customize), rows);
+    }
+
+    /** MEETUBE(watch-look): which buttons the player shows (PlayerButton hides the rest). */
+    static SettingsPages.Page playerButtons(Context context) {
+        List<SettingsRow> rows = new ArrayList<>();
+        rows.add(SettingsRow.note(context.getString(R.string.mobile_settings_player_buttons_note)));
+
+        rows.add(SettingsRow.header(context.getString(R.string.mobile_settings_player_buttons_top)));
+        playerButton(context, rows, R.string.mobile_player_audio_only, "mobile_player_audio");
+        playerButton(context, rows, R.string.mobile_cast_button, "mobile_player_cast");
+        playerButton(context, rows, R.string.mobile_player_subtitles, "mobile_player_subtitles");
+
+        rows.add(SettingsRow.header(context.getString(R.string.mobile_settings_player_buttons_center)));
+        playerButton(context, rows, R.string.mobile_settings_player_prev_next, "mobile_player_previous", "mobile_player_next");
+
+        rows.add(SettingsRow.header(context.getString(R.string.mobile_settings_player_buttons_fullscreen)));
+        playerButton(context, rows, R.string.mobile_watch_like, "mobile_player_like");
+        playerButton(context, rows, R.string.mobile_watch_dislike, "mobile_player_dislike");
+        playerButton(context, rows, R.string.mobile_comments_entry, "mobile_player_comments");
+        playerButton(context, rows, R.string.mobile_live_chat_entry, "mobile_player_chat");
+        playerButton(context, rows, R.string.dialog_download, "mobile_player_download");
+        playerButton(context, rows, R.string.mobile_watch_share, "mobile_player_share");
+        playerButton(context, rows, R.string.mobile_player_lock, "mobile_player_lock"); // issue #98
+
+        return new SettingsPages.Page(context.getString(R.string.mobile_settings_player_buttons), rows);
+    }
+
+    /** One switch for one or more buttons that show and hide together. */
+    private static void playerButton(Context context, List<SettingsRow> rows, int titleRes, String... buttons) {
+        rows.add(SettingsRow.toggle(context.getString(titleRes), null,
+                () -> WatchLook.isShown(context, buttons[0]),
+                on -> {
+                    for (String button : buttons) {
+                        WatchLook.setShown(context, button, on);
+                    }
+                }));
     }
 
     /** The tab NewTube opens on: the enabled sections, then pinned channels and playlists. */
@@ -314,9 +426,9 @@ final class AppPages {
                 MediaGroup.TYPE_USER_PLAYLISTS, MediaGroup.TYPE_MY_VIDEOS, MediaGroup.TYPE_CHANNEL_UPLOADS,
                 MediaGroup.TYPE_PLAYBACK_QUEUE, MediaGroup.TYPE_BLOCKED_CHANNELS};
 
-        rows.add(BarEditor.row(context)); // METUBE(bar editor): the bars as a stack to drag
+        rows.add(BarEditor.row(context)); // MEETUBE(bar editor): the bars as a stack to drag
         rows.add(SettingsRow.note(context.getString(R.string.mobile_settings_tabs_bar_note)));
-        // METUBE(bar reset): Home, Shorts, Search, Subs, You - Search in the bar, not on top.
+        // MEETUBE(bar reset): Home, Shorts, Search, Subs, You - Search in the bar, not on top.
         rows.add(SettingsRow.action(context.getString(R.string.mobile_settings_tabs_reset),
                 context.getString(R.string.mobile_settings_tabs_reset_summary), page -> {
                     NavTabs.setLayout(context, MediaGroup.TYPE_SHORTS, MediaGroup.TYPE_SUBSCRIPTIONS, 1, false);
@@ -353,7 +465,7 @@ final class AppPages {
                                           int[] order, boolean keepOrder) {
         SidebarService sidebar = SidebarService.instance(context);
         for (int sectionId : order) {
-            // METUBE: Trending is gone from YouTube (its feed comes back empty), so it isn't offered.
+            // MEETUBE: Trending is gone from YouTube (its feed comes back empty), so it isn't offered.
             if (sectionId == MediaGroup.TYPE_SETTINGS || sectionId == MediaGroup.TYPE_SHORTS
                     || sectionId == MediaGroup.TYPE_TRENDING) {
                 continue;
@@ -621,6 +733,20 @@ final class AppPages {
                         }));
 
         rows.add(SettingsRow.note(context.getString(R.string.mobile_settings_backup_note)));
+
+        // MEETUBE(settings-transfer): settings only, as a file to keep, send a friend, or load.
+        rows.add(SettingsRow.header(context.getString(R.string.mobile_settings_transfer)));
+        rows.add(SettingsRow.action(context.getString(R.string.mobile_settings_transfer_export),
+                context.getString(R.string.mobile_settings_transfer_export_summary),
+                page -> SettingsTransferActivity.export(page.requireContext())));
+        rows.add(SettingsRow.action(context.getString(R.string.mobile_settings_transfer_share),
+                context.getString(R.string.mobile_settings_transfer_share_summary),
+                page -> SettingsTransferActivity.share(page.requireContext())));
+        rows.add(SettingsRow.action(context.getString(R.string.mobile_settings_transfer_import),
+                context.getString(R.string.mobile_settings_transfer_import_summary),
+                page -> confirm(page, R.string.mobile_settings_transfer_import, R.string.mobile_settings_transfer_import_confirm,
+                        R.string.mobile_settings_transfer_import_button,
+                        () -> SettingsTransferActivity.importFile(page.requireContext()))));
 
         return new SettingsPages.Page(context.getString(R.string.mobile_settings_backup), rows);
     }

@@ -29,7 +29,7 @@ import org.robolectric.annotation.ConscryptMode;
 import java.util.Arrays;
 
 /**
- * METUBE(issue #58): a quality picked in the sheet carries to the next videos of the session. On a
+ * MEETUBE(issue #58): a quality picked in the sheet carries to the next videos of the session. On a
  * video without that exact stream (another codec, another frame rate, no such rung) it used to
  * leave Auto in place, which opened at 240p while the gear row still read "1080p".
  */
@@ -116,6 +116,20 @@ public class Media3TrackAdapterVideoTest {
         assertEquals("399", videoOverride().id);
     }
 
+    /** An HLS group behind dash-mpd+hls: every variant has the same id ("1:"), the 240p first. */
+    @Test
+    public void aSharedIdIsNotAnExactMatch() {
+        Format hls1080 = video("1:", "vp09.00.40.08", 1080, 24, 2_934_892);
+        adapter.selectFormat(picked(hls1080));
+        adapter.onTracksChanged(tracks(
+                video("1:", "avc1.4D4015", 240, 24, 310_506),
+                video("1:", "avc1.640028", 1080, 24, 4_706_990),
+                video("1:", "vp09.00.20.08", 240, 24, 270_097),
+                hls1080));
+
+        assertEquals(1080, videoOverride().height);
+    }
+
     @Test
     public void aPickAboveTheVideosBestPlaysItsBest() {
         adapter.selectFormat(picked(VP9_1080_30));
@@ -124,5 +138,27 @@ public class Media3TrackAdapterVideoTest {
                 video("242", "vp09.00.21.08", 240, 30, 220_000)));
 
         assertEquals("247", videoOverride().id);
+    }
+
+    /** Issue #85: a 2160p60 the decoder reports beyond it - listed apart, pinned only when picked from that list. */
+    @Test
+    public void aRungBeyondTheDecoderPinsOnlyWhenPickedAsSuch() {
+        Format vp9_2160_60 = video("315", "vp09.00.51.08", 2160, 60, 18_000_000);
+        Format vp9_1080_60 = video("303", "vp09.00.41.08", 1080, 60, 4_000_000);
+        TrackGroup group = new TrackGroup("video", vp9_2160_60, vp9_1080_60);
+        Tracks tracks = new Tracks(ImmutableList.of(new Tracks.Group(group, true,
+                new int[] {C.FORMAT_EXCEEDS_CAPABILITIES, C.FORMAT_HANDLED}, new boolean[2])));
+        adapter.onTracksChanged(tracks);
+
+        assertEquals(1, adapter.getFormats(TrackSelectorManager.RENDERER_INDEX_VIDEO).size());
+        assertEquals("315", adapter.getVideoFormatsBeyondDecoder().get(0).getFormatId());
+
+        adapter.selectFormat(picked(vp9_2160_60)); // any other 2160p60 pick: the nearest playable rung
+        assertEquals("303", videoOverride().id);
+
+        FormatItem pick = adapter.getVideoFormatsBeyondDecoder().get(0);
+        Media3TrackAdapter.allowBeyondDecoder(pick);
+        adapter.selectFormat(pick);
+        assertEquals("315", videoOverride().id);
     }
 }

@@ -65,17 +65,19 @@ public class PlayerData extends DataChangeBase implements PlayerConstants, Profi
     private boolean mIsRemainingTimeEnabled;
     private int mBackgroundMode;
     private FormatItem mVideoFormat;
-    // METUBE(quality-network): the quality on mobile data; null = the same as on Wi-Fi (mVideoFormat).
+    // MEETUBE(quality-network): the quality on mobile data; null = the same as on Wi-Fi (mVideoFormat).
     private FormatItem mCellularVideoFormat;
-    // METUBE(shorts-quality): the quality for Shorts, on any network; Auto (up to 1080p) at first.
+    // MEETUBE(shorts-quality): the quality for Shorts, on any network; Auto (up to 1080p) at first.
     private FormatItem mShortsVideoFormat;
-    // METUBE(shorts-quality): a short is playing (set on every open): the video quality read and
+    // MEETUBE(shorts-quality): a short is playing (set on every open): the video quality read and
     // written is then mShortsVideoFormat (issue #26).
     private boolean mShortsPlaying;
     private FormatItem mTempVideoFormat;
     private FormatItem mAudioFormat;
     // NEWTUBE(pin-rescue): session-scoped audio override, mirrors mTempVideoFormat (never persisted).
     private FormatItem mTempAudioFormat;
+    private FormatItem mVideoVideoFormat;
+    private String mVideoVideoFormatVideoId;
     private FormatItem mVideoAudioFormat;
     private String mVideoAudioFormatVideoId;
     private FormatItem mSubtitleFormat;
@@ -440,7 +442,7 @@ public class PlayerData extends DataChangeBase implements PlayerConstants, Profi
         persistState();
     }
 
-    /** METUBE(quality-network): the Wi-Fi quality, whatever network is active (Settings). */
+    /** MEETUBE(quality-network): the Wi-Fi quality, whatever network is active (Settings). */
     public FormatItem getWifiVideoFormat() {
         return FormatItem.checkFormat(mVideoFormat, FormatItem.TYPE_VIDEO);
     }
@@ -462,7 +464,7 @@ public class PlayerData extends DataChangeBase implements PlayerConstants, Profi
         persistState();
     }
 
-    /** METUBE(shorts-quality): the Shorts quality (Settings). */
+    /** MEETUBE(shorts-quality): the Shorts quality (Settings). */
     public FormatItem getShortsVideoFormat() {
         return FormatItem.checkFormat(mShortsVideoFormat, FormatItem.TYPE_VIDEO);
     }
@@ -474,7 +476,7 @@ public class PlayerData extends DataChangeBase implements PlayerConstants, Profi
         }
     }
 
-    /** METUBE(shorts-quality): what opens next is a short (or not); see {@link #mShortsPlaying}. */
+    /** MEETUBE(shorts-quality): what opens next is a short (or not); see {@link #mShortsPlaying}. */
     public void setShortsPlaying(boolean shorts) {
         mShortsPlaying = shorts;
     }
@@ -517,6 +519,20 @@ public class PlayerData extends DataChangeBase implements PlayerConstants, Profi
      * kept in memory for that video id only (so a reload of the same video keeps it) and never
      * persisted: the next video starts on its own original track again, like YouTube.
      */
+    /**
+     * MEETUBE(quality): a quality picked in the player's sheet, for {@code videoId} only - the next
+     * video opens at the Settings quality again. Never persisted.
+     */
+    public void setVideoVideoFormat(String videoId, FormatItem format) {
+        mVideoVideoFormatVideoId = format != null ? videoId : null;
+        mVideoVideoFormat = videoId != null ? format : null;
+    }
+
+    /** The sheet's quality pick made on {@code videoId}, or null (another video's pick never applies). */
+    public FormatItem getVideoVideoFormat(String videoId) {
+        return videoId != null && videoId.equals(mVideoVideoFormatVideoId) ? mVideoVideoFormat : null;
+    }
+
     public void setVideoAudioFormat(String videoId, FormatItem format) {
         mVideoAudioFormatVideoId = format != null ? videoId : null;
         mVideoAudioFormat = videoId != null ? format : null;

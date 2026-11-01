@@ -24,7 +24,7 @@
     <string name="mobile_settings_search_kw_hide_related">suggestions related recommendations</string>
     <string name="mobile_settings_search_kw_dislikes">return youtube dislike ryd</string>
     <string name="mobile_settings_search_kw_home_layout">rows shelves carousel feed grid smarttube</string>
-    <string name="mobile_settings_search_kw_app_icon">launcher logo home screen old classic fantasy white</string>
+    <string name="mobile_settings_search_kw_app_icon">launcher logo home screen old classic fantasy white glass heart ruby play dark blaze fire</string>
     <string name="mobile_settings_search_kw_quality">resolution 4k 1080p 720p hd data saver mobile data</string>
     <string name="mobile_settings_search_kw_loudness">volume normalization auto volume quiet loud</string>
     <string name="mobile_settings_search_kw_player_volume">quiet loud sound</string>
@@ -32,7 +32,6 @@
     <string name="mobile_settings_search_kw_sponsorblock">skip sponsors ads segments intros</string>
     <string name="mobile_settings_search_kw_dearrow">clickbait titles thumbnails</string>
     <string name="mobile_settings_search_kw_backup">export import save settings</string>
-    <string name="mobile_settings_search_kw_video_format">codec vp9 av1 h264 avc hdr 60fps</string>
     <string name="mobile_settings_search_kw_buffer">buffering cache memory</string>
     <string name="mobile_settings_search_kw_dns">dns ipv4 ipv6 servers</string>
     <string name="mobile_settings_search_kw_conscrypt">ssl tls certificates security censorship blocked byebyedpi</string>
@@ -41,4 +40,8 @@
     <string name="mobile_settings_search_kw_gesture_levels">gestures brightness volume</string>
     <string name="mobile_settings_search_kw_gesture_seek">gestures scrub skip forward rewind</string>
     <string name="mobile_settings_search_kw_double_tap_seek">double tap seek skip forward rewind seconds jump interval</string>
+    <string name="mobile_settings_search_kw_loader">loader loading spinner progress neon frosted glass cookie liquid ring orb blob orbit</string>
+    <string name="mobile_settings_search_kw_watched_bar">watched progress red line bar history seen thumbnail</string>
+    <string name="mobile_settings_search_kw_refresh_sound">refresh sound pop audio pull swipe noise mute</string>
+    <string name="mobile_settings_search_kw_short_ends">shorts loop repeat autoscroll auto scroll next swipe</string>
 </resources>

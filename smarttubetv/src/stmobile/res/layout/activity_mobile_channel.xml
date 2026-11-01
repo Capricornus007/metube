@@ -14,7 +14,7 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent">
 
-    <!-- METUBE(glass): the page is a GlassSource; the top bar and the tabs float over it as frosted
+    <!-- MEETUBE(glass): the page is a GlassSource; the top bar and the tabs float over it as frosted
          glass (Glass.blur), so the header and the cards scroll under them. -->
     <com.newtube.mobile.ui.common.GlassSource
         android:id="@+id/mobile_channel_glass_source"
@@ -22,7 +22,7 @@
         android:layout_height="match_parent"
         android:background="@color/mobile_color_background">
 
-    <!-- METUBE(channel header, issue #10): the header scrolls away with the cards; the tabs stay.
+    <!-- MEETUBE(channel header, issue #10): the header scrolls away with the cards; the tabs stay.
          The page starts under the top bar (padding, not clipped) and the cards run up under the
          bar and the tabs: -104dp = bar 56dp + tabs 48dp, given back as the grids' top padding, so
          the first card still starts right under the tabs. -->
@@ -77,14 +77,10 @@
         <include layout="@layout/mobile_page_load_state" />
 
         <ProgressBar
+            style="@style/Widget.MeeTube.GlassSpinner"
             android:id="@+id/mobile_channel_progress"
-            style="?android:attr/progressBarStyle"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
             android:layout_gravity="center"
-            android:visibility="gone"
-            android:indeterminateTint="@color/mobile_color_primary"
-            android:indeterminateTintMode="src_in" />
+            android:visibility="gone" />
 
     </FrameLayout>
 
@@ -121,7 +117,7 @@
         android:layout_height="@dimen/mobile_title_bar_height"
         app:glassCornerRadius="0dp"
         app:glassLiquid="false"
-        app:glassTint="@color/metube_glass_tint">
+        app:glassTint="@color/meetube_glass_tint">
 
     <LinearLayout
         android:id="@+id/mobile_channel_toolbar"
@@ -154,7 +150,7 @@
             android:textStyle="bold"
             tools:text="Some Channel" />
 
-        <!-- METUBE(channel sort, issue #5): Latest / Popular / Oldest for the open tab. -->
+        <!-- MEETUBE(channel sort, issue #5): Latest / Popular / Oldest for the open tab. -->
         <ImageButton
             android:id="@+id/mobile_channel_sort"
             android:layout_width="48dp"
@@ -180,7 +176,7 @@
         android:layout_marginTop="@dimen/mobile_title_bar_height"
         app:glassCornerRadius="0dp"
         app:glassLiquid="false"
-        app:glassTint="@color/metube_glass_tint">
+        app:glassTint="@color/meetube_glass_tint">
 
         <com.google.android.material.tabs.TabLayout
             android:id="@+id/mobile_channel_tabs"
@@ -197,20 +193,21 @@
 
     </com.newtube.mobile.ui.common.GlassView>
 
-    <!-- METUBE(channel nav): Browse's floating nav pill over the channel, the tab it came from lit
+    <!-- MEETUBE(channel nav): Browse's floating nav pill over the channel, the tab it came from lit
          (MobileBrowseActivity.copyNavTabs); slides away as the page scrolls down. -->
     <com.newtube.mobile.ui.common.GlassView
         android:id="@+id/mobile_nav_glass"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_gravity="bottom"
+        android:layout_gravity="bottom|center_horizontal"
         android:layout_marginHorizontal="16dp"
         android:layout_marginBottom="12dp"
         android:elevation="6dp"
         android:padding="6dp"
         android:visibility="gone"
         app:glassCornerRadius="34dp"
-        app:glassTint="@color/metube_glass_tint">
+        app:glassMaxWidth="@dimen/meetube_nav_max_width"
+        app:glassTint="@color/meetube_glass_tint">
 
         <com.google.android.material.bottomnavigation.BottomNavigationView
             android:id="@+id/mobile_bottom_nav"

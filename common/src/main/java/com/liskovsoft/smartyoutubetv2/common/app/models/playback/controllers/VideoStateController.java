@@ -86,7 +86,7 @@ public class VideoStateController extends BasePlayerController {
             return false;
         }
 
-        // METUBE(shorts): a swipe down in the Shorts player always means the previous short.
+        // MEETUBE(shorts): a swipe down in the Shorts player always means the previous short.
         boolean shorts = getVideo() != null && getVideo().belongsToShorts();
         // NEWTUBE(prev-restart): seek to the start on prev, but only once the user has watched
         // this video for a while since it (re)started - see PreviousRestartGate. The raw position
@@ -292,7 +292,7 @@ public class VideoStateController extends BasePlayerController {
 
     @Override
     public void onSourceChanged(Video item) {
-        // METUBE(shorts-quality): a short opens in the Shorts quality, if one is set (issue #26).
+        // MEETUBE(shorts-quality): a short opens in the Shorts quality, if one is set (issue #26).
         getPlayerData().setShortsPlaying(item != null && item.belongsToShorts());
         // At this stage video isn't loaded yet. So format switch isn't take any resources.
         restoreFormats();
@@ -451,8 +451,15 @@ public class VideoStateController extends BasePlayerController {
             return;
         }
 
+        // The error fixer's rescue first (a failing pick must not come back on its reload), then
+        // MEETUBE(quality): a pick in the player's sheet, which holds for its own video (and its
+        // reloads) only - every other video follows the Settings quality.
+        FormatItem videoPick = getPlayerData().getVideoVideoFormat(
+                getVideo() != null ? getVideo().videoId : null);
         if (getPlayerData().getTempVideoFormat() != null) {
             getPlayer().setFormat(getPlayerData().getTempVideoFormat());
+        } else if (videoPick != null) {
+            getPlayer().setFormat(videoPick);
         } else {
             getPlayer().setFormat(getPlayerData().getFormat(FormatItem.TYPE_VIDEO));
         }
