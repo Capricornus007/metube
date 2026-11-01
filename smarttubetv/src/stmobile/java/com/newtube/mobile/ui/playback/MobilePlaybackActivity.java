@@ -18,6 +18,7 @@ import android.graphics.Bitmap;
 import android.graphics.Color;
 import android.graphics.Rect;
 import android.graphics.SurfaceTexture;
+import android.app.Activity;
 import android.graphics.drawable.Drawable;
 import android.graphics.drawable.Icon;
 import android.os.Build;
@@ -5106,13 +5107,20 @@ public class MobilePlaybackActivity extends MobileActivity
     // ---------------------------------------------------------------------------------
 
     private void openPlayerMenu() {
+        openPlayerMenu(this);
+    }
+
+    /** {@code sheetHost}: the visible window the menu's sheets attach to (an in-place Shorts host,
+     *  or this player). Controllers stay on this Activity whatever the host is. */
+    private void openPlayerMenu(@Nullable Activity sheetHost) {
         if (mPresenter == null) {
             return;
         }
 
         cancelAutoHide();
 
-        BottomSheetDialog sheet = Haptics.watch(new BottomSheetDialog(this));
+        mSheetHost = sheetHost;
+        BottomSheetDialog sheet = Haptics.watch(new BottomSheetDialog(sheetContext()));
         LinearLayout content = createSheetContent();
 
         // Mirrors the official app's gear sheet: no title, a handful of everyday rows, icon +
@@ -5231,7 +5239,7 @@ public class MobilePlaybackActivity extends MobileActivity
 
         cancelAutoHide();
 
-        BottomSheetDialog sheet = Haptics.watch(new BottomSheetDialog(this));
+        BottomSheetDialog sheet = Haptics.watch(new BottomSheetDialog(sheetContext()));
         LinearLayout content = createSheetContent();
 
         // Effective, not stored: a Shuffle started from the playlist page is scoped to that queue
@@ -5477,6 +5485,7 @@ public class MobilePlaybackActivity extends MobileActivity
 
     private void onPlayerSheetClosed() {
         if (!isPlayerSheetShown() && !isFinishing()) {
+            mSheetHost = null; // METUBE(shorts-host): the last in-place menu sheet is gone
             armAutoHide();
             setControlsGlassLive(true);
         }
@@ -5563,6 +5572,19 @@ public class MobilePlaybackActivity extends MobileActivity
 
     /** NEWTUBE(sheet-landscape): the sheet waiting for what one of its rows opened (handOffSheet). */
     @Nullable private BottomSheetDialog mSheetHandingOff;
+
+    /**
+     * METUBE(shorts-host): while a short plays in a full-screen in-place host (MobileShortsHost),
+     * the gear menu's sheets must attach to THAT visible window - {@code BottomSheetDialog(this)}
+     * would be themed/inset for the player window the host is covering. Set while an in-place host
+     * opens the player menu; null (this player is the visible surface) for every other open.
+     */
+    @Nullable private Activity mSheetHost;
+
+    /** The context an in-place menu sheet should attach to: the covering host, or this player. */
+    private Activity sheetContext() {
+        return mSheetHost != null ? mSheetHost : this;
+    }
 
     /** Longest a sheet waits for the picker its row opened before it leaves anyway. */
     private static final long SHEET_HAND_OFF_TIMEOUT_MS = 1_000;
@@ -9304,7 +9326,7 @@ public class MobilePlaybackActivity extends MobileActivity
         }
 
         com.google.android.material.bottomsheet.BottomSheetDialog dialog =
-                new com.google.android.material.bottomsheet.BottomSheetDialog(this);
+                new com.google.android.material.bottomsheet.BottomSheetDialog(sheetContext());
         View content = getLayoutInflater().inflate(R.layout.sheet_mobile_quality, null);
         dialog.setContentView(content);
 
@@ -9440,7 +9462,7 @@ public class MobilePlaybackActivity extends MobileActivity
 
         cancelAutoHide();
 
-        BottomSheetDialog dialog = Haptics.watch(new BottomSheetDialog(this));
+        BottomSheetDialog dialog = Haptics.watch(new BottomSheetDialog(sheetContext()));
         View content = getLayoutInflater().inflate(R.layout.sheet_mobile_quality, null);
         dialog.setContentView(content);
         ((TextView) content.findViewById(R.id.quality_sheet_quality_title))
@@ -9644,7 +9666,7 @@ public class MobilePlaybackActivity extends MobileActivity
         moveLastUsedCaptionsFirst(autoTracks);
 
         com.google.android.material.bottomsheet.BottomSheetDialog dialog =
-                new com.google.android.material.bottomsheet.BottomSheetDialog(this);
+                new com.google.android.material.bottomsheet.BottomSheetDialog(sheetContext());
         View content = getLayoutInflater().inflate(R.layout.sheet_mobile_captions, null);
         dialog.setContentView(content);
 
@@ -9755,7 +9777,7 @@ public class MobilePlaybackActivity extends MobileActivity
     private void showSleepTimerSheet() {
         cancelAutoHide();
 
-        BottomSheetDialog dialog = Haptics.watch(new BottomSheetDialog(this));
+        BottomSheetDialog dialog = Haptics.watch(new BottomSheetDialog(sheetContext()));
         // Same anatomy as the speed sheet: title, one flat list with a check on the active pick.
         View content = getLayoutInflater().inflate(R.layout.sheet_mobile_speed, null);
         dialog.setContentView(content);
@@ -9792,7 +9814,7 @@ public class MobilePlaybackActivity extends MobileActivity
         }
 
         com.google.android.material.bottomsheet.BottomSheetDialog dialog =
-                new com.google.android.material.bottomsheet.BottomSheetDialog(this);
+                new com.google.android.material.bottomsheet.BottomSheetDialog(sheetContext());
         View content = getLayoutInflater().inflate(R.layout.sheet_mobile_speed, null);
         dialog.setContentView(content);
 
@@ -10461,7 +10483,7 @@ public class MobilePlaybackActivity extends MobileActivity
         if (track == null || isFinishing()) {
             return false;
         }
-        mTranscriptSheet = TranscriptSheet.create(this, track, isLandscape() ? null : mVideoArea,
+        mTranscriptSheet = TranscriptSheet.create(sheetContext(), track, isLandscape() ? null : mVideoArea,
                 () -> mExoPlayerController != null ? mExoPlayerController.getPositionMs() : -1,
                 positionMs -> seekFromList(positionMs, null), noLyrics);
         showPlayerSheet(mTranscriptSheet);
@@ -11805,6 +11827,78 @@ public class MobilePlaybackActivity extends MobileActivity
     @Override
     public Video getVideo() {
         return mExoPlayerController != null ? mExoPlayerController.getVideo() : null;
+    }
+
+    // ---------------------------------------------------------------------------------
+    // METUBE(shorts-host): the in-place full-screen host's bridge back into this player
+    // (MiniPlayerBridge forwards the host's rail/swipes to these). Every delegate touches
+    // THIS activity's controllers / current video / queue; only the visual anchor (a menu
+    // sheet) may belong to the host's window.
+    // ---------------------------------------------------------------------------------
+
+    /** The in-place host's like: the watch page's own like button, so both rails share state. */
+    void hostShortsLike() {
+        if (getButtonState(R.id.action_thumbs_up) != BUTTON_ON && mWatchLike != null) {
+            mWatchLike.performClick();
+        }
+    }
+
+    /** The in-place host's dislike: the watch page's dislike button (mutes repeats, like YouTube). */
+    void hostShortsDislike() {
+        if (getButtonState(R.id.action_thumbs_down) != BUTTON_ON && mWatchDislike != null) {
+            mWatchDislike.performClick();
+        }
+    }
+
+    /** The in-place host's share: the same share sheet the watch page's rail opens. */
+    void hostShortsShare() {
+        shareCurrentVideo(false);
+    }
+
+    /**
+     * The in-place host's gear: the full player menu, built from this player's controllers but
+     * anchored on the VISIBLE host window ({@code sheetHost}) so its sheets are themed and inset
+     * for the surface actually on screen, not the covered player.
+     */
+    void hostShortsMore(@NonNull Activity sheetHost) {
+        openPlayerMenu(sheetHost);
+    }
+
+    /** A comment's video link (or a host deep link): keep playing it in this same session. */
+    void hostOpenVideo(@NonNull String videoId) {
+        onRelatedClicked(Video.from(videoId));
+    }
+
+    /** Swipe up over the host: the queue's next short, exactly like the watch page's own swipe. */
+    void hostPlayNextShort() {
+        if (mPresenter != null) {
+            mPresenter.onNextClicked();
+        }
+    }
+
+    /** Swipe down over the host: the queue's previous short. */
+    void hostPlayPreviousShort() {
+        if (mPresenter != null) {
+            mPresenter.onPreviousClicked();
+        }
+    }
+
+    /** The host's scrub line: the same seek the watch page's own bar performs. */
+    void hostSeekShortTo(long positionMs) {
+        if (mExoPlayerController != null) {
+            mExoPlayerController.setPositionMs(positionMs);
+        }
+    }
+
+    /**
+     * The host's real size: report the window the video is drawn in so NEW chunks are fetched for
+     * it. An in-place full-screen host must be reported as full screen - the mini card's own cap
+     * would otherwise drop the short to 360p (VideoViewportCap; see MiniPlayerBridge#setFullscreenViewport).
+     */
+    void hostSetViewport(int widthPx, int heightPx) {
+        if (mExoPlayerController != null) {
+            mExoPlayerController.setSmallWindowViewport("fullscreen-host", widthPx, heightPx);
+        }
     }
 
     // finish()/finishReally() are inherited from MobileActivity/MotherActivity, which already
