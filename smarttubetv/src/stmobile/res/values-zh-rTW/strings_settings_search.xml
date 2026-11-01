@@ -26,7 +26,6 @@
     <string name="mobile_settings_search_kw_sponsorblock">跳過 略過 廣告 贊助 片頭 片尾 片段 段落 去廣告 sponsorblock</string>
     <string name="mobile_settings_search_kw_dearrow">標題 縮圖 封面 標題黨 聳動 誇張 換圖 dearrow clickbait</string>
     <string name="mobile_settings_search_kw_backup">備份 還原 匯出 匯入 輸出 輸入 存檔 復原</string>
-    <string name="mobile_settings_search_kw_video_format">格式 編碼 解碼 影片格式 codec vp9 av1 h264 hevc hdr 60fps</string>
     <string name="mobile_settings_search_kw_buffer">緩衝 緩衝區 卡頓 快取 記憶體 載入 預載 延遲 cache</string>
     <string name="mobile_settings_search_kw_dns">dns 域名 網域 解析 伺服器 ip ipv4 ipv6 連線 找不到</string>
     <string name="mobile_settings_search_kw_conscrypt">安全 憑證 證書 加密 ssl tls https 審查 封鎖 被牆 網路堆疊 相容性 conscrypt byebyedpi</string>
