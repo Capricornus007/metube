@@ -5,7 +5,7 @@ sections below remain historical evidence, not the current release verdict.
 
 Phone-only: the TV flavors, vendored ExoPlayer fork and Leanback modules were
 deleted. Playback uses Media3 1.10.1 with embedded Cronet and an OkHttp fallback.
-Toolchain: AGP 9.2.1 / Gradle 9.6.1 / compileSdk 37 / targetSdk 37 / minSdk 24.
+Toolchain: AGP 9.6.0-alpha02 / Gradle 9.10.0-20261103002137+0000 / compileSdk 37 / targetSdk 37 / minSdk 24.
 
 ## Quality start: vertical 1080p, startup chunks replaced (2026-10-19, branch fix/quality-start, Pixel)
 
@@ -150,19 +150,14 @@ on real walled identities (emulators) and with a synthetic wall on the Pixel and
 the Mi 8: recovery in about a second, no reload cap. Left: the ~6 s rewind at the
 wall.
 
-The in-app update flow (one sheet from check to install, HANDOFF §32) ships in
-the same release, verified end to end on the Pixel.
+MeeTube no longer ships the in-app update flow described in HANDOFF §32. That subsystem was
+removed by the fork contract in `08b70b6`; package repositories are the only update path.
 
-## In-app updates: one sheet from check to install (2026-09-28, emulator)
+## Updates: package repositories only
 
-Settings -> About -> Check for updates and the launch check now lead to one update sheet: the
-release notes per version and the size first, the download only when the user taps Update (with
-progress and Cancel), then Android's installer on its own - also after the one-time "Install
-unknown apps" permission, and from a notification when the download finished in the background.
-A known update shows as a dot on the You tab and a row at the top of You; after the update the app
-says "Updated to MeeTube X" with What's new. Replaces a flow that downloaded the APK silently,
-showed nothing while doing it, and pinned a blank "Update" page. Details and the test recipe:
-[HANDOFF §32](HANDOFF.md#32-in-app-update-flow-2026-09-28-emulator). Not yet on the Pixel.
+About reports the installed MeeTube version and retains the project/source information. There is
+no launch check, update button, APK downloader, installer permission, notification, or You-tab
+update badge inside the app. The old flow remains documented in HANDOFF §32 only as history.
 
 ## Speed, stability and smoothness round 3 (2026-09-25/26, Pixel 9, Wi-Fi + LTE)
 

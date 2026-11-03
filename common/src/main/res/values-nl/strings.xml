@@ -40,8 +40,6 @@
     <string name="video_buffer_size_med">Gemiddeld</string>
     <string name="video_buffer_size_high">Hoog</string>
     <string name="video_buffer_size_highest">Hoogste</string>
-    <string name="update_changelog">Wijzigingslog</string>
-    <string name="install_update">Update installeren</string>
     <string name="section_is_empty">Deze rubriek is leeg.</string>
     <string name="dialog_add_to_playlist">Voeg toe/Verwijder uit afspeellijst</string>
     <string name="msg_signed_users_only">Enkel voor ingelogde gebruikers</string>
@@ -79,8 +77,6 @@
     <string name="player_only_ui">Speler weergeven</string>
     <string name="player_ui_and_pause">Speler weergeven en pauzeren</string>
     <string name="player_only_pause">Speler pauzeren</string>
-    <string name="update_not_found">Geen update beschikbaar.</string>
-    <string name="update_in_progress">Even geduld…</string>
     <string name="player_ui_hide_behavior">Speler verbergen</string>
     <string name="option_never">Nooit</string>
     <string name="side_panel_sections">Rubrieken</string>
@@ -346,7 +342,6 @@
     <string name="player_seek_confirmation_play">Met bevestiging (spelen tijdens het zoeken)</string>
     <string name="hide_shorts_from_home">Shorts verbergen op Home</string>
     <string name="finish_on_disconnect">Voltooi de app nadat de telefoon/tablet is losgekoppeld</string>
-    <string name="update_error">Update fout</string>
     <string name="hide_shorts_from_history">Shorts verbergen bij geschiedenis</string>
     <string name="hide_shorts_from_trending">Shorts verbergen bij Trending</string>
     <string name="disable_screensaver">Schermbeveiliging uitschakelen</string>
@@ -573,7 +568,6 @@
     <string name="old_home_look">Oude look van de Home-sectie</string>
     <string name="old_channel_look">Oude look van de Kanaalpagina</string>
     <string name="hide_shorts_everywhere">Shorts overal verbergen</string>
-    <string name="update_found">Update</string>
     <string name="volume_boost_warning">Elke instelling boven de limiet kan potentieel schade aan de luidsprekers veroorzaken</string>
     <string name="play_video_incognito">Incognito afspelen</string>
     <string name="header_kids_home">Kinderen</string>

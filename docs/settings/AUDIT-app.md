@@ -121,7 +121,7 @@ player's own "…" sheet never reads `MainUIData` menu items. Items marked *auth
 | 37 | Move section up | Move section up | on | SMP:284 **is overwritten by SMP:285** | DEAD | — | Item 38 controls both rows. |
 | 38 | Move section down | "Move section up" + "Move section down" | on | SMP:285 / SMP:167 | LIVE | Section long-press menus | Reorders only the You list; the bottom bar order is fixed. |
 | 39 | Rename this section | Rename this section | on | SMP:189 | LIVE | Long-press menus of pinned channel/playlist sections | |
-| 40 | Check for updates | Check for updates | off | BMP:546 -> `AppUpdatePresenter.start(true)` -> phone update screen | LIVE | Section menus, signed in only | Duplicates About > Check for updates. |
+| 40 | Check for updates | — | off | — | REMOVED | — | The fork has no in-app updater; package repositories deliver updates. |
 | 41 | Add/Remove from subscription group | same | off | `ChannelGroupMenuProvider` via VMP:1257 | LIVE | Cards with a channel or video | Of unclear use on the phone. |
 | 42 | Remove the subscription group | same | off | `RemoveGroupMenuProvider` via SMP:300 | LIVE | Long-press menu of a channel-group section | |
 | 43 | Rename the subscription group | same | off | `RenameGroupMenuProvider` via SMP:300 | LIVE | same | |
@@ -274,8 +274,7 @@ Two entry points share `AccountSettingsPresenter` (a singleton):
 
 | Row | Getter/Setter | Default | Phone reader | Verdict | What it does | Side effects / notes |
 |---|---|---|---|---|---|---|
-| Check for updates (desc "MeeTube <version>"). On `-Pfdroid` builds this row is just the version line and does nothing | `AppUpdatePresenter.start(true)` -> `PhoneUpdates.showUpdateScreen` | — | MMA hooks (`setPhoneUpdates`) | LIVE | Looks for a newer MeeTube. | |
-| Notify about updates (switch; hidden on F-Droid builds) | `AppUpdateChecker#isUpdateCheckEnabled` / `#setUpdateCheckEnabled` (minIntervalMs > 0) | on | `AppUpdates`:192 (automatic checks), `AppUpdates`:464 (the You badge) | LIVE | Tells you when an update is out. | |
+| Version (desc "MeeTube <version>") | `AppInfoHelpers#getAppVersionName` | — | — | LIVE | Reports the installed package version. | Static information; package repositories are the only update path. |
 | Source code (desc "github.com/aleixrodriala/newtube") | `Utils.openLinkExt` | — | — | LIVE | Opens the repository. | |
 | License (desc "MIT") | `Utils.openLinkExt` | — | — | LIVE | Opens the licence. | |
 | Send diagnostic log (desc "For bug reports. Includes the videos and channels you opened; passwords and sign-in tokens are removed") | `DiagnosticLog.share` | — | `DiagnosticLog.start` in MMA | LIVE | Shares recent app logs for a bug report. | |
@@ -366,7 +365,7 @@ The phone already hides the key-remapping, app/player/search exit shortcuts and 
 * **Network** (proxy, Conscrypt): an "Advanced" group.
 * **Settings > Accounts** still opens the old TV dialog while the You tab uses AccountsSheet; route the
   Settings row to the sheet.
-* Context-menu **Check for updates** duplicates About.
+* The context-menu **Check for updates** row was removed with the in-app updater.
 
 ### Confusing labels
 "Set-up sections"; "Context menu"; the bare **"Hide"** menu item; "Add/Remove playlist from Playlists section"

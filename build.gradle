@@ -19,9 +19,9 @@ buildscript {
         //jcenter()
     }
     dependencies {
-        // AGP 9.2 supports API 37 and supplies Kotlin compilation itself. The standalone
+        // AGP 9.6 supports API 37 and supplies Kotlin compilation itself. The standalone
         // kotlin-android plugin/classpath is intentionally absent (built-in Kotlin migration).
-        classpath 'com.android.tools.build:gradle:9.2.1'
+        classpath 'com.android.tools.build:gradle:9.6.0-alpha02'
 
         // NOTE: Do not place your application dependencies here; they belong
         // in the individual module build.gradle files

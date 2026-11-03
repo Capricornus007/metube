@@ -30,6 +30,7 @@ import java.util.function.Supplier;
  *     with the options, and picking one applies it and closes the dialog. This replaces the old
  *     inline radio lists that made a page twenty rows longer per setting;</li>
  *     <li>{@link #KIND_NOTE}: a small paragraph that explains the rows above it;</li>
+ *     <li>{@link #KIND_INFO}: a non-interactive title and value, such as the installed version;</li>
  *     <li>{@link #KIND_DIVIDER}: the hairline between two groups.</li>
  * </ul>
  */
@@ -40,8 +41,7 @@ public final class SettingsRow {
     public static final int KIND_CHOICE = 3;
     public static final int KIND_NOTE = 4;
     public static final int KIND_DIVIDER = 5;
-    /** MEETUBE(support): a centred thank-you at the foot of a page - icon, a line, a small link. */
-    public static final int KIND_FOOTER = 6;
+    public static final int KIND_INFO = 6;
     /** MEETUBE(bar editor): a row that is its own view (the Tabs page's drag-to-order bar). */
     public static final int KIND_CUSTOM = 7;
 
@@ -117,19 +117,18 @@ public final class SettingsRow {
         return new SettingsRow(KIND_DIVIDER);
     }
 
-    public static SettingsRow footer(@DrawableRes int icon, CharSequence title, CharSequence summary,
-                                     @NonNull Action action) {
-        SettingsRow row = new SettingsRow(KIND_FOOTER);
-        row.icon = icon;
-        row.title = title;
-        row.summary = () -> summary;
-        row.action = action;
-        return row;
-    }
-
     public static SettingsRow note(CharSequence text) {
         SettingsRow row = new SettingsRow(KIND_NOTE);
         row.title = text;
+        return row;
+    }
+
+    /** A title and value displayed without click or focus behavior. */
+    public static SettingsRow info(@DrawableRes int icon, CharSequence title, CharSequence summary) {
+        SettingsRow row = new SettingsRow(KIND_INFO);
+        row.icon = icon;
+        row.title = title;
+        row.summary = () -> summary;
         return row;
     }
 

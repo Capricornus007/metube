@@ -155,17 +155,16 @@ Per-row evidence (what each pref does on the phone, with file:line) is in
 - **Other TV leftovers removed** (same call): the accounts sheet's "Account settings" (a TV dialog: the password
   lock, the TV's account picker on start, and "separate settings per account", which moved to
   Advanced › Accounts), the video menu's QR code, Switch account (the TV's picker) and Check for
-  updates (it is in About), and in the player's More › Zoom the aspect-ratio and rotation lists and
-  the 50–300 % zoom steps, which did nothing on the phone (it keeps the five fit modes). Conscrypt
-  stays (Advanced › Network): upstream filed it under "Internet censorship" (ByeByeDPI), which
-  phones need as much as TVs.
+  updates (the fork uses package repositories), and in the player's More › Zoom the aspect-ratio and
+  rotation lists and the 50–300 % zoom steps, which did nothing on the phone (it keeps the five fit
+  modes). Conscrypt stays (Advanced › Network): upstream filed it under "Internet censorship"
+  (ByeByeDPI), which phones need as much as TVs.
 - **Duplicates merged:** history (General radio, Search switch, menu items) is one History and privacy
   page.
 - **Video menu:** the per-item position picker is gone. People whose order was customised get a
   "Usual order" row that puts back the phone's order. No switch for items whose flag the phone
   ignores (exit PiP; Open playlist always shows where it applies; Move up follows Move down) or that
-  `PhoneOnlyPrefs` keeps off (Open comments, Pause history, and the QR code, Switch account and
-  Check for updates above).
+  `PhoneOnlyPrefs` keeps off (Open comments, Pause history, the QR code and Switch account).
 - The TV's **Shorts** rows are gone with its Shorts (1.12.0); the phone's Shorts have their own
   quality row (Video quality, issue #26). **Hide Mixes** is gone too (its filter only runs on the old v1
   lists; every phone feed is v2).

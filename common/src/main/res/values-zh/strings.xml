@@ -38,8 +38,6 @@
     <string name="video_buffer_size_low">低</string>
     <string name="video_buffer_size_med">中</string>
     <string name="video_buffer_size_high">高</string>
-    <string name="update_changelog">更新日志</string>
-    <string name="install_update">安装更新</string>
     <string name="section_is_empty">哎呀！这里什么都没有</string>
     <string name="dialog_add_to_playlist">添加至播放列表或从中移除</string>
     <string name="msg_signed_users_only">仅限已登录用户</string>
@@ -77,8 +75,6 @@
     <string name="player_only_ui">仅用户界面</string>
     <string name="player_ui_and_pause">用户界面和暂停</string>
     <string name="player_only_pause">仅暂停</string>
-    <string name="update_not_found">已是最新版本</string>
-    <string name="update_in_progress">请稍等……</string>
     <string name="option_never">从不</string>
     <string name="side_panel_sections">设置分区</string>
     <string name="boot_to_section">启动时进入的分区</string>
@@ -343,7 +339,6 @@
     <string name="player_seek_confirmation_play">带确认（快进时播放）</string>
     <string name="hide_shorts_from_home">隐藏首页的短视频</string>
     <string name="finish_on_disconnect">手机/平板断开连接后关闭应用</string>
-    <string name="update_error">更新错误</string>
     <string name="hide_shorts_from_history">隐藏历史记录的短视频</string>
     <string name="hide_shorts_from_trending">隐藏热门分区的短视频</string>
     <string name="disable_screensaver">禁用屏保</string>
@@ -567,7 +562,6 @@
     <string name="old_home_look">旧版首页</string>
     <string name="old_channel_look">旧版频道</string>
     <string name="hide_shorts_everywhere">隐藏所有分区的短视频</string>
-    <string name="update_found">更新</string>
     <string name="volume_boost_warning">任何超出限制的设置都可能损坏扬声器</string>
     <string name="play_video_incognito">隐私模式播放</string>
     <string name="header_kids_home">儿童</string>

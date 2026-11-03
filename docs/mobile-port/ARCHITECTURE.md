@@ -25,7 +25,7 @@ presenters + backend + player and write new touch Views.
 | Module | Role | Verdict | Action |
 |---|---|---|---|
 | `MediaServiceCore/youtubeapi`, `/mediaserviceinterfaces` | InnerTube backend, account login, stream/sig decode | **reuse-as-is** | Depend on it unchanged |
-| `SharedModules/*` (`sharedutils`, `j2v8`, `appupdatechecker2`, `commons-io`) | utils, V8 JS engine (sig/nsig), updater | **reuse-as-is** | Unchanged |
+| `SharedModules/*` (`sharedutils`, `j2v8`, `appupdatechecker2`, `commons-io`) | utils, V8 JS engine (sig/nsig), legacy updater module | **reuse-selectively** | The app uses sharedutils/J2V8/commons-io; `appupdatechecker2` remains vendored but is not an app dependency |
 | `exoplayer-amzn-2.10.6/*` | Player engine (DASH/HLS/SABR) | **reuse-as-is** | Unchanged (only `extension-leanback` is TV-tied; not needed) |
 | `common/.../app/presenters/**` | All MVP presenters | **reuse-with-tweaks** | Reuse; only `ViewManager` is reworked |
 | `common/.../app/models/playback/**`, `common/.../exoplayer/**` | 11 playback controllers + ExoPlayer wrapper | **reuse-as-is** | Unchanged |

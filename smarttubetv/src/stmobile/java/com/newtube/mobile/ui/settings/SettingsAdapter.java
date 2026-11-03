@@ -85,8 +85,6 @@ final class SettingsAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder
                 return new TextHolder(inflater.inflate(R.layout.item_mobile_settings_header, parent, false));
             case SettingsRow.KIND_NOTE:
                 return new TextHolder(inflater.inflate(R.layout.item_mobile_settings_note, parent, false));
-            case SettingsRow.KIND_FOOTER:
-                return new FooterHolder(inflater.inflate(R.layout.item_mobile_settings_footer, parent, false));
             case SettingsRow.KIND_CUSTOM:
                 return new RecyclerView.ViewHolder(new android.widget.FrameLayout(parent.getContext())) {};
             case SettingsRow.KIND_DIVIDER:
@@ -109,25 +107,6 @@ final class SettingsAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder
                     ViewGroup.LayoutParams.WRAP_CONTENT));
             host.removeAllViews();
             host.addView(row.custom.create(host, mListener));
-        } else if (holder instanceof FooterHolder) {
-            FooterHolder footer = (FooterHolder) holder;
-            footer.icon.setImageResource(row.icon);
-            footer.title.setText(row.title);
-            footer.summary.setText(row.summary != null ? row.summary.get() : null);
-            footer.itemView.setOnClickListener(v -> mListener.onRowClicked(row));
-        }
-    }
-
-    private static final class FooterHolder extends RecyclerView.ViewHolder {
-        final ImageView icon;
-        final TextView title;
-        final TextView summary;
-
-        FooterHolder(@NonNull View itemView) {
-            super(itemView);
-            icon = itemView.findViewById(R.id.settings_footer_icon);
-            title = itemView.findViewById(R.id.settings_footer_title);
-            summary = itemView.findViewById(R.id.settings_footer_summary);
         }
     }
 
@@ -200,11 +179,12 @@ final class SettingsAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder
             itemView.setAccessibilityDelegate(isSwitch ? SwitchRole.INSTANCE : null);
 
             boolean enabled = row.isEnabled();
+            boolean interactive = row.kind != SettingsRow.KIND_INFO && enabled;
             itemView.setEnabled(enabled);
             itemView.setAlpha(enabled ? 1f : 0.38f);
             toggle.setEnabled(enabled);
-            itemView.setOnClickListener(enabled ? v -> listener.onRowClicked(row) : null);
-            itemView.setClickable(enabled);
+            itemView.setOnClickListener(interactive ? v -> listener.onRowClicked(row) : null);
+            itemView.setClickable(interactive);
         }
     }
 

@@ -87,8 +87,12 @@ public final class SettingsPageFragment extends Fragment implements SettingsAdap
         View view = inflater.inflate(R.layout.fragment_mobile_settings_page, container, false);
         mTitle = view.findViewById(R.id.settings_title);
         mList = view.findViewById(R.id.settings_list);
-        view.findViewById(R.id.settings_back).setOnClickListener(
-                v -> requireActivity().getOnBackPressedDispatcher().onBackPressed());
+        // MEETUBE(settings back): a beat for the button's press (animator/press_3d) to show before the page goes.
+        view.findViewById(R.id.settings_back).setOnClickListener(v -> v.postDelayed(() -> {
+            if (isResumed()) {
+                requireActivity().getOnBackPressedDispatcher().onBackPressed();
+            }
+        }, 140));
 
         mAdapter = new SettingsAdapter(this);
         mList.setLayoutManager(new LinearLayoutManager(requireContext()));
@@ -112,6 +116,8 @@ public final class SettingsPageFragment extends Fragment implements SettingsAdap
     @Override
     public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
+        // MEETUBE(glass): the top bar frosts the rows scrolling under it.
+        com.newtube.mobile.ui.common.Glass.blur(view.findViewById(R.id.settings_bar), view.findViewById(R.id.settings_blur_target));
         if (SettingsPages.ROOT.equals(mPageId)) {
             View search = view.findViewById(R.id.settings_search_field);
             search.setVisibility(View.VISIBLE);
@@ -119,7 +125,8 @@ public final class SettingsPageFragment extends Fragment implements SettingsAdap
             com.newtube.mobile.ui.common.Glass.blur(search, view.findViewById(R.id.settings_blur_target));
             ((ViewGroup.MarginLayoutParams) search.getLayoutParams()).topMargin += Math.round(4 * getResources().getDisplayMetrics().density);
             mList.setPadding(mList.getPaddingLeft(),
-                    getResources().getDimensionPixelSize(R.dimen.mobile_settings_search_room),
+                    getResources().getDimensionPixelSize(R.dimen.mobile_settings_bar_height)
+                            + getResources().getDimensionPixelSize(R.dimen.mobile_settings_search_room),
                     mList.getPaddingRight(), mList.getPaddingBottom());
             search.setOnClickListener(v -> {
                 if (getActivity() instanceof MobileSettingsActivity) {
@@ -198,7 +205,6 @@ public final class SettingsPageFragment extends Fragment implements SettingsAdap
     public void onRowClicked(@NonNull SettingsRow row) {
         switch (row.kind) {
             case SettingsRow.KIND_LINK:
-            case SettingsRow.KIND_FOOTER:
                 if (row.page != null) {
                     openPage(row.page);
                 } else if (row.action != null) {

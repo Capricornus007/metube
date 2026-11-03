@@ -10,6 +10,8 @@ Every MeeTube release, newest first.<br>
 
 | Version | Released | Highlights |
 | :-- | :-- | :-- |
+| [**3.2.7** HotLight](#327-hotlight) | 2026-11-02 | Lighter |
+| [**3.2.5** Plazma](#325-plazma) | 2026-11-01 | Smoother |
 | [**3.2.3** Mirage](#323-mirage) | 2026-10-31 | Pick your spinner and icon, Shorts autoscroll, a mini player that rides the bottom bar |
 | [**3.2.1** Sublime](#321-sublime) | 2026-10-28 | Shorts open instantly, a SponsorBlock skip pill, transcripts for songs without lyrics |
 | [**3.2.0** Rebirth](#320-rebirth) | 2026-10-28 | MeTube is now MeeTube, downloads up to 4K, GlowFlow everywhere |
@@ -38,6 +40,73 @@ Every MeeTube release, newest first.<br>
 | [**1.5.0**](#150) | 2026-10-07 | Shorts |
 | [**1.0.0**](#100) | 2026-10-07 | Floating Glass |
 
+
+## 3.2.7 HotLight
+
+> **Lighter**<br>
+> 📅 2026-11-02 · closes #64, #144 and #148
+
+### New
+
+- Swipe brightness all the way down to switch to Auto brightness (#64).
+- Every list bounces and stretches when you scroll past its ends.
+- The About card tilts as you move your phone.
+- A terminal style thank you note above the coffee button.
+
+### Changed
+
+- The app is half the size: 32 MB instead of 62 MB on most phones.
+- No scroll bars anywhere.
+- The Settings back button presses in like a real button.
+- The tab bar lens pops out less and switches faster.
+- About gets a Creator heading and a shorter issue reporters line.
+
+### Fixed
+
+- The app opens on Home again after you swipe it away from recents (#148).
+- No black bar behind see-through keyboards in Search, Settings search and comments (#144).
+- A landscape video after a vertical one in upright fullscreen now turns to landscape.
+- Picture-in-picture no longer flashes the full controls when it opens.
+- Emoji only comments no longer offer Translate.
+- Dropped old TV permissions that made Play Protect flag the app.
+
+### Thanks
+
+Thanks to everyone who reports issues, and in this release to @KrishnakantShedge, @Batmancpu and @alibinarshad.
+
+## 3.2.5 Plazma
+
+> **Smoother**<br>
+> 📅 2026-11-01 · closes #138, #139, #140 and #141
+
+### New
+
+- **Shorts shelf on Home.** Each Shorts row is one card you swipe sideways. Turn it off in Settings > Customize layout (#43).
+- **Long press Easter egg.** Long press the brand pill to check it out.
+- **Search bubble.** Scrolling down shrinks the bottom bar into a Search button in a corner, scrolling up brings it back.
+- **Translate comments** right under the comment (#139).
+- **A new About page.** A glass card with Star, Share and Send log buttons, plus Issue reporters and Contributors pages.
+- **Exact counts.** Video details shows the full view and like numbers.
+
+### Changed
+
+- **Shorts swipe like Reels.** The next short is ready under your finger, even with Loop shorts off.
+- **More glass.** A frosted Settings top bar, icons in glass beads, frosted duration pills on thumbnails and a lit rim on pop-ups.
+
+### Fixed
+
+- **Subtitles stay on screen** when a fullscreen video is zoomed, and two lines at once no longer overlap (#138).
+- **Home chips line up** with the pills and cards (#140).
+- **The comment like press** is no longer cut on the left (#141).
+- **Home no longer jumps into picture-in-picture** when you open Settings on Android 8 to 11 (#143).
+
+### Thanks
+
+Thanks to everyone who reports issues, and in this release to @sushi1579, @AshUchiha3, @KrishnakantShedge and @karthick4568. Keep them coming.
+
+### Coming soon
+
+**MeeTube for TV.**
 
 ## 3.2.3 Mirage
 

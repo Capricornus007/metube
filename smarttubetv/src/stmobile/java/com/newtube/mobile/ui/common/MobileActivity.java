@@ -75,12 +75,28 @@ public abstract class MobileActivity extends MotherActivity {
     protected void onPostCreate(@Nullable Bundle savedInstanceState) {
         super.onPostCreate(savedInstanceState);
         FocusRing.install(getWindow()); // MEETUBE(tv): the remote's highlight, on every screen
+        BounceOverscroll.install(getWindow()); // MEETUBE(bounce): lists bounce at their ends
     }
 
     @Override
     public boolean dispatchTouchEvent(MotionEvent event) {
         Haptics.onTouch(getWindow().peekDecorView(), event); // MEETUBE(haptics): every tap clicks
         return super.dispatchTouchEvent(event);
+    }
+
+    /**
+     * MEETUBE(issue #143): opening one of our own screens is not the user leaving the app. Without
+     * this flag Android sends this screen onUserLeaveHint, which before Android 12 is the PiP entry
+     * (MiniPip, the player) - Home with a docked card opening Search went to PiP on Android 8 and the
+     * card was gone, audio playing. ViewManager.isNewViewPending() guarded it only by a 1 s window.
+     */
+    @SuppressWarnings("deprecation")
+    @Override
+    public void startActivityForResult(android.content.Intent intent, int requestCode, @Nullable Bundle options) {
+        if (intent.getComponent() != null && getPackageName().equals(intent.getComponent().getPackageName())) {
+            intent.addFlags(android.content.Intent.FLAG_ACTIVITY_NO_USER_ACTION);
+        }
+        super.startActivityForResult(intent, requestCode, options);
     }
 
     @Override
@@ -227,6 +243,17 @@ public abstract class MobileActivity extends MotherActivity {
      */
     protected boolean shouldInsetContentForNavigationBar() {
         return true;
+    }
+
+    /**
+     * MEETUBE(issue #144): a screen that moves its own content clear of the keyboard (IME insets)
+     * says so here, and keeps drawing behind it. A fitted window (the edge-to-edge opt-out, up to
+     * Android 15) is otherwise shrunk above the keyboard by the system, and what a see-through
+     * keyboard showed behind it was the bare window background: a black slab. From Android 16 every
+     * window already works this way. installContentInsets keeps the content off the bars either way.
+     */
+    protected boolean drawsUnderKeyboard() {
+        return false;
     }
 
     /** Re-evaluates content padding after an in-place orientation/configuration change. */
@@ -449,7 +476,7 @@ public abstract class MobileActivity extends MotherActivity {
                 // #68, MobilePlaybackActivity.applyImmersiveSystemBars): clear them first.
                 window.getDecorView().setSystemUiVisibility(legacyFlags);
             }
-            window.setDecorFitsSystemWindows(true);
+            window.setDecorFitsSystemWindows(!drawsUnderKeyboard());
             WindowInsetsController controller = window.getInsetsController();
             if (controller != null) {
                 controller.show(WindowInsets.Type.systemBars());

@@ -47,7 +47,7 @@
                 android:clipToPadding="false"
                 android:paddingHorizontal="@dimen/mobile_card_spacing"
                 android:paddingBottom="@dimen/meetube_nav_clearance"
-                android:scrollbars="vertical"
+                android:scrollbars="none"
                 tools:listitem="@layout/item_video_card" />
 
         </com.newtube.mobile.ui.common.HapticSwipeRefreshLayout>
@@ -475,7 +475,7 @@
         android:layout_height="wrap_content"
         android:clipToPadding="false"
         android:overScrollMode="never"
-        android:paddingHorizontal="12dp"
+        android:paddingHorizontal="16dp"
         android:paddingBottom="8dp"
         android:visibility="gone"
         app:layout_constraintEnd_toEndOf="parent"
@@ -649,6 +649,35 @@
 
     </com.newtube.mobile.ui.common.GlassView>
 
+    <!-- MEETUBE(search fab): a scroll down shrinks the nav bar into this Search bubble in a bottom
+         corner, a scroll up stretches it back into the bar (MobileBrowseActivity.morphSearch; the
+         corner is Settings > Customization's, set in code). Corners always round: a capsule at any size. -->
+    <com.newtube.mobile.ui.common.GlassView
+        android:id="@+id/mobile_search_fab"
+        android:layout_width="56dp"
+        android:layout_height="56dp"
+        android:layout_marginHorizontal="16dp"
+        android:layout_marginBottom="16dp"
+        android:clickable="true"
+        android:contentDescription="@string/mobile_search_button"
+        android:elevation="6dp"
+        android:focusable="true"
+        android:visibility="invisible"
+        app:glassCornerRadius="999dp"
+        app:glassTint="@color/meetube_glass_tint"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent">
+
+        <ImageView
+            android:layout_width="24dp"
+            android:layout_height="24dp"
+            android:layout_gravity="center"
+            android:contentDescription="@null"
+            android:src="@drawable/ic_mobile_search"
+            android:tint="@color/mobile_color_on_surface" />
+
+    </com.newtube.mobile.ui.common.GlassView>
+
     <!-- MEETUBE(nav lens, issue #46): the liquid glass lens a tab switch glides across the bar;
          sized and placed in code (NavLens.play), there only while it moves. -->
     <com.newtube.mobile.ui.common.NavLens
@@ -702,6 +731,58 @@
                 android:text="@string/mobile_nav_hint_change"
                 android:textColor="@color/mobile_color_on_surface_secondary"
                 android:textSize="13sp" />
+
+        </LinearLayout>
+
+    </com.newtube.mobile.ui.common.GlassView>
+
+    <!-- MEETUBE(greeting): a held brand pill frosts the whole screen with a greeting for the time
+         of day and three glass shortcuts (GreetingOverlay). A tap off the shortcuts closes it. -->
+    <com.newtube.mobile.ui.common.GlassView
+        android:id="@+id/mobile_greet_overlay"
+        android:layout_width="0dp"
+        android:layout_height="0dp"
+        android:clickable="true"
+        android:elevation="20dp"
+        android:focusable="true"
+        android:visibility="gone"
+        app:glassCornerRadius="0dp"
+        app:glassLiquid="false"
+        app:glassTint="@color/meetube_glass_tint"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent">
+
+        <LinearLayout
+            android:id="@+id/mobile_greet_content"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center"
+            android:orientation="vertical"
+            android:paddingHorizontal="40dp">
+
+            <TextView
+                android:id="@+id/mobile_greet_title"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:fontFamily="cursive"
+                android:gravity="center"
+                android:textColor="@color/mobile_color_on_surface"
+                android:textSize="44sp"
+                android:textStyle="bold"
+                tools:text="Good evening" />
+
+            <TextView
+                android:id="@+id/mobile_greet_line"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="4dp"
+                android:layout_marginBottom="28dp"
+                android:gravity="center"
+                android:textColor="@color/mobile_color_on_surface_secondary"
+                android:textSize="16sp"
+                tools:text="Wind down with something good" />
 
         </LinearLayout>
 

@@ -447,6 +447,8 @@ public class MobilePlaybackActivity extends MobileActivity
     private String mDescriptionViews;
     @Nullable
     private String mDescriptionDate;
+    /** MEETUBE(exact counts): the likes as a whole number, -1 when YouTube sent only "144K". */
+    private long mLikeCountExact = -1;
 
     /**
      * Keep the portrait video box tied to the width the watch page actually receives. Display
@@ -713,8 +715,7 @@ public class MobilePlaybackActivity extends MobileActivity
 
         NetPath.log("playback-activity abort=no-video reason=bare-launch");
 
-        // Land the user on Home instead of a dead player. startDefaultView picks the stack top, or
-        // the root (Browse) when the stack is empty - which is exactly the cold-process case here.
+        // Land the user on Home instead of a dead player: startDefaultView opens the root (Browse).
         getViewManager().startDefaultView();
         finishReally();
     }
@@ -2108,6 +2109,7 @@ public class MobilePlaybackActivity extends MobileActivity
             // over a black page with no controls.
             logPip("enter-aborted-restored inPip=" + (isInPipModeNow() ? "y" : "n"));
             mPipStateStale = isInPipModeNow();
+            mPipEnterPending = false; // before showControlsInternal, which refuses a pending entry
             int orientation = layoutOrientation();
             applyWatchLayoutForOrientation(orientation);
             applySystemBarsForOrientation(orientation);
@@ -4615,6 +4617,13 @@ public class MobilePlaybackActivity extends MobileActivity
         if (isShortsMode() || mPlayerLocked) {
             return; // MEETUBE(shorts): the overlay is the chrome; MEETUBE(lock): nothing while locked
         }
+        if (mIsInPip || mPipEnterPending) {
+            // The pinned window is all video. Most callers checked mIsInPip on their own, the
+            // presenter's showOverlay did not: right after a home-gesture PiP the full controls
+            // came up inside the window until the auto-hide timer took them away.
+            logPip("controls-blocked by=" + new Throwable().getStackTrace()[1]);
+            return;
+        }
         mControlsVisible = true;
         mControlsRoot.setVisibility(View.VISIBLE);
         mControlsRoot.animate().cancel();
@@ -4819,6 +4828,37 @@ public class MobilePlaybackActivity extends MobileActivity
             }
         }
         return aspect > 0f && aspect < 1f;
+    }
+
+    /**
+     * NEWTUBE(issue #69): the new video's first frame is up, so its shape is known. A landscape
+     * video that an autoplay or a pick from Up next brought into a vertical one's upright
+     * fullscreen goes to landscape fullscreen, as its own button press would have: the request
+     * rotates the window, and that rotation drops the upright layout (layoutOrientation).
+     */
+    private void onVideoShapeKnown() {
+        if (!mVideoShapePending) {
+            return;
+        }
+        mVideoShapePending = false;
+        boolean upright = mLayoutOverride == Configuration.ORIENTATION_LANDSCAPE
+                && getResources().getConfiguration().orientation == Configuration.ORIENTATION_PORTRAIT;
+        if (!upright || isVerticalVideo() || mIsInPip || mPipEnterPending || isFinishing()
+                || areOrientationRequestsIgnored()) {
+            return;
+        }
+        float aspect = mVideoAspect;
+        if (mPlayer != null && mPlayer.getVideoSize().width > 0 && mPlayer.getVideoSize().height > 0) {
+            aspect = (float) mPlayer.getVideoSize().width / mPlayer.getVideoSize().height;
+        }
+        if (!(aspect >= 1f)) {
+            return; // still unknown
+        }
+        if (BuildConfig.DEBUG) {
+            NetPath.log("fullscreen upright-to-landscape aspect=" + aspect);
+        }
+        setRequestedOrientation(ActivityInfo.SCREEN_ORIENTATION_SENSOR_LANDSCAPE);
+        armOrientationHandBack(Configuration.ORIENTATION_LANDSCAPE);
     }
 
     private void toggleFullscreen() {
@@ -6018,7 +6058,7 @@ public class MobilePlaybackActivity extends MobileActivity
                 }
             }
             maybeLiftStillAtFrame();
-            mVideoShapePending = false; // NEWTUBE(issue #69): this video's shape is known now
+            onVideoShapeKnown();
         }
     };
 
@@ -10199,6 +10239,7 @@ public class MobilePlaybackActivity extends MobileActivity
         mWatchDescription.setText(null);
         mDescriptionViews = null;
         mDescriptionDate = null;
+        mLikeCountExact = -1;
         mWatchMeta.setText(null);
         mWatchLikeCount.setText(R.string.mobile_watch_count_placeholder);
         mLikeCountRaw = null;
@@ -10361,6 +10402,7 @@ public class MobilePlaybackActivity extends MobileActivity
             if (isCountUnset(mWatchLikeCount) && !TextUtils.isEmpty(metadata.getLikeCount())) {
                 mLikeCountRaw = metadata.getLikeCount();
             }
+            mLikeCountExact = metadata.getLikeCountNumber(); // counted with mLikedInRaw's like, as below
             // NEWTUBE(ryd-opt-in): metadata's dislike count is only an estimate from the likes.
             if (showsDislikeCount() && isCountUnset(mWatchDislikeCount)
                     && !TextUtils.isEmpty(metadata.getDislikeCount())) {
@@ -10455,6 +10497,16 @@ public class MobilePlaybackActivity extends MobileActivity
             extras.avatar = mWatchAvatar.getDrawable();
             extras.subscribe = mWatchSubscribe;
             extras.openChannel = this::openCurrentChannel;
+        }
+        // MEETUBE(exact counts): Video details in whole numbers - the likes moved by the person's
+        // own tap like the short count (showLikeCount), the views from this video's /player reply.
+        if (mLikeCountExact > 0 && mLikedInRaw != -1) {
+            int likedNow = getButtonState(R.id.action_thumbs_up) == BUTTON_ON ? 1 : 0;
+            extras.likes = mLikeCountExact + likedNow - mLikedInRaw;
+        }
+        Video video = getVideo();
+        if (mCaptionInfo != null && video != null && Helpers.equals(video.videoId, mCaptionInfo.getVideoId())) {
+            extras.views = Helpers.parseLong(mCaptionInfo.getViewCount());
         }
         showPlayerSheet(DescriptionSheet.create(this, mWatchTitle.getText(), likes, mDescriptionViews,
                 mDescriptionDate, mWatchDescription.getText(),

@@ -2077,6 +2077,9 @@ python3 psum.py runs/base runs/candA
 
 ## 32. In-app update flow (2026-09-28, emulator)
 
+> Historical: the fork removed this complete subsystem in `08b70b6`. Package repositories are now
+> the only update path; none of the classes, resources, manifest hooks, or tests below ship.
+
 **Before:** the launch check (Splash -> `BootDialogPresenter` -> `AppUpdatePresenter`) downloaded the
 whole APK in silence (69 MB for 1.10.4), then pinned a TV-style "Update" section that the phone put
 under You -> Explore and rendered as a blank page. Settings -> About -> Check for updates gave no
